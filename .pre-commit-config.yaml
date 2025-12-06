@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.8
+    hooks:
+      # Linter - encontra problemas no código
+      - id: ruff
+        args: [--fix]
+      # Formatter - formata o código automaticamente
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # Remove espaços em branco no final das linhas
+      - id: trailing-whitespace
+      # Garante que arquivos terminam com nova linha
+      - id: end-of-file-fixer
+      # Valida sintaxe YAML
+      - id: check-yaml
+      # Detecta arquivos grandes sendo commitados
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      # Detecta credenciais/secrets acidentais
+      - id: detect-private-key
