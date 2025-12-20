@@ -1,0 +1,102 @@
+{
+  "/app/payroll/overview": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/overview"
+  },
+  "/app/payroll/employees": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/employees"
+  },
+  "/app/payroll/contractors": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/contractors"
+  },
+  "/app/payroll/taxes": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/taxes"
+  },
+  "/app/payroll/benefits": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/benefits"
+  },
+  "/app/payroll/settings": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/payroll/settings"
+  },
+  "/app/employees/list": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/employees/list"
+  },
+  "/app/employees/directory": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/employees/directory"
+  },
+  "/app/employees/orgchart": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/employees/orgchart"
+  },
+  "/app/time": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/time"
+  },
+  "/app/timeactivity": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/timeactivity"
+  },
+  "/app/timesheets": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/timesheets"
+  },
+  "/app/hr/advisor": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/hr/advisor"
+  },
+  "/app/hradvisor": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/hradvisor"
+  },
+  "/app/reports/payroll": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/reports/payroll"
+  },
+  "/app/reports/employees": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/reports/employees"
+  },
+  "/app/reports/time": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/reports/time"
+  },
+  "/app/settings/payroll": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/settings/payroll"
+  },
+  "/app/settings/company": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/settings/company"
+  },
+  "/app/settings/users": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/settings/users"
+  },
+  "/app/settings/advanced": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/settings/advanced"
+  },
+  "/app/invoice": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/invoice"
+  },
+  "/app/expense": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/expense"
+  },
+  "/app/bill": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/bill"
+  },
+  "/app/employee": {
+    "status": "OK",
+    "url": "https://qbo.intuit.com/app/employee"
+  }
+}

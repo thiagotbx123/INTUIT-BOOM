@@ -1,0 +1,178 @@
+{
+  "Dashboard": {
+    "url": "https://apps.trustmineral.com/dashboard",
+    "route": "/dashboard",
+    "data": {
+      "title": "My Dashboard - Mineral Platform",
+      "headings": [
+        {
+          "tag": "H3",
+          "text": "Upgrade to Hands-on Guidance From a Dedicated HR Expert"
+        },
+        {
+          "tag": "H3",
+          "text": "Featured Topic: Wage and Hour"
+        },
+        {
+          "tag": "H3",
+          "text": "You have not submitted any cases yet."
+        }
+      ],
+      "links": [],
+      "buttons": [
+        "PREVIOUS",
+        "NEXT"
+      ]
+    },
+    "status": "OK"
+  },
+  "HR Compliance": {
+    "url": "https://apps.trustmineral.com/hr-compliance",
+    "route": "/hr-compliance",
+    "data": {
+      "title": "Mineral Platform",
+      "headings": [],
+      "links": [],
+      "buttons": [
+        "GO",
+        "GO"
+      ]
+    },
+    "status": "OK"
+  },
+  "Company Policies": {
+    "url": "https://apps.trustmineral.com/company-policies",
+    "route": "/company-policies",
+    "data": {
+      "title": "Company Policies - Mineral Platform",
+      "headings": [],
+      "links": [],
+      "buttons": [
+        "CREATE HANDBOOK"
+      ]
+    },
+    "status": "OK"
+  },
+  "Safety": {
+    "status": "ERROR",
+    "error": "Page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://apps.trustmineral.com/safe"
+  },
+  "Training": {
+    "url": "https://apps.trustmineral.com/dashboard",
+    "route": "/training",
+    "data": {
+      "title": "My Dashboard - Mineral Platform",
+      "headings": [
+        {
+          "tag": "H3",
+          "text": "Upgrade to Hands-on Guidance From a Dedicated HR Expert"
+        },
+        {
+          "tag": "H3",
+          "text": "Featured Topic: Wage and Hour"
+        },
+        {
+          "tag": "H3",
+          "text": "You have not submitted any cases yet."
+        }
+      ],
+      "links": [],
+      "buttons": [
+        "PREVIOUS",
+        "NEXT"
+      ]
+    },
+    "status": "OK"
+  },
+  "HR Tools": {
+    "url": "https://apps.trustmineral.com/hr-tools",
+    "route": "/hr-tools",
+    "data": {
+      "title": "Mineral Platform",
+      "headings": [],
+      "links": [],
+      "buttons": [
+        "Compare Salaries",
+        "Create a Job Description"
+      ]
+    },
+    "status": "OK"
+  },
+  "Templates": {
+    "url": "https://apps.trustmineral.com/templates",
+    "route": "/templates",
+    "data": {
+      "title": "Mineral Platform",
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "Templates"
+        }
+      ],
+      "links": [],
+      "buttons": [
+        "GO",
+        "Go to Forms",
+        "GO",
+        "Go to Letters",
+        "GO",
+        "Go to Sample Policies",
+        "Go to Toolkits"
+      ]
+    },
+    "status": "OK"
+  },
+  "Resources": {
+    "url": "https://apps.trustmineral.com/resources",
+    "route": "/resources",
+    "data": {
+      "title": "Mineral Platform",
+      "headings": [],
+      "links": [],
+      "buttons": [
+        "GO",
+        "GO",
+        "GO",
+        "GO",
+        "VIEW NEW EMPLOYEE ORIENTATION CH...",
+        "VIEW ACA EMPLOYER COMPLIANCE CH...",
+        "VIEW NEW EMPLOYEE ONBOARDING CH...",
+        "VIEW TELECOMMUTING CHECKLIST",
+        "GO"
+      ]
+    },
+    "status": "OK"
+  },
+  "My Cases": {
+    "url": "https://apps.trustmineral.com/my-cases",
+    "route": "/my-cases",
+    "data": {
+      "title": "My Cases - Mineral Platform",
+      "headings": [
+        {
+          "tag": "H3",
+          "text": "You have not submitted any cases yet."
+        }
+      ],
+      "links": [],
+      "buttons": [
+        "FIND",
+        "ASK AN EXPERT"
+      ]
+    },
+    "status": "OK"
+  },
+  "Todo": {
+    "url": "https://apps.trustmineral.com/todo/list",
+    "route": "/todo",
+    "data": {
+      "title": "My To Do List - Mineral Platform",
+      "headings": [],
+      "links": [],
+      "buttons": [
+        "back"
+      ]
+    },
+    "status": "OK"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "HR Compliance": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"HR Compliance\\\"\").first\n"
+  },
+  "Company Policies": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"Company Policies\\\"\").first\n"
+  },
+  "Safety": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"Safety\\\"\").first\n"
+  },
+  "Training": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"Training\\\"\").first\n"
+  },
+  "HR Tools": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"HR Tools\\\"\").first\n"
+  },
+  "Templates": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"Templates\\\"\").first\n"
+  },
+  "Resources": {
+    "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"nav\").locator(\"text=\\\"Resources\\\"\").first\n"
+  }
+}

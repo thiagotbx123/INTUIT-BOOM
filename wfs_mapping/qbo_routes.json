@@ -1,0 +1,112 @@
+{
+  "/app/homepage": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/homepage",
+    "title": "QuickBooks"
+  },
+  "/app/banking": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/banking",
+    "title": "Bank transactions"
+  },
+  "/app/reconcile": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/reconcile",
+    "title": "QuickBooks"
+  },
+  "/app/customers": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/customers",
+    "title": "Customers"
+  },
+  "/app/vendors": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/vendors",
+    "title": "Vendors"
+  },
+  "/app/invoices": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/invoices",
+    "title": "Invoices"
+  },
+  "/app/estimates": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/estimates",
+    "title": "Estimates"
+  },
+  "/app/expenses": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/expenses",
+    "title": "Expenses"
+  },
+  "/app/bills": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/bills",
+    "title": "QuickBooks"
+  },
+  "/app/payroll": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/payroll",
+    "title": "QuickBooks"
+  },
+  "/app/employees": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/employees",
+    "title": "QuickBooks"
+  },
+  "/app/contractors": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/contractors",
+    "title": "QuickBooks"
+  },
+  "/app/timetracking": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/timetracking",
+    "title": "QuickBooks"
+  },
+  "/app/projects": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/projects",
+    "title": "QuickBooks"
+  },
+  "/app/items": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/items",
+    "title": "Products and services"
+  },
+  "/app/inventory": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/inventory",
+    "title": "QuickBooks"
+  },
+  "/app/reportlist": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/reportlist",
+    "title": "QuickBooks"
+  },
+  "/app/chartofaccounts": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/chartofaccounts",
+    "title": "QuickBooks"
+  },
+  "/app/journal": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/journal",
+    "title": "QuickBooks"
+  },
+  "/app/settings": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/settings",
+    "title": "QuickBooks"
+  },
+  "/app/taxes": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/taxes",
+    "title": "QuickBooks"
+  },
+  "/app/hr": {
+    "status": "OK",
+    "final_url": "https://qbo.intuit.com/app/hr",
+    "title": "QuickBooks"
+  }
+}

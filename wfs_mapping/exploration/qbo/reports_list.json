@@ -1,0 +1,452 @@
+{
+  "wfs_reports": [
+    {
+      "text": "Unbilled time",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:dc5bcf70-9be8-404d-be0f-c9b6fd968910&type=system&token=UNBILLED_TIME&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Project Profitability Summary",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=PROJECT_PROFITABILITY_SUMMARY&&labor_costing_method=payrollcosts&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Time Activities by Customer Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:6eaafe46-d9f6-4a08-9121-341d8b8d1121&type=system&token=TIME_ACTIVITIES_BY_CUST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "1099 Contractor Balance Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:2b8d5837-4936-4210-8f19-0ac8f07d1d38&type=system&token=CUSTOM_DETAIL_REPORT&SubToken=contractorBalanceDetail&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "1099 Contractor Balance Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:d6400707-2dc0-40f8-9f45-67e6b9cd6b45&type=system&token=CUSTOM_SUMMARY_REPORT&SubToken=contractorBalanceSummary&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Employee Contact List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:e6c720ec-8ade-4c03-a081-7fcc4f7b736d&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Recent/Edited Time Activities",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:1d619a25-bf0a-4c51-a1da-1c7b13c4e880&type=system&token=RECENT_TIME_ACTIVITIES&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Time Activities by Employee Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:0199767a-8701-4d8c-a37e-8ce0df9e99b6&type=system&token=TIME_ACTIVITIES&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Paycheck History",
+      "href": "https://qbo.intuit.com/app/payroll/reports/paycheck-history"
+    },
+    {
+      "text": "Contractor Payments",
+      "href": "https://qbo.intuit.com/app/payroll/reports/contractor-payments"
+    },
+    {
+      "text": "Payroll Deductions/Contributions",
+      "href": "https://qbo.intuit.com/app/payroll/reports/deductions-contributions"
+    },
+    {
+      "text": "Payroll Summary by Employee",
+      "href": "https://qbo.intuit.com/app/payroll/reports/payroll-summary?name=pse"
+    },
+    {
+      "text": "Employee Directory",
+      "href": "https://qbo.intuit.com/app/payroll/reports/employee-directory"
+    },
+    {
+      "text": "Employee Details",
+      "href": "https://qbo.intuit.com/app/payroll/reports/employee-details"
+    },
+    {
+      "text": "Multiple Worksites",
+      "href": "https://qbo.intuit.com/app/payroll/reports/multiple-worksite"
+    },
+    {
+      "text": "Payroll Details",
+      "href": "https://qbo.intuit.com/app/payroll/reports/payroll-summary?name=details"
+    },
+    {
+      "text": "Payroll Item List",
+      "href": "https://qbo.intuit.com/app/payroll/reports/payroll-item-list"
+    },
+    {
+      "text": "Payroll Summary",
+      "href": "https://qbo.intuit.com/app/payroll/reports/payroll-summary"
+    },
+    {
+      "text": "Vacation and Sick Leave",
+      "href": "https://qbo.intuit.com/app/payroll/reports/vacation-sick-leave"
+    },
+    {
+      "text": "Retirement Plans",
+      "href": "https://qbo.intuit.com/app/payroll/reports/retirement-plans"
+    },
+    {
+      "text": "State Mandated Retirement Plans",
+      "href": "https://qbo.intuit.com/app/payroll/reports/retirement-plans?name=statemandretplans"
+    },
+    {
+      "text": "Payroll Tax Liability",
+      "href": "https://qbo.intuit.com/app/payroll/reports/tax-liability"
+    },
+    {
+      "text": "Payroll Tax Payments",
+      "href": "https://qbo.intuit.com/app/payroll/reports/tax-payments"
+    },
+    {
+      "text": "Total Payroll Cost",
+      "href": "https://qbo.intuit.com/app/payroll/reports/total-payroll-cost"
+    },
+    {
+      "text": "Total Pay",
+      "href": "https://qbo.intuit.com/app/payroll/reports/total-pay"
+    },
+    {
+      "text": "Payroll Tax and Wage Summary",
+      "href": "https://qbo.intuit.com/app/payroll/reports/tax-wage-summary"
+    },
+    {
+      "text": "Workers' Compensation",
+      "href": "https://qbo.intuit.com/app/payroll/reports/workers-compensation"
+    }
+  ],
+  "financial": [
+    {
+      "text": "Accounts receivable aging summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c0499904-3b68-4a09-98e6-75c193352571&type=system&token=AR_AGING&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Balance Sheet",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:cbe6fa12-96f4-46ad-9d6e-b13349076ee9&type=system&token=BAL_SHEET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c46c823a-8641-4641-b08a-dda0e499066f&type=system&token=PANDL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Bill Approval Status",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:4884e98f-6f27-4380-9c44-9abfc7f11656&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Product/Item Profitability by Customer",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:3c7105ca-c203-4fc4-9488-0422d8fc07db&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Invoice Approval Status",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:1bd1dfaf-e548-4462-a68e-e4ca3b09ce33&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Balance Sheet Comparison",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:21a5a5fc-a0fa-4f76-a857-e79fb0382871&type=system&token=BAL_SHEET_COMP&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Balance Sheet Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:76cb7416-b1ab-49df-aa55-fe59aeca5471&type=system&token=BAL_SHEET_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Balance Sheet Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:f14c1b5b-533b-4ef0-ab3b-e20f7bcd2b94&type=system&token=BAL_SHEET_SUM&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Statement of Cash Flows",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:be53cbb0-d2cd-4e59-abf5-5755e22c8c5f&type=system&token=CASH_FLOW&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss by Customer",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:f3bea294-98a5-4ed7-94a7-b87c01d5aa52&type=system&token=PANDL_BYCUST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss by Month",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c7325521-712e-40a8-83e4-86b7a94ca48b&type=system&token=PANDL_BY_MONTH&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss by Tag Group",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=PANDL_BY_TAG_TYPE&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss Comparison",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:ea4100ff-9f63-4bc1-a26f-7b49c582c068&type=system&token=PANDL_COMP&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c7ea70d5-5b4e-49d7-8d3a-94cd4dea9c26&type=system&token=PANDL_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss as % of total income",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:1157e486-e5db-4f58-b267-b1f41ef7dd1c&type=system&token=PANDL_PCT_TOT_INC&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Profit and Loss year-to-date comparison",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:1bbb0ca2-4dd3-480f-a7c3-afaeb5dde5c0&type=system&token=PANDL_YTD_COMP&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Quarterly Profit and Loss Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:bfee05d9-4bfa-4569-9bd0-b5abe729a1ca&type=system&token=QRTR_PANDL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Accounts receivable aging detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:73f15f2c-2671-4831-9f24-1faef280cfa2&type=system&token=AR_AGING_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Customer Balance Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:ecea1937-9063-4915-8cb5-15d39d66a7ce&type=system&token=CUST_BAL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Customer Balance Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:52f7dc24-f557-4f7f-85e2-a64562ecdbf8&type=system&token=CUST_BAL_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Invoice List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:2ebd9d01-416e-49fb-90ca-4c3700c7558a&type=system&token=INVOICE_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Invoices and Received Payments",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=INVOICE_PAYMENT&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Open Invoices",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:f2c33c26-7f57-4a45-a122-65aa1cae3699&type=system&token=OPEN_INVOICES&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Unbilled charges",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:7c155f20-cfe8-4ba0-8f46-f2b4f50a3add&type=system&token=UNBILLED_CHARGES&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Sales by Customer Type Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:37dd32b7-3d0c-4999-b454-d88dc429eb1f&type=system&token=CUSTOMER_TYPE_SALES_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Income by Customer Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:2af326b7-fa2c-43a1-a2d5-504e9398e06d&type=system&token=CUST_INC&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Sales by Customer Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:38363bf9-2ec9-4972-a515-46abf8e98034&type=system&token=CUST_SALES&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Sales by Customer Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:b00801e1-3d69-4531-8041-98f5a2fd1cab&type=system&token=CUST_SALES_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Sales by Product/Service Summary",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=ITEM_SALES&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Sales by Product/Service Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:3d5a48ae-03fa-4abb-9c30-baf55b369427&type=system&token=ITEM_SALES_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Accounts payable aging summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:41476b71-0fdc-4724-9e46-4150495f60d1&type=system&token=AP_AGING&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Accounts payable aging detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:7577fb3e-5a98-4dd1-a94e-a0039ce978af&type=system&token=AP_AGING_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Bills and Applied Payments",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=BILL_PAYMENT&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Bill Payment List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:5f258cc8-4df3-4bdd-b4e1-f578d85c91d9&type=system&token=BILL_PAY_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Unpaid Bills",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:159bbcaa-2884-4526-ba40-9687c623cf52&type=system&token=UNPAID_BILLS&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Vendor Balance Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:7f6d5c68-b667-4db5-8591-e6d02b7571dd&type=system&token=VEND_BAL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Vendor Balance Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:2a587736-77f3-49d7-9278-343666d951c0&type=system&token=VEND_BAL_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Expenses by Vendor Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:bd7d1eb6-9120-44f3-b34c-a7fa65efce2c&type=system&token=VEND_EXP&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Trial Balance",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=TRIAL_BAL&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Adjusted Trial Balance",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:72dd16f3-7629-42a1-a109-4b8388367b1d&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    }
+  ],
+  "other": [
+    {
+      "text": "Skip to Main Content",
+      "href": "https://qbo.intuit.com/app/standardreports#main"
+    },
+    {
+      "text": "Standard reports",
+      "href": "https://qbo.intuit.com/app/standardreports"
+    },
+    {
+      "text": "Custom reports",
+      "href": "https://qbo.intuit.com/app/customreports"
+    },
+    {
+      "text": "Management reports",
+      "href": "https://qbo.intuit.com/app/managementreports"
+    },
+    {
+      "text": "Dashboards",
+      "href": "https://qbo.intuit.com/app/business-intelligence/analytics-dashboard"
+    },
+    {
+      "text": "Create new report",
+      "href": "https://qbo.intuit.com/app/standardreports#"
+    },
+    {
+      "text": "Revenue Recognition Report (Beta)",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:f4a6840b-e392-43cc-a768-6c28c02d5a9e&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Business Snapshot",
+      "href": "https://qbo.intuit.com/app/report?rptId=COMP_SNAPSHOT&"
+    },
+    {
+      "text": "Collections Report",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:61f1bef3-ec0d-49b9-8f2c-80bd7107cebb&type=system&token=COLLECTIONS&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Statement List",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=STATEMENT_INVOICE&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Terms List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:dff478c4-1b44-4db6-90b8-0e8962ebbf96&type=system&token=TERM_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Inventory Valuation Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:72fc85ce-f75a-4672-b157-9a39570063c0&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Inventory Valuation Summary",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:234374d0-6a42-42e6-955e-9326700435de&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Open Purchase Order Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:e36f800b-139b-41da-a14d-47f58c9ba483&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Open Purchase Order List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:adb1b48f-443d-4b22-bb47-f8dc2487e2d5&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Physical Inventory Worksheet",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c37512c9-2109-4390-a961-0ded92fe1772&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Estimates & Progress Invoicing Summary by Customer",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:edf36075-0a20-4ac9-b859-146817f05194&type=system&token=CUSTOM_DETAIL_REPORT&SubToken=EST_VS_PI&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Customer Contact List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:97046176-38d6-4272-986c-ede2334d2636&type=system&token=CUST_CONTACT&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Customer Phone List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c8e6c40a-6901-4b7f-a8df-1ca9b3ccc82e&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Deposit Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:40b27501-860b-4705-99b9-768040bf785a&type=system&token=DEPOSIT_DETAIL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Estimates by Customer",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:15a3d6bc-4836-4658-8c56-e8847efc1993&type=system&token=ESTIMATE_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Product/Service List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:e001c4e8-a778-490f-876b-50ee58c10ff5&type=system&token=ITEM_PRICE&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Payment Method List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:0359024c-4cbf-4b17-beb6-5c8fcb05d833&type=system&token=PAYMENTMETHOD_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction List by Customer",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:cef4d5ab-496d-446e-9807-8a2a8b5dadef&type=system&token=TX_LIST_BY_CUST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction List by Tag Group",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=TX_LIST_BY_TAG_TYPE&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Check Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:43b62bab-3bd9-43e2-a577-b38c99d4b9a6&type=system&token=CHECK_DETAIL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "1099 Transaction Detail Report",
+      "href": "https://qbo.intuit.com/app/report?rptId=CUSTOM_DETAIL_REPORT&SubToken=1099DetailReport"
+    },
+    {
+      "text": "Purchases by Product/Service Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:bd0de6d0-77c9-4f41-b94b-76e0b51f16b7&type=system&token=ITEM_PURCHASE_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Purchase List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:2ecca1a7-de22-4aba-9f57-267daf7897fc&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction List by Vendor",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:64238b06-0064-4ed8-9459-b3c505b322a3&type=system&token=TX_LIST_BY_VENDOR&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Purchases by Vendor Detail",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:03525cb1-f817-4e45-bfae-1c4507921e72&type=system&token=VENDOR_PURCHASE_DET&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Vendor Contact List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:377ec128-023c-4a0e-b5c8-ed54a0646664&type=system&token=VEND_CONTACT&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Vendor Phone List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:d605baff-fb61-49f2-aeb6-b3bb72ee0f98&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Account List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:e3088e53-831a-482a-a340-da2c88a89659&type=system&token=ACCT_LIST&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Invalid Journal Transactions",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:4f712709-1549-46ba-a2f9-0c897d588a6f&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "General Ledger",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:736d5115-5331-471d-ab88-1a7c80dbee60&type=system&token=GEN_LEDGER&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "General Ledger List",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:12fd1761-d590-49cf-892a-c05df31bf27f&type=system&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Journal",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:ba11238b-a329-4e50-82c6-c287f27729a1&type=system&token=JOURNAL&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Recurring Template List",
+      "href": "https://qbo.intuit.com/app/reportv2?rptId=MEM_TXN_REPORT&&backLinkRoute=standardreports&backLinkText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Recent Transactions",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:670c00a6-d5b3-4eff-84f3-e36cac7ddc77&type=system&token=RECENT_TX&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction Detail by Account",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:c257b4c2-29a5-48f8-a4da-35ddf2fa55b4&type=system&token=TX_DET_BY_ACCT&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction List by Date",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:4023ce03-d69d-49f5-b56d-a62b54cf55a5&type=system&token=TX_LIST_BY_DATE&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    },
+    {
+      "text": "Transaction List with Splits",
+      "href": "https://qbo.intuit.com/app/report/builder?rptId=sbg:d0c9b314-c1d4-4020-95ec-7c29665f656a&type=system&token=TX_LIST_WITH_SPLITS&previousRoute=standardreports&previousRouteText=Back%20to%20standard%20reports"
+    }
+  ]
+}

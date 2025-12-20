@@ -1,0 +1,41 @@
+{
+  "url": "https://apps.trustmineral.com/dashboard",
+  "links": [
+    {
+      "text": "VIEW ARTICLE",
+      "href": "https://apps.trustmineral.com/featured-content/2H1jC0UGlSp2OdMKzTPSMF/details",
+      "visible": true
+    },
+    {
+      "text": "GO TO PAGE",
+      "href": "https://apps.trustmineral.com/hr-compliance/law-alerts/sy6sLPds4laRtsfj4yWtx/details",
+      "visible": true
+    },
+    {
+      "text": "GO TO PAGE",
+      "href": "https://apps.trustmineral.com/hr-compliance/law-alerts/dGzB7dSUXfJL07oq9h7Ad/details",
+      "visible": true
+    },
+    {
+      "text": "GO TO PAGE",
+      "href": "https://apps.trustmineral.com/hr-compliance/law-alerts/8pFbY9qT9OnKx6nmEbxoF/details",
+      "visible": true
+    },
+    {
+      "text": "GO TO PAGE",
+      "href": "https://apps.trustmineral.com/hr-compliance/law-alerts/49tS9VdMpf1KKJCpXYCUsH/details",
+      "visible": true
+    },
+    {
+      "text": "View All",
+      "href": "https://apps.trustmineral.com/todo",
+      "visible": true
+    },
+    {
+      "text": "Take Me To My Cases",
+      "href": "https://apps.trustmineral.com/my-cases",
+      "visible": true
+    }
+  ],
+  "menu_items": []
+}
