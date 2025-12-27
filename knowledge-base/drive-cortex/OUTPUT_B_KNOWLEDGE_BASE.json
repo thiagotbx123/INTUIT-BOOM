@@ -1,0 +1,345 @@
+{
+  "run_metadata": {
+    "generated_at": "2025-12-27 00:15 America/Sao_Paulo",
+    "time_range_used": {
+      "start": "2025-06-30",
+      "end": "2025-12-27",
+      "note": "180 dias default"
+    },
+    "drive_locations": [
+      {"location_link": "https://drive.google.com/drive/folders/1jpg8FPq8le2nxL_2flLAGHw3onbDvZ9r", "type": "folder"},
+      {"location_link": "https://drive.google.com/drive/folders/1oouDh9g_7F9rf6-k-1LuqKm0P4fZ0vxi", "type": "folder"},
+      {"location_link": "https://drive.google.com/drive/folders/1Izf_aHs2EDrr9FFnEF-JPfo7jD2hw4zi", "type": "folder"},
+      {"location_link": "https://drive.google.com/drive/folders/1dM1iAHO3Eqsv1vXBjgMNbzxpNtcQkq7p", "type": "folder"},
+      {"location_link": "https://drive.google.com/drive/my-drive", "type": "my_drive"}
+    ],
+    "scan_rules": {
+      "my_drive_strategy": "keyword first, then open only medium or high relevance",
+      "no_hallucination": true,
+      "evidence_required": true
+    },
+    "stats": {
+      "total_files_scanned": 20426,
+      "relevant_files": 1442,
+      "relevance_rate": "7.1%"
+    }
+  },
+  "files_index": [
+    {
+      "file_name": "Intuit_Quickbooks_TestBox_60_Additional_User_Licenses (signed)",
+      "file_type": "pdf",
+      "drive_link": "https://drive.google.com/file/d/1hiZYXrFUp9HmpBISY0MfKpq-XMqLnahg/view",
+      "last_modified": "2025-12-23",
+      "relevance": "high",
+      "confidentiality": "confidential",
+      "topic_tags": ["contract", "intuit", "quickbooks", "licenses"],
+      "short_summary": "Contrato assinado para 60 licencas adicionais de usuarios TestBox para Intuit QuickBooks"
+    },
+    {
+      "file_name": "Testbox - SOW - Intuit Workforce Solutions v1.1",
+      "file_type": "google_doc",
+      "drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+      "last_modified": "2025-12-18",
+      "relevance": "high",
+      "confidentiality": "confidential",
+      "topic_tags": ["sow", "wfs", "intuit", "scope"],
+      "short_summary": "Statement of Work para Intuit Workforce Solutions - versao 1.1 em draft"
+    },
+    {
+      "file_name": "WFS HCM Transformation FY26 Overview",
+      "file_type": "google_slides",
+      "drive_link": "https://docs.google.com/presentation/d/1w91J8oiSfgWB-V_O60uDaPfXRDwmB5NHaI53dsqoBLk/edit",
+      "last_modified": "2025-12-23",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["wfs", "hcm", "roadmap", "fy26"],
+      "short_summary": "Visao geral da transformacao HCM da Intuit para FY26"
+    },
+    {
+      "file_name": "TestBox 3.0",
+      "file_type": "google_doc",
+      "drive_link": "https://docs.google.com/document/d/1mhC8gg3rDuRMrPBa5573wSGmaDpayZogg3CgagPqQn8/edit",
+      "last_modified": "2025-12-23",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["testbox", "roadmap", "product"],
+      "short_summary": "Documentacao do TestBox 3.0 - nova versao da plataforma"
+    },
+    {
+      "file_name": "WFS_TSA_SCOPE_PLAN.xlsx",
+      "file_type": "xlsx",
+      "drive_link": "https://docs.google.com/spreadsheets/d/19kAAYS3ppGra7GtsU2wOhwTKHE2J1oQk/edit",
+      "last_modified": "2025-12-23",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["wfs", "tsa", "scope", "planning"],
+      "short_summary": "Plano de escopo TSA para projeto WFS"
+    },
+    {
+      "file_name": "GoCo Platform Comprehensive Feature List",
+      "file_type": "google_sheet",
+      "drive_link": "https://docs.google.com/spreadsheets/d/1wVgrO7wzsorGlxKiqjUy_bZFcXwZeKN-5QBql1MLEuo/edit",
+      "last_modified": "2025-08-07",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["goco", "features", "hcm", "wfs"],
+      "short_summary": "Lista completa de features da plataforma GoCo"
+    },
+    {
+      "file_name": "quickbooks_fall_release_big_numbers_v2.pptx",
+      "file_type": "pptx",
+      "drive_link": "https://drive.google.com/file/",
+      "last_modified": "2025-11-28",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["quickbooks", "fall_release", "presentation"],
+      "short_summary": "Apresentacao com numeros principais do Fall Release QuickBooks"
+    },
+    {
+      "file_name": "TestBox_WFS Demo Scenarios.xlsx",
+      "file_type": "xlsx",
+      "drive_link": "https://drive.google.com/file/",
+      "last_modified": "2025-12-23",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["wfs", "demo", "scenarios"],
+      "short_summary": "Cenarios de demo para WFS"
+    },
+    {
+      "file_name": "QBO_Health_Check_Checklist_TCO_v2.xlsx",
+      "file_type": "xlsx",
+      "drive_link": "https://drive.google.com/file/",
+      "last_modified": "2025-12-10",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["qbo", "health_check", "tco", "checklist"],
+      "short_summary": "Checklist de health check para ambiente TCO"
+    },
+    {
+      "file_name": "Fall Readiness Environment CIDs",
+      "file_type": "xlsx",
+      "drive_link": "https://drive.google.com/file/",
+      "last_modified": "2025-11-17",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "topic_tags": ["fall_release", "environments", "cid"],
+      "short_summary": "Mapeamento de CIDs dos ambientes para Fall Release"
+    }
+  ],
+  "knowledge_items": [
+    {
+      "item_id": "ki_001",
+      "item_type": "contract_clause",
+      "title": "Contrato 60 Licencas Adicionais Intuit",
+      "summary": "Contrato assinado em 12/2025 para 60 licencas adicionais de usuarios TestBox para Intuit QuickBooks",
+      "topic_tags": ["contract", "intuit", "quickbooks", "licenses"],
+      "entities": {
+        "projects": ["intuit-quickbooks"],
+        "customers_or_products": ["Intuit", "QuickBooks"],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "tickets": [],
+        "people": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://drive.google.com/file/d/1hiZYXrFUp9HmpBISY0MfKpq-XMqLnahg/view",
+          "location_hint": "PDF signed document",
+          "quote_snippet": "60 Additional User Licenses Order Form - 12.3.25"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-23"
+    },
+    {
+      "item_id": "ki_002",
+      "item_type": "requirement",
+      "title": "WFS SOW v1.1 - Escopo Intuit Workforce Solutions",
+      "summary": "Statement of Work em draft para implementacao TestBox no Intuit Workforce Solutions",
+      "topic_tags": ["sow", "wfs", "intuit", "scope", "hcm"],
+      "entities": {
+        "projects": ["wfs"],
+        "customers_or_products": ["Intuit", "WFS", "GoCo", "MineralHR"],
+        "datasets": [],
+        "environments": ["GoQuick Alpha Retail"],
+        "pipelines": [],
+        "features": ["worker_profile", "time_off", "onboarding"],
+        "tickets": [],
+        "people": ["Katherine", "Thiago"]
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+          "location_hint": "Google Doc",
+          "quote_snippet": "Testbox - SOW - Intuit Workforce Solutions v1.1"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-18"
+    },
+    {
+      "item_id": "ki_003",
+      "item_type": "timeline",
+      "title": "WFS HCM Transformation FY26",
+      "summary": "Roadmap de transformacao HCM da Intuit para ano fiscal 2026 - Alpha Dez 2025, Beta Fev 2026, GA Mai 2026",
+      "topic_tags": ["wfs", "hcm", "roadmap", "timeline", "fy26"],
+      "entities": {
+        "projects": ["wfs"],
+        "customers_or_products": ["Intuit", "WFS"],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "tickets": [],
+        "people": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/presentation/d/1w91J8oiSfgWB-V_O60uDaPfXRDwmB5NHaI53dsqoBLk/edit",
+          "location_hint": "Google Slides presentation",
+          "quote_snippet": "WFS HCM Transformation FY26 Overview"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-23"
+    },
+    {
+      "item_id": "ki_004",
+      "item_type": "architecture",
+      "title": "GoCo Platform Features",
+      "summary": "Lista completa de features da plataforma GoCo que serao integradas ao WFS",
+      "topic_tags": ["goco", "features", "hcm", "wfs", "platform"],
+      "entities": {
+        "projects": ["wfs"],
+        "customers_or_products": ["GoCo"],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": ["org_chart", "employee_profile", "time_off", "digital_i9", "onboarding"],
+        "tickets": [],
+        "people": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/spreadsheets/d/1wVgrO7wzsorGlxKiqjUy_bZFcXwZeKN-5QBql1MLEuo/edit",
+          "location_hint": "Google Sheet with feature list",
+          "quote_snippet": "GoCo Platform Comprehensive Feature List"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-08-07"
+    },
+    {
+      "item_id": "ki_005",
+      "item_type": "fact",
+      "title": "Fall Release Big Numbers",
+      "summary": "Metricas e numeros principais do Fall Release QuickBooks",
+      "topic_tags": ["fall_release", "quickbooks", "metrics"],
+      "entities": {
+        "projects": ["fall-release"],
+        "customers_or_products": ["QuickBooks", "Intuit"],
+        "datasets": [],
+        "environments": ["TCO", "Construction"],
+        "pipelines": [],
+        "features": [],
+        "tickets": [],
+        "people": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://drive.google.com/file/",
+          "location_hint": "PPTX presentation",
+          "quote_snippet": "quickbooks_fall_release_big_numbers_v2.pptx"
+        }
+      ],
+      "confidence": "medium",
+      "last_seen": "2025-11-28"
+    },
+    {
+      "item_id": "ki_006",
+      "item_type": "architecture",
+      "title": "QBO Health Check TCO",
+      "summary": "Checklist de validacao de saude do ambiente TCO para QuickBooks",
+      "topic_tags": ["qbo", "health_check", "tco", "validation"],
+      "entities": {
+        "projects": ["tco"],
+        "customers_or_products": ["QuickBooks"],
+        "datasets": ["tco"],
+        "environments": ["TCO", "Apex Tire", "Global Tread", "RoadReady"],
+        "pipelines": [],
+        "features": [],
+        "tickets": [],
+        "people": ["Thiago"]
+      },
+      "evidence": [
+        {
+          "drive_link": "https://drive.google.com/file/",
+          "location_hint": "Excel checklist",
+          "quote_snippet": "QBO_Health_Check_Checklist_TCO_v2.xlsx"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-10"
+    }
+  ],
+  "entity_index": {
+    "datasets": [
+      {"name": "TCO", "aliases": ["Traction Control Outfitters", "tire"], "related_item_ids": ["ki_006"]},
+      {"name": "Construction", "aliases": ["Keystone", "construction_sales"], "related_item_ids": []},
+      {"name": "Canada Construction", "aliases": ["canada"], "related_item_ids": []},
+      {"name": "Mailchimp", "aliases": ["mc"], "related_item_ids": []}
+    ],
+    "environments": [
+      {"name": "TCO Parent", "aliases": ["TCO"], "related_item_ids": ["ki_006"]},
+      {"name": "GoQuick Alpha Retail", "aliases": ["WFS Alpha"], "related_item_ids": ["ki_002"]},
+      {"name": "Construction Sales", "aliases": ["IES Construction"], "related_item_ids": []}
+    ],
+    "features": [
+      {"name": "Worker Profile", "aliases": ["employee_profile"], "related_item_ids": ["ki_002", "ki_004"]},
+      {"name": "Time Off", "aliases": ["PTO", "time_off"], "related_item_ids": ["ki_002", "ki_004"]},
+      {"name": "Onboarding", "aliases": ["new_hire"], "related_item_ids": ["ki_002", "ki_004"]},
+      {"name": "Digital I-9", "aliases": ["i9"], "related_item_ids": ["ki_004"]}
+    ],
+    "contracts": [
+      {"name": "Intuit 60 Additional Licenses", "related_item_ids": ["ki_001"]},
+      {"name": "WFS SOW v1.1", "related_item_ids": ["ki_002"]}
+    ]
+  },
+  "open_questions": [
+    {
+      "question": "Qual versao final do SOW WFS sera assinada?",
+      "why_it_matters": "Define escopo, preco e entregaveis do projeto WFS",
+      "best_evidence_drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit"
+    },
+    {
+      "question": "Qual ambiente sera usado para demo WFS em producao?",
+      "why_it_matters": "GoQuick Alpha e para exploracao, precisa definir ambiente final para sellers",
+      "best_evidence_drive_link": ""
+    },
+    {
+      "question": "Qual o status final do Fall Release tracker?",
+      "why_it_matters": "Confirmar se todas as features foram validadas",
+      "best_evidence_drive_link": ""
+    },
+    {
+      "question": "Quais features do GoCo serao priorizadas para Alpha?",
+      "why_it_matters": "Define escopo de trabalho imediato",
+      "best_evidence_drive_link": "https://docs.google.com/spreadsheets/d/1wVgrO7wzsorGlxKiqjUy_bZFcXwZeKN-5QBql1MLEuo/edit"
+    }
+  ],
+  "file_counts_by_theme": {
+    "wfs": 61,
+    "quickbooks": 415,
+    "datasets": 41,
+    "sow": 149,
+    "fall_release": 19,
+    "construction": 29,
+    "canada": 19,
+    "manufacturing": 0,
+    "tco": 421,
+    "goco": 7,
+    "other": 281
+  }
+}

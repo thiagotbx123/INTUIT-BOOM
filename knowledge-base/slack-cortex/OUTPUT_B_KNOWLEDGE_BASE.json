@@ -1,0 +1,368 @@
+{
+  "metadata": {
+    "generated_at": "2025-12-26T12:00:00-03:00",
+    "timezone": "America/Sao_Paulo",
+    "period_days": 180,
+    "channels_analyzed": 10,
+    "version": "1.0"
+  },
+  "threads": [
+    {
+      "id": "fall_release_delivery",
+      "title": "Fall Release Delivery Status",
+      "channel": "C09QC6096G7",
+      "summary": "Fall Release entregue em 11/20. TCO e Construction OK. Secondary envs (Manufacturing, Nonprofit) em 95%.",
+      "status": "delivered",
+      "key_messages": [
+        "Deadline 11/20 cumprido para ambientes principais",
+        "Fusion UI migration causando delays pontuais",
+        "Review final de Manufacturing/Nonprofit pendente"
+      ],
+      "stakeholders": ["katherine", "thiago", "lawton"],
+      "last_activity": "2025-12-22"
+    },
+    {
+      "id": "wfs_sow_development",
+      "title": "WFS SOW Development",
+      "channel": "D09N49AG4TV",
+      "summary": "Desenvolvimento do SOW para WFS. Thiago refinando escopo com Katherine. MineralHR access obtido.",
+      "status": "in_progress",
+      "key_messages": [
+        "SOW sendo refinado com parametros MineralHR",
+        "GoQuick Alpha Retail para exploracao interna, nao demo final",
+        "Staged rollout necessario para nao impactar sellers TCO",
+        "Timeline: Alpha Dez 2025, Beta Fev 2026, GA Mai 2026"
+      ],
+      "stakeholders": ["thiago", "katherine", "nikki", "ben_hale"],
+      "last_activity": "2025-12-22"
+    },
+    {
+      "id": "tco_environment_health",
+      "title": "TCO Environment Health",
+      "channel": "C06PSSGEK8T",
+      "summary": "Monitoramento de saude do ambiente TCO multi-entity. Issues com negative inventory e login.",
+      "status": "monitoring",
+      "key_messages": [
+        "Negative inventory blocker (PLA-2916)",
+        "Login ECS task failing com workaround manual",
+        "Demo Health Checker proposto como ferramenta"
+      ],
+      "stakeholders": ["thiago", "soranzo", "engineering"],
+      "last_activity": "2025-12-10"
+    },
+    {
+      "id": "staging_coordination",
+      "title": "Staging Environment Coordination",
+      "channel": "C0762U2S3JN",
+      "summary": "Coordenacao de uso do staging entre engenheiros. Protocolo de lock via Slack.",
+      "status": "active",
+      "key_messages": [
+        "Perguntar antes de usar staging",
+        "QuickBooks login issues reportados",
+        "Data validator com assert_data_err"
+      ],
+      "stakeholders": ["eyji", "marcelo", "augusto", "soranzo"],
+      "last_activity": "2025-11-18"
+    },
+    {
+      "id": "psc_licensing",
+      "title": "PSC Team Licensing Review",
+      "channel": "C091ZCL7371",
+      "summary": "Discussao sobre utilizacao de TestBox pelo time PSC da Intuit. Reavaliar apos Fusion.",
+      "status": "pending_review",
+      "key_messages": [
+        "PSCs preferem ambientes curados para late-stage",
+        "TestBox melhor para early-stage consistent storytelling",
+        "Licensing mantido ate pos-Fusion launch"
+      ],
+      "stakeholders": ["katherine", "saniya", "tarek"],
+      "last_activity": "2025-11-05"
+    }
+  ],
+  "entities": {
+    "projects": [
+      {
+        "id": "tco",
+        "name": "TCO (Traction Control Outfitters)",
+        "type": "multi_entity",
+        "status": "active",
+        "description": "Simulacao multi-entity QBO Advanced com parent + 3 children",
+        "children": ["apex_tire", "global_tread", "roadready"],
+        "blockers": ["negative_inventory", "login_ecs_failure"]
+      },
+      {
+        "id": "construction_sales",
+        "name": "Construction Sales",
+        "type": "ies_environment",
+        "status": "active",
+        "description": "Ambiente IES para construction e desktop parity",
+        "priority_customer": "Keystone Construction"
+      },
+      {
+        "id": "wfs",
+        "name": "Workforce Solutions",
+        "type": "hcm_platform",
+        "status": "planning",
+        "description": "Plataforma HCM: Payroll + HR + Benefits + Time",
+        "timeline": {
+          "alpha": "2025-12",
+          "beta": "2026-02",
+          "ga": "2026-05-01"
+        },
+        "integrations": ["goco", "mineral_hr", "quickbooks_payroll"]
+      },
+      {
+        "id": "canada_construction",
+        "name": "Canada Construction",
+        "type": "dataset",
+        "status": "active",
+        "dataset_id": "2ed5d245-0578-43aa-842b-6e1e28367149"
+      },
+      {
+        "id": "fall_release",
+        "name": "Fall Release 2025",
+        "type": "release",
+        "status": "delivered",
+        "deadline": "2025-11-20"
+      },
+      {
+        "id": "winter_release",
+        "name": "Winter Release 2026",
+        "type": "release",
+        "status": "planning",
+        "target": "2026-02"
+      }
+    ],
+    "environments": [
+      {
+        "id": "goquick_alpha_retail",
+        "name": "GoQuick Alpha Retail",
+        "realm_id": "9341455848423964",
+        "purpose": "WFS exploration (internal)",
+        "is_sales_demo": false,
+        "access": ["thiago", "katherine", "saubhagya"]
+      },
+      {
+        "id": "tco_parent",
+        "name": "TCO Parent Company",
+        "type": "qbo_advanced",
+        "status": "active"
+      },
+      {
+        "id": "staging",
+        "name": "TestBox Staging",
+        "type": "development",
+        "status": "shared",
+        "protocol": "ask_before_use"
+      }
+    ],
+    "datasets": [
+      {
+        "id": "canada_construction",
+        "segment": "construction",
+        "region": "canada",
+        "uuid": "2ed5d245-0578-43aa-842b-6e1e28367149"
+      },
+      {
+        "id": "manufacturing",
+        "segment": "manufacturing",
+        "purpose": "stress_test"
+      },
+      {
+        "id": "tire_shop",
+        "segment": "retail",
+        "volume": "high",
+        "customers": "10000+"
+      },
+      {
+        "id": "non_profit",
+        "segment": "non_profit",
+        "status": "pending_review"
+      }
+    ],
+    "tickets": [
+      {
+        "id": "PLA-2916",
+        "title": "TCO Automation Inventory Prevent negative stock",
+        "status": "open",
+        "priority": "blocker"
+      },
+      {
+        "id": "PLA-2862",
+        "title": "Data Ingest Chart of Accounts",
+        "status": "open"
+      },
+      {
+        "id": "PLA-2866",
+        "title": "Data Ingest Products and Services",
+        "status": "open"
+      },
+      {
+        "id": "PLA-3013",
+        "title": "Login task failing for TCO",
+        "status": "blocked"
+      }
+    ],
+    "people": [
+      {
+        "id": "U09LKQKTXU7",
+        "slack_name": "katherine",
+        "full_name": "Katherine Lu",
+        "role": "Account/Program Lead",
+        "org": "testbox"
+      },
+      {
+        "id": "U09E0JP6QUT",
+        "slack_name": "thiago",
+        "full_name": "Thiago dos Santos Rodrigues",
+        "role": "TSA/Data Architect",
+        "org": "testbox"
+      },
+      {
+        "id": "U02VAQNV9FZ",
+        "slack_name": "lucassoranzo",
+        "full_name": "Lucas Soranzo",
+        "role": "Engineering Lead",
+        "org": "testbox"
+      },
+      {
+        "id": "U0719M8NFPX",
+        "slack_name": "eyji",
+        "full_name": "Eyji Koike Cuff",
+        "role": "Engineer",
+        "org": "testbox"
+      },
+      {
+        "id": "U070WJNTQ5P",
+        "slack_name": "marcelo",
+        "full_name": "Marcelo Andriolli",
+        "role": "Engineer",
+        "org": "testbox"
+      },
+      {
+        "id": "U06RNH6UGGJ",
+        "slack_name": "augusto",
+        "full_name": "Augusto Gunsch",
+        "role": "Engineer",
+        "org": "testbox"
+      },
+      {
+        "id": "lawton",
+        "full_name": "Lawton Ursrey",
+        "role": "Product Leader (IES)",
+        "org": "intuit"
+      },
+      {
+        "id": "nikki",
+        "full_name": "Nikki Behn",
+        "role": "Marketing (WFS)",
+        "org": "intuit"
+      },
+      {
+        "id": "ben_hale",
+        "full_name": "Ben Hale",
+        "role": "Sales Enablement (WFS)",
+        "org": "intuit"
+      }
+    ],
+    "features": [
+      {
+        "id": "payments_agent",
+        "name": "Payments Agent",
+        "release": "fall_2025",
+        "status": "active"
+      },
+      {
+        "id": "finance_agent",
+        "name": "Finance Agent",
+        "release": "fall_2025",
+        "status": "active"
+      },
+      {
+        "id": "shared_coa",
+        "name": "Shared Chart of Accounts",
+        "release": "fall_2025",
+        "status": "active"
+      },
+      {
+        "id": "intercompany_allocations",
+        "name": "Intercompany Cost Allocations",
+        "release": "fall_2025",
+        "status": "active"
+      },
+      {
+        "id": "fusion_ui",
+        "name": "Fusion UI Migration",
+        "release": "ongoing",
+        "status": "in_progress",
+        "impact": "interface_changes"
+      }
+    ]
+  },
+  "glossary": {
+    "TCO": "Traction Control Outfitters - Multi-entity demo environment",
+    "WFS": "Workforce Solutions - HCM platform (Payroll + HR + Benefits + Time)",
+    "IES": "Intuit Enterprise Solutions",
+    "PSC": "Professional Services Consultants",
+    "SOW": "Statement of Work",
+    "HCM": "Human Capital Management",
+    "GoCo": "HR platform being integrated into WFS",
+    "MineralHR": "HR compliance tool integrated with QBO Payroll",
+    "Fusion UI": "New Intuit interface being migrated",
+    "Realm ID": "Unique identifier for QBO company",
+    "TSA": "Technical Solutions Architect",
+    "ECS": "Elastic Container Service (AWS)",
+    "UAT": "User Acceptance Testing",
+    "Fall Release": "Nov 2025 feature release",
+    "Winter Release": "Feb 2026 feature release"
+  },
+  "open_questions": [
+    {
+      "id": "oq_1",
+      "question": "Qual sera o ambiente final para WFS sales demo?",
+      "context": "GoQuick Alpha Retail confirmado como NAO sendo o demo final",
+      "owner": "intuit",
+      "status": "pending"
+    },
+    {
+      "id": "oq_2",
+      "question": "Quando comeca oficialmente o Winter Release?",
+      "context": "Katherine menciona Fev 2026 em discussoes",
+      "owner": "intuit",
+      "status": "pending"
+    },
+    {
+      "id": "oq_3",
+      "question": "Quais dados fluem de QBO para MineralHR?",
+      "context": "Necessario para completar SOW WFS",
+      "owner": "wfs_team",
+      "status": "pending"
+    },
+    {
+      "id": "oq_4",
+      "question": "Como fazer staged rollout WFS sem impactar TCO sellers?",
+      "context": "Soranzo tem detalhes sobre limitacoes de usuarios simultaneos",
+      "owner": "testbox",
+      "status": "in_discussion"
+    },
+    {
+      "id": "oq_5",
+      "question": "Demo Health Check vira servico separado?",
+      "context": "Thiago propos, Katherine avaliando como extra service",
+      "owner": "testbox",
+      "status": "in_discussion"
+    }
+  ],
+  "source_channels": [
+    {"id": "C06PSSGEK8T", "name": "intuit-main", "messages_collected": true},
+    {"id": "C09SGBFBC02", "name": "intuit-steerco", "messages_collected": true},
+    {"id": "C09QC6096G7", "name": "fall-release", "messages_collected": true},
+    {"id": "C09DKMB4NAE", "name": "canada-training", "messages_collected": true},
+    {"id": "C072MQDJRJS", "name": "intuit-api-support", "messages_collected": true},
+    {"id": "D09GQC60JBC", "name": "dm-thiago-soranzo", "messages_collected": true},
+    {"id": "D09N49AG4TV", "name": "dm-thiago-katherine", "messages_collected": true},
+    {"id": "C091ZCL7371", "name": "psc-licensing", "messages_collected": true},
+    {"id": "C0762U2S3JN", "name": "engineering-staging", "messages_collected": true},
+    {"id": "C0901G1BVME", "name": "channel-empty", "messages_collected": true}
+  ]
+}

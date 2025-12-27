@@ -1,0 +1,590 @@
+{
+  "run_metadata": {
+    "generated_at": "2025-12-27 00:30 America/Sao_Paulo",
+    "drive_locations": [
+      {"location_link": "https://drive.google.com/drive/my-drive", "type": "my_drive"}
+    ],
+    "linear_access": "no",
+    "scan_policy": {
+      "no_hallucination": true,
+      "evidence_required": true,
+      "max_quote_words": 25
+    },
+    "stats": {
+      "total_files_scanned": 20426,
+      "relevant_files": 1926,
+      "high_priority": 274,
+      "medium_priority": 1652,
+      "last_30_days": 891
+    }
+  },
+  "files_index": [
+    {
+      "file_name": "Testbox - SOW - Intuit Workforce Solutions v1.1",
+      "file_type": "google_doc",
+      "drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+      "folder_path": "",
+      "last_modified": "2025-12-18",
+      "owner": "Alexandra Lacerda",
+      "relevance": "high",
+      "confidentiality": "confidential",
+      "doc_role": "contract",
+      "topic_tags": ["wfs", "qbo", "contract", "sow"],
+      "triage_reason": "SOW document for major new project",
+      "short_summary": "Statement of Work para Intuit WFS, versao 1.1 em draft"
+    },
+    {
+      "file_name": "WFS HCM Transformation FY26 Overview",
+      "file_type": "google_slides",
+      "drive_link": "https://docs.google.com/presentation/d/1w91J8oiSfgWB-V_O60uDaPfXRDwmB5NHaI53dsqoBLk/edit",
+      "folder_path": "",
+      "last_modified": "2025-12-23",
+      "owner": "alex_graber",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "strategy",
+      "topic_tags": ["wfs", "hcm", "roadmap"],
+      "triage_reason": "Intuit roadmap for WFS transformation",
+      "short_summary": "Visao geral da transformacao HCM para FY26"
+    },
+    {
+      "file_name": "WFS_TSA_SCOPE_PLAN.xlsx",
+      "file_type": "xlsx",
+      "drive_link": "https://docs.google.com/spreadsheets/d/19kAAYS3ppGra7GtsU2wOhwTKHE2J1oQk/edit",
+      "folder_path": "",
+      "last_modified": "2025-12-23",
+      "owner": "Thiago Rodrigues",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "strategy",
+      "topic_tags": ["wfs", "scope", "planning"],
+      "triage_reason": "Scope planning for WFS implementation",
+      "short_summary": "Plano de escopo TSA para projeto WFS"
+    },
+    {
+      "file_name": "GoCo Platform Comprehensive Feature List",
+      "file_type": "google_sheet",
+      "drive_link": "https://docs.google.com/spreadsheets/d/1wVgrO7wzsorGlxKiqjUy_bZFcXwZeKN-5QBql1MLEuo/edit",
+      "folder_path": "",
+      "last_modified": "2025-08-07",
+      "owner": "ashley_widener",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "data",
+      "topic_tags": ["wfs", "goco", "features"],
+      "triage_reason": "Master feature list for GoCo platform",
+      "short_summary": "Lista completa de features da plataforma GoCo"
+    },
+    {
+      "file_name": "Intuit_Quickbooks_TestBox_60_Additional_User_Licenses (signed)",
+      "file_type": "pdf",
+      "drive_link": "https://drive.google.com/file/d/1hiZYXrFUp9HmpBISY0MfKpq-XMqLnahg/view",
+      "folder_path": "",
+      "last_modified": "2025-12-23",
+      "owner": "Rachel Arms",
+      "relevance": "high",
+      "confidentiality": "confidential",
+      "doc_role": "contract",
+      "topic_tags": ["qbo", "contract", "licenses"],
+      "triage_reason": "Signed contract for additional licenses",
+      "short_summary": "Contrato assinado para 60 licencas adicionais"
+    },
+    {
+      "file_name": "QBO_Health_Check_Checklist_TCO_v2.xlsx",
+      "file_type": "xlsx",
+      "drive_link": "",
+      "folder_path": "",
+      "last_modified": "2025-12-10",
+      "owner": "Thiago Rodrigues",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "ops",
+      "topic_tags": ["qbo", "tco", "health_check"],
+      "triage_reason": "Health check checklist for TCO environment",
+      "short_summary": "Checklist de validacao de saude do ambiente TCO"
+    },
+    {
+      "file_name": "TestBox 3.0",
+      "file_type": "google_doc",
+      "drive_link": "https://docs.google.com/document/d/1mhC8gg3rDuRMrPBa5573wSGmaDpayZogg3CgagPqQn8/edit",
+      "folder_path": "",
+      "last_modified": "2025-12-23",
+      "owner": "",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "strategy",
+      "topic_tags": ["testbox", "roadmap"],
+      "triage_reason": "Product roadmap document",
+      "short_summary": "Documentacao do TestBox 3.0"
+    },
+    {
+      "file_name": "quickbooks_fall_release_big_numbers_v2.pptx",
+      "file_type": "pptx",
+      "drive_link": "",
+      "folder_path": "",
+      "last_modified": "2025-11-28",
+      "owner": "",
+      "relevance": "high",
+      "confidentiality": "internal",
+      "doc_role": "strategy",
+      "topic_tags": ["qbo", "fall_release"],
+      "triage_reason": "Key metrics for Fall Release",
+      "short_summary": "Metricas principais do Fall Release QuickBooks"
+    }
+  ],
+  "knowledge_items": [
+    {
+      "item_id": "ki_001",
+      "item_type": "contract_clause",
+      "title": "WFS SOW v1.1 - Scope Definition",
+      "summary": "Statement of Work para implementacao TestBox no Intuit Workforce Solutions, definindo escopo, premissas e entregaveis",
+      "topic_tags": ["wfs", "contract", "sow", "scope"],
+      "entities": {
+        "customers_or_products": ["Intuit", "WFS", "GoCo", "MineralHR"],
+        "releases": [],
+        "datasets": [],
+        "environments": ["GoQuick Alpha Retail"],
+        "pipelines": [],
+        "features": ["worker_profile", "time_off", "onboarding"],
+        "contracts": ["WFS SOW v1.1"],
+        "teams": ["TSA"],
+        "people": ["Thiago", "Katherine", "Alexandra Lacerda"],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+          "location_hint": "Full document",
+          "quote_snippet": "Testbox - SOW - Intuit Workforce Solutions v1.1"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-18"
+    },
+    {
+      "item_id": "ki_002",
+      "item_type": "timeline_event",
+      "title": "WFS Transformation FY26 Roadmap",
+      "summary": "Roadmap de transformacao HCM da Intuit: Alpha Dez 2025, Beta Fev 2026, GA Mai 2026",
+      "topic_tags": ["wfs", "hcm", "roadmap", "timeline"],
+      "entities": {
+        "customers_or_products": ["Intuit", "WFS"],
+        "releases": ["WFS Alpha", "WFS Beta", "WFS GA"],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": [],
+        "people": [],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/presentation/d/1w91J8oiSfgWB-V_O60uDaPfXRDwmB5NHaI53dsqoBLk/edit",
+          "location_hint": "Slides presentation",
+          "quote_snippet": "WFS HCM Transformation FY26 Overview"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-23"
+    },
+    {
+      "item_id": "ki_003",
+      "item_type": "architecture",
+      "title": "GoCo Platform Features",
+      "summary": "Lista completa de features da plataforma GoCo que serao integradas ao WFS",
+      "topic_tags": ["wfs", "goco", "features", "hcm"],
+      "entities": {
+        "customers_or_products": ["GoCo"],
+        "releases": [],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": ["org_chart", "employee_profile", "time_off", "digital_i9", "onboarding", "termination_wizard", "mobile_app"],
+        "contracts": [],
+        "teams": [],
+        "people": [],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://docs.google.com/spreadsheets/d/1wVgrO7wzsorGlxKiqjUy_bZFcXwZeKN-5QBql1MLEuo/edit",
+          "location_hint": "Full spreadsheet",
+          "quote_snippet": "GoCo Platform Comprehensive Feature List"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-08-07"
+    },
+    {
+      "item_id": "ki_004",
+      "item_type": "contract_clause",
+      "title": "Intuit 60 Additional Licenses Contract",
+      "summary": "Contrato assinado em Dezembro 2025 para 60 licencas adicionais de usuarios TestBox para Intuit QuickBooks",
+      "topic_tags": ["contract", "qbo", "licenses"],
+      "entities": {
+        "customers_or_products": ["Intuit", "QuickBooks"],
+        "releases": [],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "contracts": ["Intuit 60 Additional Licenses"],
+        "teams": [],
+        "people": ["Rachel Arms"],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "https://drive.google.com/file/d/1hiZYXrFUp9HmpBISY0MfKpq-XMqLnahg/view",
+          "location_hint": "Signed PDF",
+          "quote_snippet": "60 Additional User Licenses Order Form - signed"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-23"
+    },
+    {
+      "item_id": "ki_005",
+      "item_type": "environment_state",
+      "title": "TCO Environment Health Status",
+      "summary": "Ambiente TCO multi-entity operacional com checklist de health check v2. Issues conhecidas: negative inventory, login ECS",
+      "topic_tags": ["tco", "environment", "health_check"],
+      "entities": {
+        "customers_or_products": ["QuickBooks"],
+        "releases": ["Fall Release"],
+        "datasets": ["TCO"],
+        "environments": ["TCO Parent", "Apex Tire", "Global Tread", "RoadReady"],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": ["Engineering"],
+        "people": ["Thiago"],
+        "tickets": ["PLA-2916", "PLA-3013"]
+      },
+      "evidence": [
+        {
+          "drive_link": "",
+          "location_hint": "QBO_Health_Check_Checklist_TCO_v2.xlsx",
+          "quote_snippet": "Health check checklist for TCO environment"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-10"
+    },
+    {
+      "item_id": "ki_006",
+      "item_type": "decision",
+      "title": "Fall Release Work Reclassified",
+      "summary": "Fall Release work reclassificado como process improvement, nao outstanding delivery work",
+      "topic_tags": ["fall_release", "decision"],
+      "entities": {
+        "customers_or_products": ["Intuit"],
+        "releases": ["Fall Release"],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": [],
+        "people": ["Katherine"],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "",
+          "location_hint": "Slack DM Thiago-Katherine 2025-12-22",
+          "quote_snippet": "rephrase work as process improvement"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-22"
+    },
+    {
+      "item_id": "ki_007",
+      "item_type": "decision",
+      "title": "GoQuick Alpha Not Sales Demo",
+      "summary": "GoQuick Alpha Retail confirmado como ambiente de exploracao, NAO demo final para sales",
+      "topic_tags": ["wfs", "environment", "decision"],
+      "entities": {
+        "customers_or_products": ["Intuit", "WFS"],
+        "releases": [],
+        "datasets": [],
+        "environments": ["GoQuick Alpha Retail"],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": [],
+        "people": ["Katherine"],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "",
+          "location_hint": "Slack DM 2025-12-17",
+          "quote_snippet": "this environment is just for us TestBox to explore"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-17"
+    },
+    {
+      "item_id": "ki_008",
+      "item_type": "risk",
+      "title": "Negative Inventory Bug TCO",
+      "summary": "Bug de inventario negativo em produtos TCO, afetando demos",
+      "topic_tags": ["tco", "bug", "risk"],
+      "entities": {
+        "customers_or_products": ["QuickBooks"],
+        "releases": [],
+        "datasets": ["TCO"],
+        "environments": ["TCO"],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": ["Engineering"],
+        "people": [],
+        "tickets": ["PLA-2916"]
+      },
+      "evidence": [
+        {
+          "drive_link": "",
+          "location_hint": "Linear ticket PLA-2916",
+          "quote_snippet": "Prevent negative stock in TCO automation"
+        }
+      ],
+      "confidence": "high",
+      "last_seen": "2025-12-26"
+    },
+    {
+      "item_id": "ki_009",
+      "item_type": "open_question",
+      "title": "WFS Sales Demo Environment",
+      "summary": "Qual ambiente sera usado para WFS sales demo? Intuit ainda nao confirmou",
+      "topic_tags": ["wfs", "environment", "open_question"],
+      "entities": {
+        "customers_or_products": ["Intuit", "WFS"],
+        "releases": [],
+        "datasets": [],
+        "environments": [],
+        "pipelines": [],
+        "features": [],
+        "contracts": [],
+        "teams": [],
+        "people": [],
+        "tickets": []
+      },
+      "evidence": [
+        {
+          "drive_link": "",
+          "location_hint": "Slack discussions Dec 2025",
+          "quote_snippet": "outstanding questions about what environment"
+        }
+      ],
+      "confidence": "medium",
+      "last_seen": "2025-12-22"
+    }
+  ],
+  "linear_index": {
+    "access": "no",
+    "note": "Linear MCP not configured. Use recipes in Output D to query manually.",
+    "tickets": [
+      {
+        "ticket_id": "PLA-2916",
+        "ticket_key": "PLA-2916",
+        "title": "TCO Automation Inventory Prevent negative stock",
+        "status": "open",
+        "team": "Platform",
+        "project": "TCO",
+        "labels": ["bug", "tco"],
+        "assignee": "",
+        "updated_at": "",
+        "summary": "Prevenir inventario negativo em produtos TCO",
+        "linked_drive_files": [],
+        "related_item_ids": ["ki_005", "ki_008"]
+      },
+      {
+        "ticket_id": "PLA-3013",
+        "ticket_key": "PLA-3013",
+        "title": "Login task failing for TCO",
+        "status": "blocked",
+        "team": "Platform",
+        "project": "TCO",
+        "labels": ["bug", "login"],
+        "assignee": "",
+        "updated_at": "",
+        "summary": "ECS task de login falhando para TCO",
+        "linked_drive_files": [],
+        "related_item_ids": ["ki_005"]
+      }
+    ]
+  },
+  "decision_log": [
+    {
+      "date": "2025-12-22",
+      "decision": "Fall Release work reclassified as process improvement",
+      "owner": "Katherine",
+      "why": "Clarify that we are not delivering outstanding Fall Release work, but improving processes",
+      "impact": "P1",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "date": "2025-12-17",
+      "decision": "GoQuick Alpha Retail is for exploration only, not sales demo",
+      "owner": "Katherine",
+      "why": "Prevent confusion about WFS demo environment",
+      "impact": "P1",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "date": "2025-12-15",
+      "decision": "Staged rollout required for WFS",
+      "owner": "Katherine",
+      "why": "Protect existing TCO/Keystone sellers from impact",
+      "impact": "P1",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "date": "2025-11-20",
+      "decision": "Fall Release deadline met",
+      "owner": "Team",
+      "why": "Main project milestone achieved",
+      "impact": "P0",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "date": "2025-11-05",
+      "decision": "PSCs continue with curated environments",
+      "owner": "Intuit PSC Team",
+      "why": "TestBox better suited for early-stage, PSCs need customized environments",
+      "impact": "P2",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    }
+  ],
+  "risk_register": [
+    {
+      "risk": "WFS Environment Decision Pending",
+      "impact": "P0",
+      "likelihood": "high",
+      "mitigation": "Escalate to Intuit for decision",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "risk": "Negative Inventory in TCO",
+      "impact": "P1",
+      "likelihood": "high",
+      "mitigation": "PLA-2916 in progress",
+      "evidence_drive_link": "",
+      "related_ticket": "PLA-2916"
+    },
+    {
+      "risk": "Login ECS Task Failing",
+      "impact": "P1",
+      "likelihood": "high",
+      "mitigation": "Manual workaround, needs permanent fix",
+      "evidence_drive_link": "",
+      "related_ticket": "PLA-3013"
+    },
+    {
+      "risk": "WFS SOW Finalization Delayed",
+      "impact": "P1",
+      "likelihood": "medium",
+      "mitigation": "Katherine pushed back deadline pending Intuit answers",
+      "evidence_drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+      "related_ticket": ""
+    },
+    {
+      "risk": "Manufacturing Visibility Gap",
+      "impact": "P2",
+      "likelihood": "medium",
+      "mitigation": "Verify status with Intuit",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "risk": "Fusion UI Delays",
+      "impact": "P2",
+      "likelihood": "medium",
+      "mitigation": "Monitor Intuit roadmap",
+      "evidence_drive_link": "",
+      "related_ticket": ""
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Which environment will be used for WFS sales demo?",
+      "why_it_matters": "Defines where sellers will work, impacts implementation scope",
+      "best_evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "question": "What is the official Winter Release timeline?",
+      "why_it_matters": "Resource planning and allocation",
+      "best_evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "question": "What data flows from QBO to MineralHR?",
+      "why_it_matters": "Defines WFS SOW scope",
+      "best_evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "question": "What is the real status of Manufacturing dataset?",
+      "why_it_matters": "Only 6 files in Drive, unclear project status",
+      "best_evidence_drive_link": "",
+      "related_ticket": ""
+    },
+    {
+      "question": "Will Demo Health Check become a separate service?",
+      "why_it_matters": "Potential new revenue line",
+      "best_evidence_drive_link": "",
+      "related_ticket": ""
+    }
+  ],
+  "gap_report": {
+    "important_docs_without_tickets": [
+      {
+        "drive_link": "https://docs.google.com/document/d/1h-vDGqmJRlJsndobYq9cXlrv18bEc5S0TT4GLBT9Qt0/edit",
+        "reason": "WFS SOW v1.1 should have a Linear ticket for tracking"
+      },
+      {
+        "drive_link": "https://docs.google.com/spreadsheets/d/19kAAYS3ppGra7GtsU2wOhwTKHE2J1oQk/edit",
+        "reason": "WFS Scope Plan should have implementation tickets"
+      }
+    ],
+    "important_tickets_without_docs": [
+      {
+        "ticket_id": "PLA-2916",
+        "reason": "Negative inventory issue should have runbook documentation"
+      },
+      {
+        "ticket_id": "PLA-3013",
+        "reason": "Login failure should have incident report and RCA"
+      }
+    ]
+  },
+  "theme_distribution": {
+    "tco": 518,
+    "qbo": 516,
+    "contract": 213,
+    "security": 184,
+    "ies": 164,
+    "wfs": 156,
+    "ingest": 120,
+    "reporting": 70,
+    "dataset": 72,
+    "fall_release": 63,
+    "canada": 50,
+    "construction": 45,
+    "multi_entity": 8,
+    "manufacturing": 6
+  }
+}
