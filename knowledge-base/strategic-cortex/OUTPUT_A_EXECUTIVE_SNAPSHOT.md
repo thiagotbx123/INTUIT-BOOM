@@ -1,9 +1,9 @@
 # OUTPUT A - Executive Snapshot
 
 > Strategic Intelligence - Intuit/TestBox Project
-> Generated: 2025-12-27 00:20 America/Sao_Paulo
-> Sources: Google Drive (20,426 files scanned, 1,926 relevant)
-> Linear Access: Not available (recipes provided)
+> Updated: 2025-12-27 04:00 America/Sao_Paulo
+> Sources: Google Drive (20,426 files), Linear (1,546 issues), Slack (10 channels)
+> Linear: 443 Intuit-related issues analyzed
 
 ---
 
@@ -90,15 +90,34 @@
 
 ## TOP RISCOS E BLOCKERS
 
+### Issues BLOCKED no Linear (4)
+| Issue | Titulo | Team | Assignee |
+|-------|--------|------|----------|
+| PLA-3013 | Login task failing for TCO | Platypus | Augusto Gunsch |
+| PLA-2969 | Canada Data Ingest – Bills | Platypus | Lucas Torresan |
+| PLA-2883 | Error while ingesting activities | Platypus | Augusto Gunsch |
+| PLA-2724 | Dimensions in Payroll | Platypus | Eyji Koike Cuff |
+
+### Issues URGENT no Linear (Top 5 de 15)
+| Issue | Titulo | Team | Status |
+|-------|--------|------|--------|
+| WOM-503 | Demo environments not loading for users | Wombats | Distributed |
+| KLA-2337 | Load time after clicking start demo >20s | Koala | Todo |
+| PLA-3103 | Zendesk - Could not activate help center | Platypus | Production QA |
+| PLA-2963 | The key requested for this client is invalid | Platypus | Production QA |
+| PLA-2795 | No time entries for IES Construction | Platypus | Needs Review |
+
+### Riscos Estrategicos
 | # | Risco/Blocker | Impacto | Status | Mitigacao |
 |---|---------------|---------|--------|-----------|
 | 1 | **WFS Environment Decision** | P0 | PENDING | Intuit precisa confirmar ambiente para sales demo |
-| 2 | **Negative Inventory TCO** | P1 | OPEN | PLA-2916 - Engineering working |
-| 3 | **Login ECS Task Failing** | P1 | WORKAROUND | Manual login, nao escalavel |
-| 4 | **WFS SOW Finalization** | P1 | IN PROGRESS | Thiago refinando, Katherine reviewing |
-| 5 | **Manufacturing Visibility** | P2 | GAP | Apenas 6 arquivos, status unclear |
-| 6 | **Fusion UI Delays** | P2 | IN PROGRESS | Impacta UAT timeline |
-| 7 | **Winter Release Planning** | P3 | NOT STARTED | Precisa comecar em Jan 2026 |
+| 2 | **Negative Inventory TCO** | P1 | TODO | PLA-2916 - Douglas Santos assigned |
+| 3 | **Login ECS Task Failing** | P1 | BLOCKED | PLA-3013 - Augusto Gunsch working |
+| 4 | **Canada Data Ingest** | P1 | BLOCKED | PLA-2969 - Lucas Torresan |
+| 5 | **WFS SOW Finalization** | P1 | IN PROGRESS | Thiago refinando, Katherine reviewing |
+| 6 | **Manufacturing Visibility** | P2 | GAP | Apenas 6 arquivos, status unclear |
+| 7 | **Demo Load Time >20s** | P2 | TODO | KLA-2337 - Pamela assigned |
+| 8 | **Winter Release Planning** | P3 | NOT STARTED | Precisa comecar em Jan 2026 |
 
 ---
 
@@ -155,11 +174,21 @@
 
 ## METRICAS DE VISIBILIDADE
 
-| Fonte | Arquivos | Relevantes | % |
-|-------|----------|------------|---|
+| Fonte | Total | Relevantes | % |
+|-------|-------|------------|---|
 | **Google Drive** | 20,426 | 1,926 | 9.4% |
-| **Linear** | N/A | N/A | Sem acesso |
+| **Linear** | 1,546 | 443 Intuit | 28.7% |
 | **Slack** | 10 canais | Coletado | Via MCP |
+
+### Linear Stats (6 meses)
+| Metrica | Valor |
+|---------|-------|
+| Total Issues | 1,546 |
+| Intuit/QBO/WFS Related | 443 |
+| Urgent Priority | 15 |
+| High Priority | 99 |
+| Blocked | 4 |
+| Top Team: Platypus | 487 issues |
 
 ### Distribuicao por Tema (Drive)
 | Tema | Arquivos | Trend |
@@ -188,13 +217,14 @@
 | **Estrategia** | OK | WFS e foco claro, Fall Release entregue |
 | **Contratos** | IN PROGRESS | WFS SOW em finalizacao |
 | **Datasets** | MOSTLY OK | TCO/Construction OK, Manufacturing gap |
-| **Ingest** | OPERATIONAL | Alguns incidents open |
-| **Environments** | MOSTLY OK | TCO OK, WFS pending decision |
-| **Documentacao** | GOOD | 1,926 arquivos relevantes indexados |
-| **Riscos** | MANAGED | 7 riscos identificados, 2 P0/P1 |
+| **Ingest** | OPERATIONAL | 4 issues blocked, engineering working |
+| **Environments** | ATTENTION | TCO login blocked (PLA-3013), WFS pending |
+| **Documentacao** | GOOD | 1,926 Drive + 443 Linear issues indexados |
+| **Riscos** | MANAGED | 8 riscos, 4 P1, 15 urgent Linear issues |
 
 ---
 
 Documento gerado automaticamente
-Fonte: TSA_CORTEX DriveCollector + Slack MCP
-Linear: Sem acesso direto (receitas fornecidas no Output D)
+Fontes: TSA_CORTEX DriveCollector + Slack MCP + Linear API
+Linear: Full scan 6 meses - 1,546 issues (443 Intuit-related)
+Ultima atualizacao: 2025-12-27 04:00

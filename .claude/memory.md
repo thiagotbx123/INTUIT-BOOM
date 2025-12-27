@@ -22,6 +22,9 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2025-12-27: Linear full scan - 1,546 issues (443 Intuit-related)
+- 2025-12-27: 4 blockers e 15 urgents identificados no Linear
+- 2025-12-27: Strategic Cortex atualizado com dados Linear
 - 2025-12-27: Strategic Cortex completo (5 outputs) - 20,426 arquivos processados
 - 2025-12-27: Drive Cortex criado - 1,926 arquivos relevantes indexados
 - 2025-12-27: Slack Cortex criado - 10 canais processados
@@ -47,15 +50,22 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] Camadas 2-5 ainda nao tem owners definidos
 - [ ] Hyperlinks do Google Drive precisam de cache
 
-### Riscos Ativos (via Strategic Cortex)
-| # | Risco | Impacto | Status |
-|---|-------|---------|--------|
-| 1 | WFS Environment Decision | P0 | PENDING |
-| 2 | Negative Inventory TCO | P1 | OPEN (PLA-2916) |
-| 3 | Login ECS Task Failing | P1 | WORKAROUND |
-| 4 | WFS SOW Finalization | P1 | IN PROGRESS |
-| 5 | Manufacturing Visibility | P2 | GAP |
-| 6 | Fusion UI Delays | P2 | IN PROGRESS |
+### Riscos Ativos (via Strategic Cortex + Linear)
+| # | Risco | Impacto | Status | Linear |
+|---|-------|---------|--------|--------|
+| 1 | WFS Environment Decision | P0 | PENDING | - |
+| 2 | Negative Inventory TCO | P1 | TODO | PLA-2916 |
+| 3 | Login ECS Task Failing | P1 | BLOCKED | PLA-3013 |
+| 4 | Canada Data Ingest Bills | P1 | BLOCKED | PLA-2969 |
+| 5 | WFS SOW Finalization | P1 | IN PROGRESS | - |
+| 6 | Demo Load Time >20s | P2 | TODO | KLA-2337 |
+| 7 | Manufacturing Visibility | P2 | GAP | - |
+
+### Blockers Linear (4)
+- PLA-3013: Login task failing for TCO (Augusto Gunsch)
+- PLA-2969: Canada Data Ingest Bills (Lucas Torresan)
+- PLA-2883: Error ingesting activities (Augusto Gunsch)
+- PLA-2724: Dimensions in Payroll (Eyji Koike Cuff)
 
 ### Open Questions
 - Qual ambiente final para WFS sales demo?
@@ -202,6 +212,30 @@ Adicione aqui notas importantes de cada sessao de trabalho:
 **Proximo passo:** Configurar Linear MCP, resolver WFS environment decision
 ---
 
+---
+### Sessao: 2025-12-27 04:00 - Linear Full Scan
+**Conquistas:**
+- Linear full scan executado (6 meses, 1,546 issues)
+- 443 issues Intuit-related identificadas (28.7%)
+- 4 blockers criticos encontrados
+- 15 issues urgentes mapeadas
+- Strategic Cortex atualizado com dados Linear
+
+**Blockers Encontrados:**
+- PLA-3013: Login task failing for TCO
+- PLA-2969: Canada Data Ingest Bills
+- PLA-2883: Error ingesting activities
+- PLA-2724: Dimensions in Payroll
+
+**Conhecimento Chave:**
+- Platypus e o time com mais issues (487)
+- 99 issues High priority abertas
+- WOM-507: Phil Skinner autologin issue (ativo)
+- KLA-2337: Demo load time >20s (urgente)
+
+**Proximo passo:** Resolver PLA-3013 (login TCO), monitorar WOM-507
+---
+
 ## Cortex System
 
 ### Estrutura
@@ -217,7 +251,13 @@ knowledge-base/
 |-------|-------|------------|---|
 | Drive | 20,426 | 1,926 | 9.4% |
 | Slack | 10 canais | 500+ msgs | ~80% |
-| Linear | N/A | Sem acesso | - |
+| Linear | 1,546 | 443 Intuit | 28.7% |
+
+### Linear Stats (6 meses)
+- Issues Urgentes: 15
+- Issues High: 99
+- Blocked: 4
+- Top Team: Platypus (487)
 
 ### Como Usar
 1. **Inicio de sessao:** Ler `strategic-cortex/OUTPUT_A_EXECUTIVE_SNAPSHOT.md`
