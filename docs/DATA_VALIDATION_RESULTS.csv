@@ -1,0 +1,30 @@
+Feature_id,Tables_checked,Data_check_result,Row_count,Details
+WR-001,quickbooks_bank_transactions,Strong,434,qb_bank_transactions: 434 rows
+WR-002,quickbooks_invoices,Strong,44823,qb_invoices: 44823 rows
+WR-003,"quickbooks_projects, quickbooks_project_budgets",Strong,60,qb_projects: 39 rows; qb_project_budgets: 21 rows
+WR-004,"quickbooks_chart_of_accounts, quickbooks_invoices",Strong,45502,qb_chart_of_accounts: 679 rows; qb_invoices: 44823 rows
+WR-005,quickbooks_dimensions,Strong,49,qb_dimensions: 49 rows
+WR-006,quickbooks_customers,Strong,10615,qb_customers: 10615 rows
+WR-007,N/A,NotApplicable,0,UI-only or external service
+WR-008,quickbooks_custom_reports,Weak,3,qb_custom_reports: 3 rows
+WR-009,quickbooks_custom_report_templates,Strong,21,qb_custom_report_templates: 21 rows
+WR-010,quickbooks_custom_reports,Weak,3,qb_custom_reports: 3 rows
+WR-011,N/A,NotApplicable,0,UI-only or external service
+WR-012,quickbooks_custom_report_templates,Strong,21,qb_custom_report_templates: 21 rows
+WR-013,quickbooks_custom_reports,Weak,3,qb_custom_reports: 3 rows
+WR-014,N/A,NotApplicable,0,UI-only or external service
+WR-015,quickbooks_intercompany_journal_entry,Strong,72,qb_intercompany_journal_entry: 72 rows
+WR-016,"quickbooks_dimensions, quickbooks_product_services_classifications",Inconclusive,49,qb_dimensions: 49 rows; quickbooks_product_services_classifications: NOT FOUND
+WR-017,quickbooks_dimensions,Strong,49,qb_dimensions: 49 rows
+WR-018,quickbooks_workflow_automations,Weak,8,qb_workflow_automations: 8 rows
+WR-019,quickbooks_chart_of_accounts,Strong,679,qb_chart_of_accounts: 679 rows
+WR-020,quickbooks_workflow_automations,Weak,8,qb_workflow_automations: 8 rows
+WR-021,N/A,NotApplicable,0,UI-only or external service
+WR-022,N/A,NotApplicable,0,UI-only or external service
+WR-023,N/A,NotApplicable,0,UI-only or external service
+WR-024,quickbooks_payroll_expenses,Strong,591,qb_payroll_expenses: 591 rows
+WR-025,"quickbooks_invoices, quickbooks_estimates",Strong,45347,qb_invoices: 44823 rows; qb_estimates: 524 rows
+WR-026,quickbooks_employees,Strong,1695,qb_employees: 1695 rows
+WR-027,quickbooks_employees,Strong,1695,qb_employees: 1695 rows
+WR-028,quickbooks_time_entries,Strong,62997,qb_time_entries: 62997 rows
+WR-029,quickbooks_payroll_expenses,Strong,591,qb_payroll_expenses: 591 rows

@@ -1,0 +1,369 @@
+================================================================================
+PROMPT COMPLETO: QBO Feature Validation - Projeto TCO
+================================================================================
+
+Data: 2025-12-03
+Projeto: TCO (Traction Control Outfitters)
+Company: Apex Tire
+
+================================================================================
+1. CONTEXTO DO PROJETO
+================================================================================
+
+Objetivo: Validar features do QBO Fall Release para a Intuit, gerando
+evidencias (screenshots) e planilha de controle.
+
+O processo consiste em:
+- Logar no QuickBooks Online (QBO)
+- Navegar ate cada feature definida
+- Tirar screenshot da tela (sem anotacoes)
+- Gerar planilha Excel com notas e links para evidencias
+
+================================================================================
+2. LISTA DE FEATURES A VALIDAR (28 features)
+================================================================================
+
+DIMENSIONS (1):
+- Dimensions: Dimension Assignment
+
+DTM - Digital Transaction Management (3):
+- DTM: Invoicing and Vendor Updates for QB Desktop Parity
+- DTM: Customer Updates for QB Desktop Parity
+- DTM: Invoicing and Vendor Updates for QB Desktop Parity (segunda instancia)
+
+BI - Business Intelligence (6):
+- BI: KPIs (from 3P Apps)
+- BI: KPIs (from custom formulas)
+- BI: Dashboards
+- BI: Advanced Reporting (Visual customization and Custom formula)
+- BI: Advanced Reporting (Global Report Settings)
+- BI: Advanced Reporting (New Management Reports)
+
+CONSTRUCTION (5):
+- Construction: Project Phases v2
+- Construction: Cost Groups
+- Construction: Budgets v3
+- Construction: AIA Billing
+- Construction: Certified Payroll Report
+
+BILL PAY (2):
+- Bill Pay: Payment Release Approval Workflow
+- Bill Pay: Instant Payments
+
+WFS - Workforce Solutions (3):
+- WFS: W2 Scalability
+- WFS: Run Payroll Processing Improvements
+- WFS: Paycheck Corrections Improvements
+
+AI AGENTS (8):
+- AI Agents: Accounting Agent
+- AI Agents: Payment Agent
+- AI Agents: Customer Agent
+- AI Agents: Payroll Agent
+- AI Agents: Project Management Agent
+- AI Agents: Finance Agent
+- AI Agents: Solutions Agent (AKA setup and customization capabilities)
+- AI Agents: Sales Tax Agent
+
+================================================================================
+3. FLUXO DE VALIDACAO
+================================================================================
+
+ETAPA 1: LOGIN
+- Conectar ao Chrome via Playwright CDP (porta 9222)
+- Usar credenciais do projeto TCO
+- Entrar na company correta (Apex Tire ou Consolidated View)
+- IMPORTANTE: Verificar se entrou na company, nao ficar na tela de selecao
+
+ETAPA 2: PARA CADA FEATURE
+- Navegar ate a tela da feature (URL direta ou cliques)
+- Aguardar pagina carregar (2-3 segundos)
+- Tirar screenshot (SEM anotacao/seta)
+- Salvar em G:\Meu Drive\TestBox\QBO-Evidence\
+
+ETAPA 3: APOS CAPTURA
+- Aguardar sync do Google Drive
+- Obter hyperlinks dos arquivos
+- Gerar planilha Excel
+
+================================================================================
+4. ESTRUTURA DA PLANILHA
+================================================================================
+
+Colunas:
+- Ref: Codigo da feature (ex: TCO-001)
+- Project: TCO
+- Company: Apex Tire
+- Feature: Nome da feature
+- Status: YES/NO/PARTIAL/Testing
+- Intuit_notes: Notas para comunicar a Intuit
+- Internal_TBX_notes: Notas internas TestBox
+- Evidence_file: Nome do arquivo de screenshot
+- Link: Hyperlink para Google Drive
+
+================================================================================
+5. STATUS E SIGNIFICADOS
+================================================================================
+
+YES      = Feature funciona 100% como esperado
+NO       = Feature nao funciona ou nao aparece
+PARTIAL  = TestBox entregou dados/config, mas Intuit nao habilitou feature flag
+Testing  = Ainda em processo de validacao
+
+IMPORTANTE sobre PARTIAL:
+- NAO e culpa da TestBox
+- TestBox fez sua parte (dados, configuracao)
+- Intuit/QuickBooks nao ativou a funcionalidade ainda
+- Evidencia mostra que preparacao foi feita
+
+================================================================================
+6. VIEWS DO QBO
+================================================================================
+
+CONSOLIDATED VIEW:
+- Dashboard geral com todas as companies
+- Usado para features Multi-Entity (ME)
+- URL base: https://qbo.intuit.com/app/homepage (com dropdown em "Vista consolidada")
+
+COMPANY VIEW:
+- Dentro de uma company especifica (Apex Tire)
+- Usado para maioria das features
+- URL base: https://qbo.intuit.com/app/homepage (com company selecionada)
+
+ATENCAO: Algumas features SO aparecem em uma view especifica!
+
+================================================================================
+7. ROTAS DAS FEATURES
+================================================================================
+
+Dimensions:
+- /app/settings?settingsPanel=dimensions
+
+DTM:
+- /app/invoices
+- /app/customers
+- /app/vendors
+
+BI:
+- /app/business-intelligence/kpi-scorecard
+- /app/business-intelligence/dashboards
+- /app/reportlist
+- /app/reportsettings
+- /app/managementreports
+
+Construction:
+- /app/projects
+- /app/budgets
+- /app/payroll
+
+Bill Pay:
+- /app/billpay
+
+WFS:
+- /app/payroll
+
+AI Agents:
+- /app/homepage (Intuit Assist no canto inferior direito)
+
+================================================================================
+8. ESTRUTURA DE NOTAS
+================================================================================
+
+INTUIT NOTES (Coluna F):
+Proposito: Comunicar para a Intuit/QuickBooks
+Conteudo:
+- O QUE a feature faz (objetivo)
+- O QUE aparece na tela (evidencia visual)
+- COMO o usuario interage (se aplicavel)
+
+Exemplo:
+"Vendor Notes feature allows adding internal notes to vendor records.
+Notes are visible in vendor profile under Additional Info section.
+Supports rich text formatting and attachments."
+
+---
+
+INTERNAL TBX NOTES (Coluna G):
+Proposito: Documentacao interna TestBox
+Conteudo:
+- COMO navegar ate a feature
+- PROBLEMAS encontrados durante validacao
+- WORKAROUNDS aplicados
+- APRENDIZADOS para proximas validacoes
+
+Exemplo:
+"Navigation: Expenses > Vendors > [Vendor Name] > Edit
+Issue: Notes field only appears after saving vendor once
+Workaround: Create vendor first, then edit to add notes
+Learning: Check if vendor has transactions before testing"
+
+================================================================================
+9. ESTRUTURA DE ARQUIVOS DO PROJETO
+================================================================================
+
+intuit-boom/
+|
++-- qbo_checker/
+|   +-- config.py           # Configuracoes (EVIDENCE_DIR, credenciais)
+|   +-- login.py            # Conexao CDP e login QBO
+|   +-- navigator.py        # Navegacao entre views e features
+|   +-- screenshot.py       # Captura de screenshots
+|   +-- spreadsheet.py      # Geracao de planilha Excel
+|   +-- hyperlink_cache.py  # Cache de links do Google Drive
+|   +-- features_rich.json  # Definicao rica das features
+|
++-- data/
+|   +-- hyperlink_cache.json    # Cache filename -> Drive URL
+|   +-- knowledge_extracted.json # Conhecimento extraido
+|
++-- docs/
+|   +-- MACRO_FEATURE_VALIDATION.md
+|   +-- QBO_FEATURE_VALIDATION_PROMPT.txt (este arquivo)
+|   +-- plans/
+|       +-- 2025-12-03-feature-validation-design.md
+|
++-- G:\Meu Drive\TestBox\QBO-Evidence\  # Screenshots salvos aqui
+
+================================================================================
+10. CODIGO PRINCIPAL
+================================================================================
+
+LOGIN:
+```python
+from qbo_checker.login import ensure_logged_in
+pw, browser, page = ensure_logged_in('TCO')
+```
+
+SCREENSHOT:
+```python
+from qbo_checker.screenshot import generate_filename, capture_screenshot
+
+filename = generate_filename('TCO', 'Traction', feature_name)
+# Gera: 2025-12-03_TCO_Traction_{feature_name}.png
+
+filepath = capture_screenshot(page, filename)
+# Salva em EVIDENCE_DIR (Google Drive)
+```
+
+NAVEGACAO:
+```python
+page.goto(f'https://qbo.intuit.com{route}', timeout=30000)
+time.sleep(3)  # Aguarda carregar
+```
+
+================================================================================
+11. O QUE NAO USAR (REMOVIDO/DESCONTINUADO)
+================================================================================
+
+- Anotacao com seta vermelha: REMOVIDA
+- annotate_screenshot(): NAO USAR
+- get_element_bbox(): NAO USAR
+- highlight/text_target: NAO USAR
+
+O screenshot deve ser LIMPO, sem marcacoes.
+
+================================================================================
+12. PROBLEMAS CONHECIDOS E SOLUCOES
+================================================================================
+
+PROBLEMA 1: Tela de selecao de empresa
+- Sintoma: Screenshot mostra "Restaure sua empresa" com lista de companies
+- Causa: Login nao completou, precisa selecionar company
+- Solucao: Clicar na company desejada antes de navegar
+
+PROBLEMA 2: Sync do Google Drive
+- Sintoma: Hyperlinks nao funcionam ou arquivo nao encontrado
+- Causa: Arquivos levam tempo para sincronizar e gerar FILE_ID
+- Solucao: Aguardar alguns minutos apos salvar screenshots
+
+PROBLEMA 3: Views diferentes
+- Sintoma: Feature nao aparece ou mostra erro
+- Causa: Feature so funciona em Consolidated ou Company View
+- Solucao: Verificar view correta para cada feature
+
+PROBLEMA 4: Timeout na navegacao
+- Sintoma: Erro de timeout ao carregar pagina
+- Causa: Pagina lenta ou URL incorreta
+- Solucao: Aumentar timeout ou verificar URL
+
+================================================================================
+13. PRINCIPIO FUNDAMENTAL
+================================================================================
+
+*** CODIGO E A FONTE DE VERDADE ***
+
+- A planilha Excel e OUTPUT, nao INPUT
+- Mudancas devem ser feitas no codigo/JSON
+- A planilha e gerada a partir do codigo
+- Planilha canonica serve apenas como REFERENCIA para aprendizado
+
+Fluxo de atualizacao:
+Aprendizado (conversas) -> Codigo (features.json, spreadsheet.py) -> Planilha gerada
+
+================================================================================
+14. CHECKLIST DE VALIDACAO
+================================================================================
+
+[ ] Chrome aberto e logado no QBO
+[ ] Company correta selecionada (Apex Tire ou Consolidated)
+[ ] Pasta QBO-Evidence vazia/pronta
+[ ] Para cada feature:
+    [ ] Navegou ate a tela correta
+    [ ] Aguardou carregar (2-3 seg)
+    [ ] Screenshot tirado
+    [ ] Arquivo salvo no Drive
+[ ] Apos todas features:
+    [ ] Aguardou sync do Drive
+    [ ] Hyperlinks gerados
+    [ ] Planilha criada
+    [ ] Notas preenchidas
+    [ ] Status definido
+
+================================================================================
+15. CONHECIMENTO POR CATEGORIA
+================================================================================
+
+DIMENSIONS:
+- Permite criar campos customizados para transacoes
+- Usado para reporting avancado
+- Navegacao: Settings > Custom Fields > Dimensions
+
+DTM (Digital Transaction Management):
+- Multiple Shipping Addresses: Multiplos enderecos por cliente
+- Vendor CC/BCC: Copiar emails em comunicacoes com vendors
+- Vendor Notes: Notas internas para vendors
+
+BI (Business Intelligence):
+- KPIs Library: Biblioteca de indicadores pre-definidos
+- Custom Formula: Criar KPIs customizados
+- Dashboards: Paineis visuais de metricas
+- Advanced Reporting: Relatorios complexos
+- Management Reports: Relatorios gerenciais
+
+CONSTRUCTION:
+- Project Phases: Fases de projeto (multiplos steps)
+- Cost Groups: Agrupamento de custos
+- Budgets V3: Nova versao de orcamentos
+- AIA Billing: Faturamento padrao AIA
+- Certified Payroll: Folha certificada
+
+BILL PAY:
+- Approval Workflow: Fluxo de aprovacao de pagamentos
+- Instant Payments: Pagamentos instantaneos
+
+WFS (Workforce Solutions):
+- W2 Scalability: Escalabilidade de W2
+- Run Payroll Improvements: Melhorias no processamento de folha
+- Paycheck Corrections: Correcoes de contracheque
+
+AI AGENTS:
+- Intuit Assist: Assistente IA no canto inferior direito
+- Varios agentes especializados por area (Accounting, Payment, Customer, etc)
+
+================================================================================
+FIM DO DOCUMENTO
+================================================================================
+
+Documento criado em: 2025-12-03
+Projeto: intuit-boom
+Autor: Claude + Usuario
