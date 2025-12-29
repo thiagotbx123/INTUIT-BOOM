@@ -1,0 +1,186 @@
+{
+  "timestamp": "2025-12-29",
+  "total_features": 29,
+  "quality_summary": {
+    "EXCELLENT": 17,
+    "GOOD": 8,
+    "ACCEPTABLE": 0,
+    "WEAK": 4
+  },
+  "screenshots": {
+    "WR-001": {
+      "file": "WR-001_TCO_20251229_1119_UI_Accounting_AI_Banking.png",
+      "size_kb": 359,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-002": {
+      "file": "WR-002_TCO_20251229_1121_UI_Sales_Tax_AI.png",
+      "size_kb": 168,
+      "quality": "GOOD",
+      "alternatives": 2
+    },
+    "WR-003": {
+      "file": "WR-003_TCO_20251229_1123_UI_Projects.png",
+      "size_kb": 116,
+      "quality": "GOOD",
+      "alternatives": 1
+    },
+    "WR-004": {
+      "file": "WR-004_TCO_20251229_1102_UI_Homepage_Dashboard.png",
+      "size_kb": 309,
+      "quality": "EXCELLENT",
+      "alternatives": 2
+    },
+    "WR-005": {
+      "file": "WR-005_TCO_20251229_1130_UI_Business_Feed.png",
+      "size_kb": 167,
+      "quality": "GOOD",
+      "alternatives": 2
+    },
+    "WR-006": {
+      "file": "WR-006_TCO_20251229_1148_UI_Intuit_Assist.png",
+      "size_kb": 277,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-007": {
+      "file": "WR-007_TCO_20251229_1105_UI_Intuit_Intelligence.png",
+      "size_kb": 251,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-008": {
+      "file": "WR-008_TCO_20251229_1148_UI_AI_Report_Explanations.png",
+      "size_kb": 249,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-009": {
+      "file": "WR-009_TCO_20251229_1123_UI_KPI_Scorecard.png",
+      "size_kb": 218,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-010": {
+      "file": "WR-010_TCO_20251229_1125_UI_Dashboards.png",
+      "size_kb": 321,
+      "quality": "EXCELLENT",
+      "alternatives": 2
+    },
+    "WR-011": {
+      "file": "WR-011_TCO_20251229_1148_UI_Enhanced_Report_Columns.png",
+      "size_kb": 250,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-012": {
+      "file": "WR-012_TCO_20251229_1127_UI_Calculated_Fields.png",
+      "size_kb": 137,
+      "quality": "GOOD",
+      "alternatives": 2
+    },
+    "WR-013": {
+      "file": "WR-013_TCO_20251229_1127_UI_Management_Reports.png",
+      "size_kb": 150,
+      "quality": "GOOD",
+      "alternatives": 2
+    },
+    "WR-014": {
+      "file": "WR-014_TCO_20251229_1105_UI_Benchmarking.png",
+      "size_kb": 13,
+      "quality": "WEAK",
+      "alternatives": 0
+    },
+    "WR-015": {
+      "file": "WR-015_TCO_20251229_1127_UI_Multi_Entity_Reports.png",
+      "size_kb": 256,
+      "quality": "EXCELLENT",
+      "alternatives": 4
+    },
+    "WR-016": {
+      "file": "WR-016_TCO_20251229_1126_UI_Dimension_Assignment.png",
+      "size_kb": 209,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-017": {
+      "file": "WR-017_TCO_20251229_1148_UI_Migrate_Service_Items.png",
+      "size_kb": 238,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-018": {
+      "file": "WR-018_TCO_20251229_1134_UI_Workflow.png",
+      "size_kb": 184,
+      "quality": "GOOD",
+      "alternatives": 4
+    },
+    "WR-019": {
+      "file": "WR-019_TCO_20251229_1151_UI_Balance_Sheet_Full.png",
+      "size_kb": 215,
+      "quality": "EXCELLENT",
+      "alternatives": 4
+    },
+    "WR-020": {
+      "file": "WR-020_TCO_20251229_1148_UI_Parallel_Approval_Workflow.png",
+      "size_kb": 184,
+      "quality": "GOOD",
+      "alternatives": 1
+    },
+    "WR-021": {
+      "file": "WR-021_TCO_20251229_1105_UI_Desktop_Migration.png",
+      "size_kb": 35,
+      "quality": "WEAK",
+      "alternatives": 0
+    },
+    "WR-022": {
+      "file": "WR-022_TCO_20251229_1105_UI_DFY_Migration.png",
+      "size_kb": 22,
+      "quality": "WEAK",
+      "alternatives": 0
+    },
+    "WR-023": {
+      "file": "WR-023_TCO_20251229_1105_UI_Feature_Compatibility.png",
+      "size_kb": 36,
+      "quality": "WEAK",
+      "alternatives": 0
+    },
+    "WR-024": {
+      "file": "WR-024_TCO_20251229_1127_UI_Certified_Payroll.png",
+      "size_kb": 262,
+      "quality": "EXCELLENT",
+      "alternatives": 2
+    },
+    "WR-025": {
+      "file": "WR-025_TCO_20251229_1105_UI_Sales_Order.png",
+      "size_kb": 206,
+      "quality": "EXCELLENT",
+      "alternatives": 0
+    },
+    "WR-026": {
+      "file": "WR-026_TCO_20251229_1127_UI_Payroll_Hub.png",
+      "size_kb": 138,
+      "quality": "GOOD",
+      "alternatives": 2
+    },
+    "WR-027": {
+      "file": "WR-027_TCO_20251229_1148_UI_Canadian_Payroll.png",
+      "size_kb": 268,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-028": {
+      "file": "WR-028_TCO_20251229_1148_UI_Canadian_Payroll_Enhanced.png",
+      "size_kb": 260,
+      "quality": "EXCELLENT",
+      "alternatives": 1
+    },
+    "WR-029": {
+      "file": "WR-029_TCO_20251229_1105_UI_Enhanced_Amendments.png",
+      "size_kb": 211,
+      "quality": "EXCELLENT",
+      "alternatives": 0
+    }
+  }
+}
