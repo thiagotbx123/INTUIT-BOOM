@@ -1,0 +1,30 @@
+Ref,Name,Category,Priority,Status,Last Check,Notes
+WR-001,Accounting AI,AI Agents,P0,PASS,2025-12-29,Bank feed com sugestoes AI funcionando
+WR-002,Sales Tax AI,AI Agents,P0,PASS,2025-12-29,Sales tax categories com sugestoes AI funcionando
+WR-003,Project Management AI,AI Agents,P0,PASS,2025-12-29,Profitability tracking OK
+WR-004,Finance AI,AI Agents,P1,PASS,2025-12-29,Intuit Assist e insights presentes no dashboard
+WR-005,Solutions Specialist,AI Agents,P1,PASS,2025-12-29,Business Feed com Cash Flow e metricas
+WR-006,Customer Agent,AI Agents,P2,PASS,2025-12-29,Customers e Leads tab presente
+WR-007,Omni / Intuit Intelligence,AI Agents,P2,PASS,2025-12-29,Intuit Assist icon presente no dashboard
+WR-008,Conversational BI,AI Agents,P3,PASS,2025-12-29,Reports interface com AI insights presente
+WR-009,KPIs Customizados,Reporting,P0,PASS,2025-12-29,27 KPIs incluindo custom
+WR-010,Dashboards,Reporting,P0,PASS,2025-12-29,Multiplos dashboards disponiveis
+WR-011,3P Data Integrations,Reporting,P2,PASS,2025-12-29,Apps marketplace disponivel
+WR-012,Calculated Fields,Reporting,P1,PASS,2025-12-29,Calculated fields disponiveis em reports
+WR-013,Management Reports,Reporting,P1,PASS,2025-12-29,Management Reports visivel
+WR-014,Benchmarking,Reporting,P2,PASS,2025-12-29,Benchmarking mencionado no dashboard
+WR-015,Multi-Entity Reports,Reporting,P1,PASS,2025-12-29,Multi-Entity/Consolidated reports disponiveis
+WR-016,Dimension Assignment v2,Dimensions,P0,PASS,2025-12-29,AI suggestions com sparkle funcionando
+WR-017,Hierarchical Dimension Reporting,Dimensions,P1,PASS,2025-12-29,Hierarchical dimensions com parent/child
+WR-018,Dimensions on Workflow,Dimensions,P1,PASS,2025-12-29,Dimensions em Workflow rules
+WR-019,Dimensions on Balance Sheet,Dimensions,P1,PASS,2025-12-29,Dimension filters em Balance Sheet
+WR-020,Parallel Approval,Workflow,P1,PASS,2025-12-29,Parallel Approval em workflows
+WR-021,Seamless Desktop Migration,Migration,P2,PASS,2025-12-29,Migration option visivel em Settings
+WR-022,DFY Migration Experience,Migration,P2,PASS,2025-12-29,DFY option presente
+WR-023,Feature Compatibility,Migration,P3,PASS,2025-12-29,Documentacao de compatibilidade disponivel
+WR-024,Certified Payroll Report,Construction,P1,PASS,2025-12-29,Certified Payroll mencionado
+WR-025,Sales Order,Construction,P2,PASS,2025-12-29,Sales flow presente
+WR-026,Multi-Entity Payroll Hub,Payroll,P1,PASS,2025-12-29,Multi-Entity Payroll Hub disponivel
+WR-027,Garnishments - Child Support,Payroll,P2,PASS,2025-12-29,Garnishments option presente em Payroll
+WR-028,Assignments in QBTime,Payroll,P2,PASS,2025-12-29,Time tracking com assignments presente
+WR-029,Enhanced Amendments (CA),Payroll,P3,PASS,2025-12-29,Amendments section presente BETA
