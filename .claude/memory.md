@@ -54,6 +54,9 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-05: PPTs RACCOONS criados (Recursos + Alinhamentos) com hyperlinks
+- 2026-01-05: SpineHUB collect completo - 1293 eventos (958 Slack, 209 Drive, 87 Claude)
+- 2026-01-05: Alinhamentos Thais documentados (SYNC 02 Jan 2025)
 - 2025-12-29: WINTER RELEASE CONSTRUCTION CORRIGIDO - 25 features (21 PASS, 2 PARTIAL, 2 N/A)
 - 2025-12-29: Learnings criticos documentados (5 erros graves corrigidos)
 - 2025-12-29: Tracker unificado TCO+Construction com 50 features
@@ -528,6 +531,85 @@ NOT_AVAILABLE     # Feature nao disponivel
 ```
 
 **Proximo passo:** Usar feature_validator.py em todas validacoes futuras
+---
+
+---
+### Sessao: 2025-12-29 20:30 - REVISAO CRITICA + Framework Universal
+**Conquistas:**
+- Revisao critica de 10 screenshots TCO problematicos
+- Framework Universal de Validacao criado (aplicavel a TODOS ambientes)
+- Checklist pre-captura em JSON
+- 6 regras canonicas documentadas
+- 5 anti-patterns com exemplos reais
+
+**Problemas Identificados nos Screenshots:**
+| Ref | Feature | Problema | Severidade |
+|-----|---------|----------|------------|
+| WR-006 | Customer Agent | Dashboard generico | CRITICO |
+| WR-007 | Intuit Intelligence | Homepage sem chat | CRITICO |
+| WR-012 | Calculated Fields | 404 | CRITICO |
+| WR-014 | Benchmarking | Loading spinner | GRAVE |
+| WR-015 | Multi-Entity Reports | Contexto errado (Apex vs Consolidated) | CRITICO |
+| WR-020 | Parallel Approval | Lista generica | MEDIO |
+| WR-023 | Feature Compatibility | N/A - Documentacao | N/A |
+| WR-026 | Payroll Hub | 404 | CRITICO |
+| WR-029 | Enhanced Amendments | CA-specific, TCO errado | N/A |
+
+**6 REGRAS CANONICAS (UNIVERSAIS):**
+```
+REGRA 1: Screenshot DEVE provar a feature especifica
+         - NAO aceitar homepage/dashboard generico
+         - Pergunta: "Este screenshot prova ESTA feature?"
+
+REGRA 2: Contexto correto OBRIGATORIO
+         - Multi-entity = Consolidated View
+         - CA features = California tenant
+         - Verificar header ANTES de capturar
+
+REGRA 3: N/A = DOCUMENTACAO, nao falha
+         - N/A so para features sem UI
+         - Se falhou: investigar, nao marcar N/A
+
+REGRA 4: Agrupar por contexto
+         - Capturar TODAS features do contexto atual
+         - Trocar empresa UMA VEZ
+         - Evitar switching repetido
+
+REGRA 5: 404 = INVESTIGAR
+         - Tentar navegacao alternativa
+         - Pesquisar na web
+         - Se nao existe: NOT_AVAILABLE com justificativa
+
+REGRA 6: Ambiente especifico = Ambiente especifico
+         - CA = California (nao Canada)
+         - Canada = Sistema payroll diferente
+         - Fresh tenant = Sem dados
+```
+
+**Mapa de Contextos:**
+| Contexto | Features |
+|----------|----------|
+| APEX (Individual) | WR-001 a WR-014, WR-016 a WR-020, etc |
+| CONSOLIDATED VIEW | WR-015, WR-026 |
+| DOCUMENTATION | WR-023 |
+| CA TENANT | WR-029 |
+
+**Arquivos Criados:**
+- `knowledge-base/UNIVERSAL_VALIDATION_FRAMEWORK.md` - Framework completo
+- `qbo_checker/CAPTURE_CHECKLIST.json` - Checklist executavel
+- `docs/REVISAO_CRITICA_TCO_20251229.md` - Analise detalhada
+- `qbo_checker/FEATURE_VALIDATION_CANON.json` v3.0 - Regras atualizadas
+
+**Diferencas TCO vs Construction:**
+| Aspecto | TCO | Construction |
+|---------|-----|--------------|
+| Multi-entity | Sim (5 empresas) | Verificar |
+| Consolidated View | Disponivel | Verificar |
+| Workflow Automation | Funcional | 404 |
+| AI Sparkles | Visivel | Limitado |
+| Special | - | Certified Payroll, Projects |
+
+**Proximo passo:** Executar recaptura TCO com novo framework
 ---
 
 ## Cortex System
