@@ -54,6 +54,12 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-20: Winter Release 2026 Gantt v9 Final - 29 features consolidadas em 7 categorias
+- 2026-01-20: Google Sheets integration via gspread - paleta de cores extraida
+- 2026-01-20: Auditoria completa do GSheet (10 issues, 44 warnings identificados)
+- 2026-01-06: IES February Release FY26 - Analise Critica Integrada criada
+- 2026-01-06: Documento Conversational BI analisado com comentarios internos Intuit
+- 2026-01-06: Explicacao para leigo criada (IES_FEBRUARY_RELEASE_EXPLICACAO_LEIGO.md)
 - 2026-01-05: PPTs RACCOONS criados (Recursos + Alinhamentos) com hyperlinks
 - 2026-01-05: SpineHUB collect completo - 1293 eventos (958 Slack, 209 Drive, 87 Claude)
 - 2026-01-05: Alinhamentos Thais documentados (SYNC 02 Jan 2025)
