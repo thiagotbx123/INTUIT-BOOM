@@ -54,6 +54,10 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-20: IC Balance Sheet Investigation - Bug identificado, escalado para Engineering (PLA-3201)
+- 2026-01-20: Dossier completo criado (PT + EN) - 339 linhas documentando investigacao
+- 2026-01-20: 5 JEs criados (~$14M) + 4 IC mappings corrigidos + conta 1083 criada
+- 2026-01-20: Troubleshooting Guide criado em SpineHUB/knowledge-base
 - 2026-01-20: Winter Release 2026 Gantt v9 Final - 29 features consolidadas em 7 categorias
 - 2026-01-20: Google Sheets integration via gspread - paleta de cores extraida
 - 2026-01-20: Auditoria completa do GSheet (10 issues, 44 warnings identificados)
@@ -616,6 +620,34 @@ REGRA 6: Ambiente especifico = Ambiente especifico
 | Special | - | Certified Payroll, Projects |
 
 **Proximo passo:** Executar recaptura TCO com novo framework
+---
+
+---
+### Sessao: 2026-01-20 22:30 - IC Balance Sheet Investigation
+**Conquistas:**
+- Investigacao completa do erro "Consolidated Balance Sheet isn't balancing"
+- Identificacao de conta deletada em 4 IC mappings
+- Criacao da conta 1083 no Shared COA
+- Atualizacao de 4 mapeamentos IC
+- Criacao de 5 Journal Entries (~$14M total)
+- Descoberta de bug no Consolidated View (nao sincroniza mudancas)
+
+**Problema:**
+- JEs salvos corretamente nas entidades individuais
+- Consolidated View NAO reflete as mudancas
+- Refreshes multiplos nao resolvem
+
+**Acoes:**
+- Dossier criado (PT): DOSSIE Consolidated Balance Sheet Out of Balance Investigation.txt
+- Dossier criado (EN): DOSSIER_Consolidated_Balance_Sheet_Investigation_EN.md
+- Linear ticket criado: PLA-3201
+- Troubleshooting Guide: SpineHUB/knowledge-base/QBO_IC_BALANCE_SHEET_TROUBLESHOOTING.md
+
+**Conclusao:**
+- Problema de sistema/backend, nao de dados
+- Escalado para Intuit Engineering
+
+**Proximo passo:** Aguardar resposta de Engineering, atualizar David Ball
 ---
 
 ## Cortex System
