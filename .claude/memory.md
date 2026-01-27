@@ -54,6 +54,14 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-27: Keystone Payroll Employee Duplication - 90 employees com erro, ~86 duplicados deletados manualmente
+- 2026-01-27: Root cause: processo QBO-side criando records (nao TBX bug)
+- 2026-01-27: Linear ticket PLA-3227 criado via API + worklog adicionado como comentario
+- 2026-01-27: Linear API integrada - scripts create_linear_ticket.py e add_linear_comment.py
+- 2026-01-27: February Release prep - 3 docs de orientacao para Alexandra criados
+- 2026-01-27: Descoberta: michael_gugel+test1@intuit.com (real Intuit employee) em dados sinteticos
+- 2026-01-23: SpineHUB Full Context Export - Documento completo gerado (INTUIT_BOOM_FULL_CONTEXT_2026-01-23.md)
+- 2026-01-23: Contexto consolidado para transferencia de conhecimento entre IAs (~1,500 linhas)
 - 2026-01-20: IC Balance Sheet Investigation - Bug identificado, escalado para Engineering (PLA-3201)
 - 2026-01-20: Dossier completo criado (PT + EN) - 339 linhas documentando investigacao
 - 2026-01-20: 5 JEs criados (~$14M) + 4 IC mappings corrigidos + conta 1083 criada
@@ -97,6 +105,7 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 |------|---------|--------|
 | 2025-12-27 | Strategic Cortex com 5 outputs (A-E) | Cobertura completa do projeto |
 | 2025-12-27 | DriveCollector via TSA_CORTEX | MCP Drive nao disponivel |
+| 2026-01-27 | Linear via API direta | API key em Tools/LINEAR_AUTO/.env |
 | 2025-12-27 | Linear como receitas manuais | MCP Linear nao configurado |
 | 2025-12-22 | Fall Release = process improvement | Reclassificado como manutencao |
 | 2025-12-17 | GoQuick Alpha != sales demo | Evitar confusao ambiente WFS |
@@ -126,6 +135,10 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - PLA-2883: Error ingesting activities (Augusto Gunsch)
 - PLA-2724: Dimensions in Payroll (Eyji Koike Cuff)
 
+### Tickets Recentes
+- PLA-3227: Keystone Employee Duplication (RESOLVED) - 2026-01-27
+- PLA-3201: IC Balance Sheet (ESCALATED) - 2026-01-20
+
 ### Open Questions
 - Qual ambiente final para WFS sales demo?
 - Qual timeline oficial do Winter Release?
@@ -143,8 +156,11 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - RoadReady Service Solutions, LLC (9341455130170608)
 
 ### CONSTRUCTION
-- Keystone Construction (Par.)
+- Keystone Construction (Par.) - CID: 9341454156620895
+- Keystone Terra (Ch.) - CID: 9341454156620204
 - Vista consolidada
+- Dataset: construction_demo (ID: 2ed5d245-0578-43aa-842b-6e1e28367149)
+- Employees no dataset: 45
 
 
 
@@ -679,4 +695,50 @@ knowledge-base/
 3. **Verificar mudancas:** Consultar `OUTPUT_E_DELTA_SUMMARY.md`
 4. **Dados estruturados:** Usar `OUTPUT_C_KNOWLEDGE_BASE.json`
 
+---
+
+## Linear API Access
+
+### Configuracao
+- **API Key:** Ver `C:\Users\adm_r\Tools\LINEAR_AUTO\.env`
+- **Location:** `C:\Users\adm_r\Tools\LINEAR_AUTO\.env`
+- **Endpoint:** `https://api.linear.app/graphql`
+
+### Teams
+| Team | Key | ID |
+|------|-----|-----|
+| Platypus | PLA | fd21180c-8619-4014-98c6-ac9eb8d47975 |
+| Raccoons | RAC | 5a021b9f-bb1a-49fa-ad3b-83422c46c357 |
+| Koala | KLA | fea84e7b-54e5-4b89-bf90-9967bdd2b90b |
+
+### Scripts Disponiveis
+- `create_linear_ticket.py` - Criar tickets via API
+- `add_linear_comment.py` - Adicionar comentarios via API
+
+---
+
+---
+### Sessao: 2026-01-27 14:00 - Keystone Payroll Duplication + February Release Prep
+**Conquistas:**
+- Keystone Payroll: 90 employees com erro, ~86 duplicados deletados manualmente
+- Root cause identificado: processo QBO-side (nao TBX bug)
+- Descoberta: michael_gugel+test1@intuit.com (real Intuit employee) em dados sinteticos
+- Linear ticket PLA-3227 criado via API + worklog como comentario
+- Linear API integrada com scripts Python
+- February Release: 3 docs de orientacao para Alexandra
+
+**Conhecimentos Adquiridos:**
+- Linear GraphQL API: mutations para criar issues e comentarios
+- QBO pode estar criando records via recovery/retry automatico
+- IES Release process: Write it Straight -> UAT doc -> Siji George -> Feature Activation
+- Pain point Intuit: nomes Dev vs Write It Straight
+
+**Arquivos Criados:**
+- `docs/WORKLOG_KEYSTONE_PAYROLL_DUPLICATION_2026-01-27.md`
+- `docs/URGENTE_ALEXANDRA_FEB_RELEASE_2026-01-27.md`
+- `docs/ORIENTACAO_ALEXANDRA_IES_RELEASE_2026-01-27.md`
+- `knowledge-base/INTEL_IES_RELEASE_READINESS_2026-01-27.md`
+- `create_linear_ticket.py`, `add_linear_comment.py`
+
+**Proximo passo:** Postar report em #testbox-intuit-mm-external, Alexandra responder kat sobre February Release
 ---
