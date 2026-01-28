@@ -54,6 +54,9 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-27: Deep Investigation - 6 usuarios Intuit com admin access identificados no ambiente
+- 2026-01-27: Descoberta: custom role "Project Custom" criado 1/20/2026 (7 dias antes do problema)
+- 2026-01-27: Resposta tecnica formulada para Jason/Matt com sugestao de Activity Log
 - 2026-01-27: Keystone Payroll Employee Duplication - 90 employees com erro, ~86 duplicados deletados manualmente
 - 2026-01-27: Root cause: processo QBO-side criando records (nao TBX bug)
 - 2026-01-27: Linear ticket PLA-3227 criado via API + worklog adicionado como comentario
@@ -161,6 +164,17 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - Vista consolidada
 - Dataset: construction_demo (ID: 2ed5d245-0578-43aa-842b-6e1e28367149)
 - Employees no dataset: 45
+- Projects no dataset: 6 (GaleGuardian, Sobey Stadium, Leap Labs, BMH, TidalWave, Azure Pines)
+
+### USUARIOS INTUIT COM ACESSO (Keystone Terra)
+| Nome | Email | Role |
+|------|-------|------|
+| QB Demoteam | qbdemoteam@intuit.com | Primary Admin |
+| Akshit Agarwal | akshit_agarwal@intuit.com | Company admin |
+| Garrett Lusk | garrett_lusk@intuit.com | Company admin |
+| Lawton Ursrey | - | Company admin |
+| Austin Alexander | austin_alexander@intuit.com | Bill approver |
+| Sumit Kumar | sumit_kumar1@intuit.com | Bill approver |
 
 
 
@@ -741,4 +755,25 @@ knowledge-base/
 - `create_linear_ticket.py`, `add_linear_comment.py`
 
 **Proximo passo:** Postar report em #testbox-intuit-mm-external, Alexandra responder kat sobre February Release
+---
+
+---
+### Sessao: 2026-01-27 22:00 - Deep Investigation Employee Duplication
+**Conquistas:**
+- Investigacao profunda no ambiente QBO (Manage Users)
+- 6 usuarios Intuit com admin access identificados
+- Custom role "Project Custom" criado 1/20/2026 descoberto (sem description, 0 users)
+- Datasets analisados: 45 employees, 6 projects (vs 30+ no ambiente)
+- Resposta tecnica formulada para Jason/Matt
+
+**Conhecimentos Adquiridos:**
+- QBO IAM: Custom roles requerem acao admin explicita
+- QBO Audit: actor_id, timestamp, request_origin em cada mutation
+- Raciocinio investigativo: Manage Users = primeiro passo para identificar atores
+
+**Tecnica Aprendida:**
+- Investigacao de anomalias: verificar quem tem write permissions antes de tudo
+- Se dados aparecem sem explicacao, procurar authenticated actors
+
+**Proximo passo:** Matt puxar Activity Log, Thiago postar response tecnica
 ---
