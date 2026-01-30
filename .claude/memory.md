@@ -54,15 +54,16 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-01-29: 8 tickets Linear processados (PLA-2960, 2934, 2971, 2969, 2949, 3013, 2916, 2932)
+- 2026-01-29: SQLite database acessado - TCO tem 51 classifications confirmadas
+- 2026-01-29: Canada dataset: 474 bills PAID, 50 selecionados para UNPAID (4139-4188)
+- 2026-01-29: PLA-3013 Login resolved - Augusto confirmou test users configurados
+- 2026-01-29: PLA-2916 Negative Inventory - Douglas proposal aprovado (Initial Quantity)
+- 2026-01-29: Winter Release prep - response para Kat sobre pre-build data
+- 2026-01-29: Learning: FK type = PK type da tabela referenciada
 - 2026-01-27: Deep Investigation - 6 usuarios Intuit com admin access identificados no ambiente
-- 2026-01-27: Descoberta: custom role "Project Custom" criado 1/20/2026 (7 dias antes do problema)
-- 2026-01-27: Resposta tecnica formulada para Jason/Matt com sugestao de Activity Log
-- 2026-01-27: Keystone Payroll Employee Duplication - 90 employees com erro, ~86 duplicados deletados manualmente
-- 2026-01-27: Root cause: processo QBO-side criando records (nao TBX bug)
+- 2026-01-27: Keystone Payroll Employee Duplication - 90 employees com erro, ~86 duplicados deletados
 - 2026-01-27: Linear ticket PLA-3227 criado via API + worklog adicionado como comentario
-- 2026-01-27: Linear API integrada - scripts create_linear_ticket.py e add_linear_comment.py
-- 2026-01-27: February Release prep - 3 docs de orientacao para Alexandra criados
-- 2026-01-27: Descoberta: michael_gugel+test1@intuit.com (real Intuit employee) em dados sinteticos
 - 2026-01-23: SpineHUB Full Context Export - Documento completo gerado (INTUIT_BOOM_FULL_CONTEXT_2026-01-23.md)
 - 2026-01-23: Contexto consolidado para transferencia de conhecimento entre IAs (~1,500 linhas)
 - 2026-01-20: IC Balance Sheet Investigation - Bug identificado, escalado para Engineering (PLA-3201)
@@ -139,6 +140,11 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - PLA-2724: Dimensions in Payroll (Eyji Koike Cuff)
 
 ### Tickets Recentes
+- PLA-2932: Contractors Documents - Douglas working (FK types clarified) - 2026-01-29
+- PLA-2916: Negative Inventory - Douglas proposal approved - 2026-01-29
+- PLA-3013: Login Task Failing - RESOLVED (Augusto confirmed) - 2026-01-29
+- PLA-2969: Canada Bills - BACKLOG - 2026-01-29
+- PLA-2949: TCO Bank Rules - BACKLOG - 2026-01-29
 - PLA-3227: Keystone Employee Duplication (RESOLVED) - 2026-01-27
 - PLA-3201: IC Balance Sheet (ESCALATED) - 2026-01-20
 
@@ -776,4 +782,31 @@ knowledge-base/
 - Se dados aparecem sem explicacao, procurar authenticated actors
 
 **Proximo passo:** Matt puxar Activity Log, Thiago postar response tecnica
+---
+
+---
+### Sessao: 2026-01-29 17:00 - Linear Tickets Sprint + Winter Release Data Prep
+**Conquistas:**
+- 8 tickets Linear processados em sprint
+- SQLite database acessado (qbo_database_TCO_Construction.db)
+- TCO: 51 classifications confirmadas (8/9 facets)
+- Canada: 50 bills selecionados para UNPAID (IDs 4139-4188)
+- PLA-3013 Login: investigacao profunda, Augusto confirmou fix
+- PLA-2916 Negative Inventory: Douglas proposal aprovado (Initial Quantity)
+- Winter Release: response para Kat sobre pre-build data
+
+**Conhecimentos Adquiridos:**
+- SQLite access: `qbo_database_TCO_Construction.db` em Downloads
+- TCO dataset_id: `fab72c98-c38d-4892-a2db-5e5269571082`
+- FK type = PK type da tabela referenciada (regra simples)
+- Test users: bypass CAPTCHA com +55 phone, 000000 TOTP
+- Pre-build approach: foundation data ANTES do flag (proven Fall Release)
+
+**Communication Learnings:**
+- Respostas simples vencem - Kat prefere direto ao ponto
+- "tipo espelho - tem que bater" > explicacao longa
+- Mostrar conhecimento tecnico especifico da credibilidade
+- Mencionar AI-assisted scripting acelera entregas
+
+**Proximo passo:** Douglas finalizar tickets, responder Kat sobre Winter Release
 ---
