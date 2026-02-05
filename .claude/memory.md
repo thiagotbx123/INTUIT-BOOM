@@ -54,6 +54,9 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-02-05: SALES environment - organizando e equalizando dataset
+- 2026-02-05: Alexandra finalizou employees, iniciou vendors features
+- 2026-02-05: Augusto ajudando com time entries big ingestions
 - 2026-01-29: 8 tickets Linear processados (PLA-2960, 2934, 2971, 2969, 2949, 3013, 2916, 2932)
 - 2026-01-29: SQLite database acessado - TCO tem 51 classifications confirmadas
 - 2026-01-29: Canada dataset: 474 bills PAID, 50 selecionados para UNPAID (4139-4188)
