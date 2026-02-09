@@ -813,3 +813,36 @@ knowledge-base/
 
 **Proximo passo:** Douglas finalizar tickets, responder Kat sobre Winter Release
 ---
+
+---
+### Sessao: 2026-02-08 - Deep Research: QBO Ingestion Checklist Refinement
+**Conquistas:**
+- Pesquisa exaustiva Slack (7 canais + 5 DMs), Linear (555 tickets via API), Web (5 agentes paralelos)
+- Checklist evoluido: 35 → 40 regras + 10 referencia pipeline
+- 5 regras novas adicionadas (QB_LI_QTY_MIN_1, QB_TERMS_DATE_OVERFLOW, QB_BILLS_PURCHASABLE_ONLY, BIZ_INVENTORY_SAFETY_FLOOR, RL_BILLS_EXPENSE_CATEGORY)
+- 3 regras da web identificadas (QB_LI_AMOUNT_PRECISION, QB_DOCNUMBER_MAX_21, QB_COLON_IN_NAMES)
+- 2 correcoes a regras existentes (COGS usa FIFO nao flat cost; Depreciacao NAO e automatica)
+- P&L e CSV versions atualizados para v12/v8/v4 (46/46 audit PASS)
+- Memoria copiada para projeto intuit-boom (2 formatos de path)
+- SpineHub collect executado + learning salvo
+
+**Checklist Location:**
+- `~/.claude/projects/C--Users-adm-r-Clients-intuit-boom/memory/health_check_methodology.md`
+- `~/.claude/projects/C--windows-system32/memory/health_check_methodology.md`
+
+**Dataset State:**
+- 4 CSVs prontos para Augusto ingerir: invoices v12, invoice LI v8, bills v4, bill LI v4
+- P&L: $10.93M income, $3.24M net, 29.6% margin
+
+**Conhecimentos Web Adquiridos:**
+- QBO usa FIFO exclusivamente (nao average cost)
+- QBO PERMITE inventario negativo (nao bloqueia)
+- COGS gerado na CRIACAO da invoice (nao no pagamento)
+- DocNumber max 21 chars (trunca silenciosamente)
+- DisplayName uniqueness e case-insensitive cross Customer/Vendor/Employee
+- Rate limits: 500 req/min, 10 concurrent, 40 batch/min
+- Construction P&L benchmarks: Net Profit 3-10%, Direct Costs 65-80%
+- Tabela completa AccountType/AccountSubType validos obtida
+
+**Proximo passo:** Atualizar checklist com achados web, entregar CSVs ao Augusto
+---

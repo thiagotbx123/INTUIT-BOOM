@@ -61,6 +61,7 @@ Create a new folder and add files. Update this INDEX.md to document it.
 | STRAT-003 | 2025-12-27 | Cortex | Consolidated | Knowledge base JSON completo - 847 items | strategic-cortex/OUTPUT_C_KNOWLEDGE_BASE.json |
 | STRAT-004 | 2025-12-27 | Cortex | Consolidated | Keyword map + Linear recipes | strategic-cortex/OUTPUT_D_KEYWORD_MAP_LINEAR_RECIPES.md |
 | STRAT-005 | 2025-12-27 | Cortex | Consolidated | Delta summary - 30 dias vs anterior | strategic-cortex/OUTPUT_E_DELTA_SUMMARY.md |
+| DL-001 | 2026-01-28 | Deep-Learn | Slack API | Intelligence de 5 canais Intuit (11,202 msgs) | slack-cortex/INTUIT_DEEP_LEARN_INTELLIGENCE.md |
 
 ## Quick Reference
 

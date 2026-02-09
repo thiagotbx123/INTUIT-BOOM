@@ -184,25 +184,55 @@ C:\Users\adm_r\Projects\TSA_CORTEX\knowledge-base\learnings\
 
 ---
 
-## CONTEXTO ATUAL DO PROJETO (2025-12-27)
+## CONTEXTO ATUAL DO PROJETO (2026-02-08)
 
-### Foco Principal: WFS (Workforce Solutions)
-- SOW v1.1 em draft
-- Timeline: Alpha Dez/25, Beta Fev/26, GA Mai/26
-- Stakeholders: Katherine (TestBox), Ben Hale (Intuit)
+### Foco Principal: DATA INGESTION - Construction Dataset (Keystone)
+- **Status:** 15 CSVs prontos, 189/189 audit PASS, aguardando Augusto ingerir
+- **Dataset ID:** `321c6fa0-a4ee-4e05-b085-7b4d51473495`
+- **DB:** `tbx-postgres-staging.internal:5433` user=unstable db=unstable (Tailscale VPN)
+- **20 bugs encontrados e corrigidos** (ver MEMORY.md)
+- **59 regras documentadas** (21 QB + 13 BIZ + 14 RL + 11 PIPE)
 
-### Riscos Ativos
-| # | Risco | Impacto |
-|---|-------|---------|
-| 1 | WFS Environment Decision | P0 |
-| 2 | Negative Inventory TCO | P1 |
-| 3 | Login ECS Task | P1 |
+### Arquivos CRITICOS de Referencia
+| Arquivo | Local | O que |
+|---------|-------|-------|
+| MEMORY.md | `.claude/projects/.../memory/` | Contexto persistente COMPLETO |
+| health_check_methodology.md | `.claude/projects/.../memory/` | Checklist 59 regras detalhado |
+| SLACK_INGESTION_LESSONS.md | `.claude/projects/.../memory/` | 23 incidentes de ingestao |
+| SESSION_HANDOFF_2026-02-08.md | `Downloads/INGESTION_PLANS/` | Handoff completo |
+| GUIA_INGESTION_AUGUSTO.md | `Downloads/INGESTION_PLANS/` | Guia passo-a-passo |
+| audit_all_tables_v2.py | `Downloads/INGESTION_PLANS/` | 189 checks automatizados |
+| REGRAS_MASTER_DATABASE.md | `Downloads/INGESTION_PLANS/` | 39 regras master |
+| CHECKLIST xlsx | `Downloads/PARA_AUGUSTO/` | Checklist em Excel |
 
-### Fall Release
-- Status: ENTREGUE (11/20/2025)
-- TCO/Construction: Validados
-- Manufacturing/Nonprofit: 95%
+### P&L Final
+| CT | Income | Net | Margin |
+|---|---|---|---|
+| parent | $3.02M | +$766K | 25.4% |
+| main_child | $5.11M | +$1.46M | 28.5% |
+| secondary_child | $2.80M | +$700K | 25.0% |
+| **TOTAL** | **$10.93M** | **+$2.93M** | **26.8%** |
+
+### Company Types
+- **parent**: Keystone Construction (Par) - bank_account=5
+- **main_child**: Keystone BlueCraft - bank_account=6, TEM PAYROLL ($1.78M)
+- **secondary_child**: Terra, Volt, Stonecraft, Ironcraft, Ecocraft, Canopy - bank_account=6
+
+### Pendencias
+1. PO table name: singular vs plural (Augusto confirmar)
+2. Re-upload CSVs atualizados (fix TXN-13131) ao Google Drive
+3. Aguardar Augusto ingerir
+
+### Riscos Pos-Ingestao (do Slack audit)
+1. Employee duplication via API retry (90 dupes encontrados antes)
+2. Third-party data contamination (Intuit SEs)
+3. Gateway timeout 504 em CSVs grandes (>3K rows)
+
+### Historico
+- Fall Release: ENTREGUE (11/20/2025)
+- WFS SOW v1.1: Em andamento
+- Data Ingestion: 8+ sessoes desde 2026-01-23
 
 ---
 
-Ultima atualizacao: 2025-12-27
+Ultima atualizacao: 2026-02-08

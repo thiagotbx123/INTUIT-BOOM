@@ -1,0 +1,206 @@
+import requests
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+LINEAR_API_KEY = "REDACTED_LINEAR_KEY_2"
+LINEAR_URL = "https://api.linear.app/graphql"
+
+HEADERS = {"Content-Type": "application/json", "Authorization": LINEAR_API_KEY}
+
+
+def graphql_request(query, variables=None):
+    payload = {"query": query}
+    if variables:
+        payload["variables"] = variables
+    response = requests.post(LINEAR_URL, headers=HEADERS, json=payload)
+    return response.json()
+
+
+def search_tickets():
+    """Search for Keystone-related tickets"""
+    query = """
+    {
+      issues(filter: {
+        title: { contains: "Keystone" },
+        state: { type: { nin: ["completed", "canceled"] } }
+      }, first: 30) {
+        nodes {
+          id
+          identifier
+          title
+          state { name }
+          description
+        }
+      }
+    }
+    """
+    result = graphql_request(query)
+    return result.get("data", {}).get("issues", {}).get("nodes", [])
+
+
+def search_by_identifier(identifier):
+    """Search for a specific ticket by identifier"""
+    # Try searching by identifier
+    search_query = (
+        """
+    {
+      searchIssues(query: "%s", first: 5) {
+        nodes {
+          id
+          identifier
+          title
+          description
+          state { name }
+        }
+      }
+    }
+    """
+        % identifier
+    )
+    result = graphql_request(search_query)
+    return result.get("data", {}).get("searchIssues", {}).get("nodes", [])
+
+
+def update_ticket(issue_id, description):
+    """Update a ticket's description"""
+    mutation = """
+    mutation($id: String!, $description: String!) {
+      issueUpdate(id: $id, input: { description: $description }) {
+        success
+        issue {
+          identifier
+          title
+        }
+      }
+    }
+    """
+    result = graphql_request(mutation, {"id": issue_id, "description": description})
+    return result
+
+
+def create_ticket(title, description, team_id="f0d8b8f3-e8a0-41f3-892b-53f51e6e61e5"):
+    """Create a new ticket"""
+    mutation = """
+    mutation($title: String!, $description: String!, $teamId: String!) {
+      issueCreate(input: { title: $title, description: $description, teamId: $teamId }) {
+        success
+        issue {
+          id
+          identifier
+          title
+          url
+        }
+      }
+    }
+    """
+    result = graphql_request(
+        mutation, {"title": title, "description": description, "teamId": team_id}
+    )
+    return result
+
+
+def main():
+    print("=" * 70)
+    print("UPDATING LINEAR TICKETS")
+    print("=" * 70)
+
+    # Search for existing tickets
+    print("\n📋 Searching for Keystone tickets...")
+    tickets = search_tickets()
+
+    if tickets:
+        print(f"\nFound {len(tickets)} open tickets:")
+        for t in tickets:
+            print(f"  - {t['identifier']}: {t['title'][:60]}... [{t['state']['name']}]")
+
+    # Search for specific tickets
+    print("\n🔍 Searching for ingestion-related tickets...")
+
+    # PLA-3258 - Bills IC
+    pla_3258 = search_by_identifier("PLA-3258")
+    if pla_3258:
+        print(f"  Found PLA-3258: {pla_3258[0]['title']}")
+
+    # Create or find the main ingestion ticket
+    print("\n📝 Creating/Updating Ingestion Master Ticket...")
+
+    ingestion_description = """# Dataset Ingestion - Keystone Construction
+## Winter Release FY26
+
+**Dataset ID:** `321c6fa0-a4ee-4e05-b085-7b4d51473495`
+
+---
+
+## 📦 Files Ready for Ingestion
+
+### Phase 1: Master Data (Ingest First!)
+| File | Records | ID Range | Description |
+|------|---------|----------|-------------|
+| `INGESTION_VENDORS_NEW.csv` | 20 | 34-53 | New vendors including 5 IC Vendors |
+| `INGESTION_CUSTOMERS_NEW.csv` | 25 | 51-75 | New customers including 4 IC Customers |
+
+### Phase 2: Transactions (Ingest After Phase 1!)
+| File | Records | ID Range | Description |
+|------|---------|----------|-------------|
+| `INGESTION_BILLS.csv` | 332 | 105-436 | All bills from SALES (FK: vendor_id) |
+| `INGESTION_INVOICES.csv` | 243 | 2460-2702 | All invoices from SALES (FK: customer_id) |
+
+---
+
+## 🔗 FK Dependencies
+```
+vendors.id ←── bills.vendor_id
+customers.id ←── invoices.customer_id
+```
+
+**⚠️ IMPORTANT:** Must ingest Phase 1 before Phase 2!
+
+---
+
+## ✅ Validation Rules (from Augusto)
+- `QB_DATASET_IDS_MATCH` - All records have dataset_id = `321c6fa0-a4ee-4e05-b085-7b4d51473495`
+- `QB_COMPANY_TYPES_MATCH` - company_type is `all`, `parent`, `main_child`, or `secondary_child`
+- Sequential IDs starting from MAX+1
+
+---
+
+## 📊 Summary
+
+| Entity | Before | After | Delta |
+|--------|--------|-------|-------|
+| Vendors | 33 | 53 | +20 |
+| Customers | 50 | 75 | +25 |
+| Bills | 104 | 436 | +332 |
+| Invoices | 2459 | 2702 | +243 |
+
+---
+
+## 📁 File Location
+All files are in: `C:\\Users\\adm_r\\Downloads\\`
+
+**Generated:** 2026-02-05
+**Generated by:** Claude Code (WAR ROOM session)
+"""
+
+    # Create the master ingestion ticket
+    result = create_ticket(
+        "[QuickBooks] Dataset Ingestion - Keystone Construction SALES Sync",
+        ingestion_description,
+    )
+
+    if result.get("data", {}).get("issueCreate", {}).get("success"):
+        issue = result["data"]["issueCreate"]["issue"]
+        print(f"\n✅ Created ticket: {issue['identifier']}")
+        print(f"   Title: {issue['title']}")
+        print(f"   URL: {issue['url']}")
+    else:
+        print(f"\n❌ Failed to create ticket: {result}")
+
+    print("\n" + "=" * 70)
+    print("DONE")
+    print("=" * 70)
+
+
+if __name__ == "__main__":
+    main()
