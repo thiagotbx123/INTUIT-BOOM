@@ -8,6 +8,7 @@ Usage:
     python validate_csvs.py --summary          # Just show pass/fail summary
 """
 
+import csv
 import os
 import re
 import sys
@@ -104,24 +105,23 @@ class ValidationSpec:
 
 
 def read_csv_file(filepath, delimiter=","):
-    """Read a CSV file and return list of dicts."""
+    """Read a CSV file and return list of dicts.
+    Uses csv module to properly handle quoted fields with embedded delimiters.
+    """
+
     with open(filepath, "r", newline="", encoding="utf-8") as f:
-        content = f.read()
+        reader = csv.reader(f, delimiter=delimiter)
+        raw_headers = next(reader)
+        headers = [h.strip().lower() for h in raw_headers]
 
-    lines = content.strip().split("\n")
-    header_line = lines[0].rstrip(delimiter)
-    headers = header_line.split(delimiter)
-    headers = [h.strip().lower() for h in headers]
-
-    rows = []
-    for line in lines[1:]:
-        if not line.strip():
-            continue
-        fields = line.rstrip(delimiter).split(delimiter)
-        row = {}
-        for i, h in enumerate(headers):
-            row[h] = fields[i].strip() if i < len(fields) else ""
-        rows.append(row)
+        rows = []
+        for fields in reader:
+            if not any(f.strip() for f in fields):
+                continue
+            row = {}
+            for i, h in enumerate(headers):
+                row[h] = fields[i].strip() if i < len(fields) else ""
+            rows.append(row)
 
     return headers, rows
 
@@ -387,7 +387,6 @@ def validate_amount_precision(rows, result, file_num):
 
 def validate_bills_paid_date(rows, result, file_num):
     """QB_011: Bills must have paid_date."""
-
     if not any("paid_date" in r for r in rows[:1]):
         return
     bad = [
@@ -463,6 +462,73 @@ def validate_purchasable_products(rows, spec, result, file_num):
         result.add_pass("QB_015", "All bill LI products are purchasable")
 
 
+def validate_po_status(rows, result, file_num):
+    """QB_028: purchase_order_status must be 'Delivered' or 'Pending'."""
+    if not rows or "purchase_order_status" not in rows[0]:
+        return
+    valid = {"Delivered", "Pending"}
+    bad = []
+    for row in rows:
+        val = row.get("purchase_order_status", "").strip()
+        if val and val not in valid:
+            bad.append((row.get("id", "?"), val))
+    if bad:
+        invalid_vals = defaultdict(int)
+        for _, v in bad:
+            invalid_vals[v] += 1
+        detail = ", ".join(f"'{v}': {c}" for v, c in sorted(invalid_vals.items()))
+        result.add_fail(
+            "QB_028",
+            f"{len(bad)}/{len(rows)} rows with invalid purchase_order_status: {detail}. Valid: {sorted(valid)}",
+        )
+    else:
+        vals = defaultdict(int)
+        for row in rows:
+            vals[row.get("purchase_order_status", "")] += 1
+        dist = ", ".join(f"{v}: {c}" for v, c in sorted(vals.items()))
+        result.add_pass("QB_028", f"All PO statuses valid ({dist})")
+
+
+def validate_bill_po_company_type(rows, all_csv_data, result, file_num):
+    """QB_029: Bill company_type must match linked PO company_type."""
+    if not rows or "purchase_order_id" not in rows[0]:
+        return
+    # Need PO data - check if file #13 was loaded
+    po_data = all_csv_data.get(13, [])
+    if not po_data:
+        result.add_warn("QB_029", "PO data not available for cross-validation")
+        return
+    po_ct_map = {}
+    for po in po_data:
+        po_id = po.get("id", "")
+        if po_id:
+            po_ct_map[po_id] = po.get("company_type", "")
+    bad = []
+    for row in rows:
+        po_id = row.get("purchase_order_id", "").strip()
+        if po_id and po_id not in ("", "NULL", "None", "#N/D"):
+            bill_ct = row.get("company_type", "")
+            po_ct = po_ct_map.get(po_id, None)
+            if po_ct and bill_ct != po_ct:
+                bad.append((row.get("id", "?"), bill_ct, po_id, po_ct))
+    if bad:
+        detail = "; ".join(
+            f"bill {b[0]}: ct={b[1]} vs PO {b[2]} ct={b[3]}" for b in bad
+        )
+        result.add_fail(
+            "QB_029",
+            f"{len(bad)} bills with company_type mismatch vs linked PO: {detail}",
+        )
+    else:
+        linked = sum(
+            1
+            for r in rows
+            if r.get("purchase_order_id", "").strip()
+            not in ("", "NULL", "None", "#N/D")
+        )
+        result.add_pass("QB_029", f"All {linked} PO-linked bills match PO company_type")
+
+
 def validate_classification_count(rows, result, file_num):
     """QB_019: Exactly 4 classification entries per line item."""
     if not any("line_item_id" in r for r in rows[:1]):
@@ -489,8 +555,10 @@ def validate_classification_count(rows, result, file_num):
 # ============================================================
 
 
-def validate_csv(file_num, spec, verbose=True):
+def validate_csv(file_num, spec, verbose=True, all_csv_data=None):
     """Validate a single CSV file against the spec."""
+    if all_csv_data is None:
+        all_csv_data = {}
     manifest = spec.manifest.get(file_num)
     if not manifest:
         print(f"  File #{file_num} not in manifest - SKIP")
@@ -526,6 +594,7 @@ def validate_csv(file_num, spec, verbose=True):
         print(f"{'=' * 60}")
 
     headers, rows = read_csv_file(found, delimiter)
+    all_csv_data[file_num] = rows  # Store for cross-validation
     result = ValidationResult()
 
     # Row count check
@@ -549,11 +618,13 @@ def validate_csv(file_num, spec, verbose=True):
     validate_amount_precision(rows, result, file_num)
     validate_doc_number_length(rows, result, file_num)
     validate_estimate_status(rows, spec, result, file_num)
+    validate_po_status(rows, result, file_num)
     validate_classification_count(rows, result, file_num)
 
     # Table-specific checks
     if "bills" in target_table and "line_item" not in target_table:
         validate_bills_paid_date(rows, result, file_num)
+        validate_bill_po_company_type(rows, all_csv_data, result, file_num)
     if "bill" in target_table and "line_item" in target_table:
         validate_purchasable_products(rows, spec, result, file_num)
 
@@ -612,9 +683,17 @@ def main():
     total_fail = 0
     total_warn = 0
     file_results = {}
+    all_csv_data = {}  # Shared data for cross-validation
+
+    # If validating a single file that needs cross-validation, pre-load dependencies
+    if file_filter and file_filter == 5:
+        # Bills need PO data (#13) for QB_029
+        validate_csv(13, spec, verbose=False, all_csv_data=all_csv_data)
 
     for fnum in files_to_check:
-        result = validate_csv(fnum, spec, verbose=not summary_only)
+        result = validate_csv(
+            fnum, spec, verbose=not summary_only, all_csv_data=all_csv_data
+        )
         if result:
             total_pass += result.passed
             total_fail += result.failed
