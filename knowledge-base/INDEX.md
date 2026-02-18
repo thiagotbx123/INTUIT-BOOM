@@ -16,6 +16,7 @@ knowledge-base/
 ├── slack-cortex/         <- [NEW] Inteligencia de comunicacao Slack
 ├── drive-cortex/         <- [NEW] Inventario de documentos Drive
 ├── strategic-cortex/     <- [NEW] Visao consolidada estrategica
+├── EVIDENCE_COLLECTION_PLAYBOOK.md  <- [NEW] Full evidence pipeline guide
 ├── cortex/               <- CORTEX collection layer docs
 ├── slack-threads/        <- Extracted learnings from Slack
 ├── meetings/             <- Meeting notes and decisions
@@ -62,6 +63,9 @@ Create a new folder and add files. Update this INDEX.md to document it.
 | STRAT-004 | 2025-12-27 | Cortex | Consolidated | Keyword map + Linear recipes | strategic-cortex/OUTPUT_D_KEYWORD_MAP_LINEAR_RECIPES.md |
 | STRAT-005 | 2025-12-27 | Cortex | Consolidated | Delta summary - 30 dias vs anterior | strategic-cortex/OUTPUT_E_DELTA_SUMMARY.md |
 | DL-001 | 2026-01-28 | Deep-Learn | Slack API | Intelligence de 5 canais Intuit (11,202 msgs) | slack-cortex/INTUIT_DEEP_LEARN_INTELLIGENCE.md |
+| ACC-001 | 2026-02-13 | Credentials | Claude Session | Single source of truth for all QBO credentials | access/QBO_CREDENTIALS.json |
+| ACC-002 | 2026-02-13 | Router | Claude Session | Operation→Engine mapping (API vs Playwright) | access/QBO_ROUTER.md |
+| EVD-001 | 2026-02-13 | Playbook | Claude Session | Full evidence collection pipeline guide | EVIDENCE_COLLECTION_PLAYBOOK.md |
 
 ## Quick Reference
 
@@ -89,5 +93,12 @@ Three-layer intelligence system for strategic visibility:
 
 See `strategic-cortex/OUTPUT_A_EXECUTIVE_SNAPSHOT.md` for current status.
 
+### QBO Super Access System (NEW 2026-02-13)
+Unified access architecture with two engines:
+- **API Engine**: python-quickbooks (34 entities) + Intuit MCP Server (11 entities)
+- **Playwright Engine**: Projects, Budgets, Settings, IES-specific features
+- **Router**: `access/QBO_ROUTER.md` - maps operation → engine
+- **Credentials**: `access/QBO_CREDENTIALS.json` - single source of truth for all logins
+
 ---
-Last updated: 2025-12-27
+Last updated: 2026-02-13

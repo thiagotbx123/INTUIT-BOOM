@@ -1,51 +1,9 @@
-# Python
+.playwright-profile/
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv/
-*.egg-info/
-dist/
-build/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Dados sensíveis
-.env
-*.env
-slack_tokens.json
-config_local.py
-
-# Databases (muito grandes para git)
-*.db
-data/*.db
-
-# Chrome profiles (muito grandes)
-chrome_profile*/
-chrome_gsheets/
-
-# Screenshots e outputs
-output/
-screenshots/
-*.png
-*.xlsx
-
-# Cache
-.cache/
-*.cache
-__pycache__/
-.ruff_cache/
-
-# Logs
-*.log
-
-# OS
-.DS_Store
+*.pyc
 Thumbs.db
+.DS_Store
+node_modules/
+*.tmp
+*.bak
+data/cache/

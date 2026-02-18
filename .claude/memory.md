@@ -54,6 +54,15 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-02-13: QSP Evidence Collection - 3 features VALIDATED (ME Reports, Project Estimates, Budgets v3)
+- 2026-02-13: Evidence Playbook created at knowledge-base/EVIDENCE_COLLECTION_PLAYBOOK.md
+- 2026-02-13: Scripts: upload_to_drive.py, merge_and_link.py, update_gsheet.py in Downloads/QSP_EVIDENCE/
+- 2026-02-17: PRINTS AGRUPADOS - 31 PDFs SALES + 37 PDFs UAT criados e uploaded ao Drive
+- 2026-02-17: HYPERLINKS - SALES col H (30 links), UAT col G (29 links) nas planilhas XLSX
+- 2026-02-17: APRENDIZADO CRITICO: =HYPERLINK() formula NAO funciona em XLSX→Google Sheets. Usar cell.hyperlink nativo
+- 2026-02-17: APRENDIZADO CRITICO: Seq numbers DIFEREM entre SALES e UAT para mesma feature
+- 2026-02-17: APRENDIZADO CRITICO: Click Path e Step-by-Step sao test scripts pre-populados, NAO resultados. Origem DESCONHECIDA
+- 2026-02-17: KB criado: knowledge-base/UAT_SALES_PRINTS_KNOWLEDGE.md (guia completo)
 - 2026-02-05: SALES environment - organizando e equalizando dataset
 - 2026-02-05: Alexandra finalizou employees, iniciou vendors features
 - 2026-02-05: Augusto ajudando com time entries big ingestions
