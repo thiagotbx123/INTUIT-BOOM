@@ -251,6 +251,38 @@ images[0].save(pdf_path, "PDF", resolution=100.0,
 # Result: 1 PDF with N pages, each page = 1 screenshot
 ```
 
+### Consolidate Evidence (MANDATORY STEP)
+**After capturing all screenshots for a feature, ALWAYS combine into a multi-page PDF.**
+One screenshot per page, navigable by swiping/clicking. This is the standard delivery format.
+```python
+from PIL import Image
+import os
+
+# LOGICAL SEQUENCE (always this order):
+# 1. Settings proof (feature is enabled)
+# 2. List/overview (data exists)
+# 3. Detail view (most complete example, e.g. with linked PO)
+# 4. Additional details (standalone, edge cases)
+files = [
+    'evidence_01_settings.png',
+    'evidence_02_list.png',
+    'evidence_03_detail_linked.png',
+    'evidence_04_detail_standalone.png',
+]
+images = [Image.open(f).convert('RGB') for f in files]
+output = os.path.join('EvidencePack', 'feature_name_evidence.pdf')
+os.makedirs(os.path.dirname(output), exist_ok=True)
+images[0].save(output, 'PDF', resolution=150.0,
+               save_all=True, append_images=images[1:])
+```
+**Rules:**
+- Format: **PDF** (multi-page, one screenshot per page, navigable)
+- Sequence: Settings → List → Detail (richest) → Detail (simple) → Edge cases
+- Output goes to `EvidencePack/` folder (gitignored, upload to Drive separately)
+- Naming: `{feature_snake_case}_evidence.pdf`
+- Resolution: 150 DPI minimum
+- Always verify final PDF opens and pages navigate correctly before sharing
+
 ---
 
 ## 7. EVIDENCE NOTES TEMPLATE
