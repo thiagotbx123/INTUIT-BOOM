@@ -1,5 +1,6 @@
 # Secrets - NEVER commit
 .env
+.mcp.json
 *.pickle
 token_*.pickle
 
