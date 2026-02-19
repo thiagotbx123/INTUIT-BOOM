@@ -1,12 +1,13 @@
 """Post Bug #24 fix to Linear"""
 
+import os
 import requests
 import time
 
 API_URL = "https://api.linear.app/graphql"
 HEADERS = {
     "Content-Type": "application/json",
-    "Authorization": "REDACTED_LINEAR_KEY_1",
+    "Authorization": os.environ.get("LINEAR_API_KEY", ""),
 }
 
 

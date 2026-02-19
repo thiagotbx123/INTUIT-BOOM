@@ -1,9 +1,10 @@
+import os
 import requests
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-LINEAR_API_KEY = "REDACTED_LINEAR_KEY_2"
+LINEAR_API_KEY = os.environ.get("LINEAR_API_KEY", "")
 LINEAR_URL = "https://api.linear.app/graphql"
 
 HEADERS = {"Content-Type": "application/json", "Authorization": LINEAR_API_KEY}

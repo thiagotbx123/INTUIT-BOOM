@@ -1,12 +1,13 @@
 """Post Bug #22 fix update to Linear tickets PLA-3261 (Time Entries) and PLA-3212 (Master)"""
 
+import os
 import requests
 import time
 
 API_URL = "https://api.linear.app/graphql"
 HEADERS = {
     "Content-Type": "application/json",
-    "Authorization": "REDACTED_LINEAR_KEY_1",
+    "Authorization": os.environ.get("LINEAR_API_KEY", ""),
 }
 
 

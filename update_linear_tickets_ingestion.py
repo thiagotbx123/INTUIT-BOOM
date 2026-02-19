@@ -3,12 +3,13 @@ Update Linear tickets with ingestion status, CSVs, and orientations.
 Posts clear English comments to each relevant ticket for Augusto and the team.
 """
 
+import os
 import requests
 import json
 import time
 
 API_URL = "https://api.linear.app/graphql"
-API_KEY = "REDACTED_LINEAR_KEY_1"
+API_KEY = os.environ.get("LINEAR_API_KEY", "")
 HEADERS = {"Content-Type": "application/json", "Authorization": API_KEY}
 
 DRIVE_FOLDER = (
