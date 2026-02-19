@@ -1,0 +1,46 @@
+{
+  "mcpServers": {
+    "quickbooks": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "C:/Users/adm_r/Integrations/quickbooks-online-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "QUICKBOOKS_CLIENT_ID": "ABBCXphnRbl3SISytJ1KBYhqqasfE3HGUd9FBn9SISUOQdiE6V",
+        "QUICKBOOKS_CLIENT_SECRET": "2fMdCRacJa6EyrJNu8SjZPtVHdeRqZbxHvZE4vrn",
+        "QUICKBOOKS_ENVIRONMENT": "production",
+        "QUICKBOOKS_REDIRECTURI": "http://localhost:8000/callback",
+        "QUICKBOOKS_REFRESH_TOKEN": "RT1-128-H0-1772896844tb96jdd76tx60xhzon0j",
+        "QUICKBOOKS_REALM_ID": "9341454156620895"
+      }
+    },
+    "slack": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "slack-mcp-server@latest",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "SLACK_MCP_XOXC_TOKEN": "xoxc-958304611623-9476635228979-9984642098247-2ba56eb2032fadd42d7b957b610a06c037ee7cfc7380d07734645f4d110c9aa2",
+        "SLACK_MCP_XOXD_TOKEN": "xoxd-RhdHpr288w85U54kLZErgIJAr1SwDzhmruzhdRMqyUR%2BHebp2zuPH9blTJHETO%2F%2F3FaZanmuMLfcLz2%2BYsvx15%2FxR2yt2Jv7nX9MbZSbrkzBAIZAJU6lM0LSc4DmEQDUR3mbZczQbcuI%2Bd9C80Yf4h1DyUHV6SnG8py2U0pzwFI%2BYngxxOonj5IzxNuiHlcbFNHMXPbR"
+      }
+    },
+    "gdrive": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "google-drive-mcp@latest"
+      ],
+      "env": {
+        "GOOGLE_CLIENT_ID": "REDACTED_GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET": "REDACTED_GOOGLE_CLIENT_SECRET",
+        "GOOGLE_REFRESH_TOKEN": "REDACTED_GOOGLE_REFRESH_TOKEN"
+      }
+    }
+  }
+}

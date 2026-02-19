@@ -1,9 +1,51 @@
+# Secrets - NEVER commit
+.env
+*.pickle
+token_*.pickle
+
+# Browser automation profile data
 .playwright-profile/
+chrome_profile_*/
+chrome_gsheets/
+
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+
+# OS files
 Thumbs.db
 .DS_Store
+nul
+
+# Node modules
 node_modules/
+
+# Temporary files
 *.tmp
 *.bak
+tmpclaude-*
+
+# Data/cache
 data/cache/
+*.db
+*.db-journal
+
+# Debug screenshots
+debug*.png
+current_*.png
+login_*.png
+test_*.png
+*_state.png
+*_final.png
+*_check.png
+
+# Large binary files
+*.pptx
+*.docx
+*.xlsb
+
+# Evidence packs (stored on Google Drive, not git)
+EvidencePack/
+wfs_mapping/exploration/
+screenshots/
