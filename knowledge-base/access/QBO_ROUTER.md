@@ -166,6 +166,31 @@ Code:
   results = batch_create(customers, qb=client)
 ```
 
+### Recipe: Evidence Check (full investigation + evidence + response)
+```
+Engine: PLAYWRIGHT
+Trigger: "Evidence check: {problem description} no/na {entity}"
+Example: "Evidence check: cliente não encontra item receipt na Terra"
+
+Steps:
+  1. LOGIN: Use QBO_CREDENTIALS.json → email + password + TOTP
+  2. NAVIGATE: Switch to correct entity (multiEntitySwitchCompany?companyId={cid})
+  3. INVESTIGATE: Go to feature URL, verify settings, check data exists
+  4. SCREENSHOT: Capture evidence in logical sequence:
+     - Settings proof (feature is enabled)
+     - List/overview (data exists)
+     - Detail view (richest example, e.g. with linked PO)
+     - Additional details (standalone, edge cases)
+  5. CONSOLIDATE: Combine into multi-page PDF (1 page per screenshot, navigable)
+     Output: EvidencePack/{feature_snake_case}_evidence.pdf
+     Method: PIL Image.save(pdf, "PDF", resolution=150, save_all=True, append_images=[...])
+  6. RESPOND: Draft response for whoever needs it (team, client, etc.)
+     Tone: natural, humble, concise, basic English
+
+Naming: evidence_{nn}_{description}.png → {feature}_evidence.pdf
+Reference: EVIDENCE_COLLECTION_PLAYBOOK.md (full pipeline details)
+```
+
 ---
 
 ## AUTH FLOW (for Claude)
@@ -203,7 +228,7 @@ START:
 | Date | Operation | Engine | Result | Recipe Added? |
 |------|-----------|--------|--------|---------------|
 | 2026-02-13 | Foundation created | - | - | Initial recipes |
-| | | | | |
+| 2026-02-19 | Evidence Check: Item Receipt Terra | PLAYWRIGHT | VALIDATED (3 receipts found) | Yes - Evidence Check recipe |
 
 ---
 
