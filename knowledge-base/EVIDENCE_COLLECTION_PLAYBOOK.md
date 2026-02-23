@@ -203,6 +203,9 @@ ws.freeze_panes = "A2"
 | Workflows | `/app/workflows` |
 | Sales Orders | inventory menu → Sales orders |
 | Budget | Inside project → Budget tab |
+| IC Account Mapping | `/app/ic-accountdefaults` (CV only, via SHORTCUTS) |
+| IC Transactions | `/app/multi-entity-transactions` (CV sidebar → Accounting) |
+| Shared COA | `/app/sharedcoa` (CV only) |
 
 ### Common Pitfalls
 - QBO Reports URL changed: `/app/standardreports` (NOT `/app/reportlist` which gives 404)
@@ -210,6 +213,9 @@ ws.freeze_panes = "A2"
 - PM Agent panel: scroll may not work via JS (accept screenshot as-is)
 - `browser_wait_for` can return 241K chars output → use `browser_snapshot` instead
 - Budget creation: may work even when expected to be blocked by feature flag
+- Settings > "Switch company" causes LOGOUT - always use header company switcher dropdown
+- IC Account Mapping (`/app/ic-accountdefaults`): only accessible from CV Homepage SHORTCUTS section
+- IC Account Mapping shows accounts from Company 2's COA in "Due from company 1" field (not Company 1)
 
 ### TOTP Authentication
 ```python

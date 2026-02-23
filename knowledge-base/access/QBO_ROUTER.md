@@ -87,6 +87,9 @@
 | **Sales Orders** | PW | PW | PW | PW | IES-specific |
 | **Payroll** | PW | PW | PW | - | Separate API (not QBO REST) |
 | **HR/Mineral** | PW | PW | - | - | Third-party integration |
+| **IC Account Mapping** | PW | PW | PW | PW | CV only, `/app/ic-accountdefaults` |
+| **IC Elimination Accounts** | PW | PW | PW | PW | CV only |
+| **Shared COA** | PW | PW | PW | PW | CV only, `/app/sharedcoa` |
 
 ---
 
@@ -166,6 +169,42 @@ Code:
   results = batch_create(customers, qb=client)
 ```
 
+### Recipe: Copy Sales Order to Invoice/PO
+```
+Engine: PLAYWRIGHT
+Steps:
+1. Open Sales Order detail: /app/commerce/orders/view?detailId={ID}&detailType=salesOrder
+2. Click "Copy" button (top right, "Duplicate or copy data to another transaction")
+3. "Copy options" panel opens on right side
+4. Open "Copy to" dropdown → select target: Invoice, Purchase Order, Estimate, etc.
+   (15 options: Bill, Check, CC Credit, Credit Memo, Delayed Charge/Credit, Estimate,
+    Expense, Invoice, Journal Entry, PO, Refund Receipt, Sales Order, Sales Receipt, Vendor Credit)
+5. Click "Copy" button
+6. New transaction form opens pre-populated with SO data
+Note: This is "Copy" not "Convert" - original SO remains unchanged
+Note: For SO→Invoice, a "Suggested transactions" panel shows linked Estimates with "Add" buttons
+Note: Linked transactions visible via "Linked transactions (N)" button at top of SO detail
+```
+
+### Recipe: View/Edit IC Account Mapping
+```
+Engine: PLAYWRIGHT
+URL: /app/ic-accountdefaults (CV ONLY)
+Access: CV Homepage → SHORTCUTS section → "Intercompany account mapping"
+Steps:
+1. Login to QBO
+2. Switch to Consolidated View (company switcher in header)
+3. On CV Homepage, click "Intercompany account mapping" in SHORTCUTS section
+4. Dialog opens showing company pairs (Parent↔Child)
+5. Click expand arrow (>) on a pair to see 4 account fields:
+   - Due to company 2 → Due from company 1
+   - Due from company 2 → Due to company 1
+6. Click combobox to change account (typeahead search)
+7. Click "Done" to save, "Cancel" to discard
+WARNING: DO NOT use Settings → "Switch company" - it causes logout!
+WARNING: Use header company switcher dropdown only for entity switching
+```
+
 ### Recipe: Evidence Check (full investigation + evidence + response)
 ```
 Engine: PLAYWRIGHT
@@ -229,6 +268,11 @@ START:
 |------|-----------|--------|--------|---------------|
 | 2026-02-13 | Foundation created | - | - | Initial recipes |
 | 2026-02-19 | Evidence Check: Item Receipt Terra | PLAYWRIGHT | VALIDATED (3 receipts found) | Yes - Evidence Check recipe |
+| 2026-02-19 | Evidence Check: AIA Billing Terra | PLAYWRIGHT | VALIDATED (Progress Invoicing ON, estimate→invoice with % per line) | No (same recipe) |
+| 2026-02-19 | Evidence Check: Sales Orders Terra | PLAYWRIGHT | VALIDATED (4 SOs, Copy→Invoice/PO/Estimate, Linked Transactions popover) | Yes - SO Copy recipe |
+| 2026-02-23 | IC Account Mapping: View/Investigate | PLAYWRIGHT | 2 pairs found (Parent↔BlueCraft, Parent↔Terra), all accounts mapped | Yes - IC Mapping recipe |
+| 2026-02-23 | Shared COA: Add Terra to account 2030 | PLAYWRIGHT | SUCCESS - Terra added to "Due to Keystone BlueCraft" shared account | No |
+| 2026-02-23 | Calculated Field: Balance Sheet | PLAYWRIGHT | CREATED - custom calculated field visible in report | No |
 
 ---
 
