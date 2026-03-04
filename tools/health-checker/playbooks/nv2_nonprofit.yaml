@@ -1,0 +1,300 @@
+# NV2 Non-Profit Health Check Playbook
+# 10-station audit adapted for Non-Profit vertical
+# Dataset: 3e1337cc-70ca-4041-bc95-0fe29181bb12
+# Created: 2026-03-04
+
+metadata:
+  name: "NV2 Non-Profit Health Check"
+  environment: "non_profit"
+  dataset_id: "3e1337cc-70ca-4041-bc95-0fe29181bb12"
+  companies:
+    - name: "Parent"
+      type: "parent"
+    - name: "Rise"
+      type: "child"
+    - name: "Response"
+      type: "child"
+  terminology:
+    customers: "Donors"
+    invoices: "Pledges"
+    products: "Programs"
+    projects: "Grants"
+    profit_and_loss: "Statement of Activity"
+    revenue: "Contributions & Grants"
+    cogs: "Program Expenses"
+  check_profile: "qbo-np.json"
+
+columns:
+  feature: "A"
+  station: "B"
+  status: "C"
+  evidence: "D"
+  notes: "E"
+
+statuses:
+  pass: "PASS"
+  partial: "PARTIAL"
+  fail: "FAIL"
+  blocked: "BLOCKED"
+
+features:
+  # =====================================================================
+  # STATION 1: DASHBOARD
+  # =====================================================================
+  - id: np-dashboard
+    station: "Dashboard"
+    sequence: 1
+    route: "/app/homepage"
+    steps:
+      - "Navigate to /app/homepage"
+      - "Wait 5s for widgets to load"
+      - "Take browser_snapshot to verify content"
+      - "Check that dashboard widgets show data (not empty)"
+      - "Verify header shows correct company name"
+      - "Run content scan on visible text"
+    checks:
+      - "Dashboard loads with data"
+      - "Widgets are populated (income, expenses, bank)"
+      - "No loading spinners stuck"
+      - "Company name visible in header"
+      - "No profanity/placeholders in visible data"
+    screenshot_prefix: "01_dashboard"
+    demo_impact: "HIGH - first screen prospect sees"
+
+  # =====================================================================
+  # STATION 2: DONORS (Customers)
+  # =====================================================================
+  - id: np-donors
+    station: "Donors"
+    sequence: 2
+    route: "/app/customers"
+    steps:
+      - "Navigate to /app/customers"
+      - "Wait for donor list to load"
+      - "Verify donor count > 0"
+      - "Scan all visible donor names for profanity/placeholders"
+      - "Check for realistic NP donor names (foundations, individuals)"
+      - "Verify no test data (test123, dummy, etc.)"
+    checks:
+      - "Donor list loads with data"
+      - "Donor names are realistic (not test data)"
+      - "Content scan: CLEAN (no profanity/gaffes)"
+      - "Mix of individual and organizational donors"
+    screenshot_prefix: "02_donors"
+    content_scan: true
+    demo_impact: "HIGH - core NP workflow"
+
+  # =====================================================================
+  # STATION 3: PLEDGES (Invoices)
+  # =====================================================================
+  - id: np-pledges
+    station: "Pledges"
+    sequence: 3
+    route: "/app/invoices"
+    steps:
+      - "Navigate to /app/invoices"
+      - "Wait for pledge list to load"
+      - "Verify mix of statuses (paid, unpaid, overdue)"
+      - "Check pledge amounts are realistic for NP"
+      - "Verify terms are varied (Net 30, Net 60, Due on Receipt)"
+    checks:
+      - "Pledge list loads with data"
+      - "Status mix exists (not all overdue)"
+      - "Amounts are realistic for nonprofit donations"
+      - "Terms are varied"
+    screenshot_prefix: "03_pledges"
+    demo_impact: "HIGH - core NP workflow"
+
+  # =====================================================================
+  # STATION 4: DIMENSIONS
+  # =====================================================================
+  - id: np-dimensions
+    station: "Dimensions"
+    sequence: 4
+    route: "/app/class"
+    steps:
+      - "Navigate to /app/class (NOT /app/dimensions which 404s)"
+      - "Wait for dimensions hub to load"
+      - "Verify 5 active dimensions exist"
+      - "Scan all dimension names and values for profanity"
+      - "Check for Restriction dimension specifically"
+      - "Verify dimension values are NP-appropriate"
+    checks:
+      - "Dimensions Hub loads at /app/class"
+      - "5 active dimensions visible"
+      - "Restriction dimension has values (With/Without Donor Restrictions)"
+      - "Content scan: CLEAN on all dimension values"
+      - "No inactive dimensions with test data"
+    screenshot_prefix: "04_dimensions"
+    content_scan: true
+    demo_impact: "HIGH - NP-specific feature"
+    known_issues:
+      - "URL /app/dimensions returns 404 — use /app/class"
+      - "URL /app/dimensions/assignment works for assignment view"
+
+  # =====================================================================
+  # STATION 5: MULTI-ENTITY
+  # =====================================================================
+  - id: np-multi-entity
+    station: "Multi-Entity"
+    sequence: 5
+    steps:
+      - "Click company switcher in header"
+      - "Verify Parent, Rise, and Response entities visible"
+      - "Switch to each entity and verify header changes"
+      - "Switch to Consolidated View if available"
+      - "Verify entity switch takes < 10 seconds"
+    checks:
+      - "Company switcher shows all 3 entities"
+      - "Can switch to Parent entity"
+      - "Can switch to Rise entity"
+      - "Can switch to Response entity"
+      - "Consolidated View available"
+    screenshot_prefix: "05_multi_entity"
+    demo_impact: "HIGH - multi-entity is key NP feature"
+
+  # =====================================================================
+  # STATION 6: STATEMENT OF ACTIVITY (P&L)
+  # =====================================================================
+  - id: np-statement-of-activity
+    station: "Statement of Activity"
+    sequence: 6
+    route: "/app/reportlist"
+    steps:
+      - "Navigate to /app/reportlist"
+      - "Find 'Statement of Activity' report (NP equivalent of P&L)"
+      - "Click to run the report"
+      - "Wait for report to render"
+      - "Verify Contributions & Grants section has revenue"
+      - "Verify Program Expenses are categorized"
+      - "Check net assets (should be positive)"
+    checks:
+      - "Statement of Activity report exists in report list"
+      - "Report loads with data"
+      - "Contributions & Grants show revenue"
+      - "Program Expenses are categorized"
+      - "Net assets positive"
+    screenshot_prefix: "06_statement_of_activity"
+    demo_impact: "CRITICAL - NP executives look at this first"
+
+  # =====================================================================
+  # STATION 7: VENDORS + BILLS
+  # =====================================================================
+  - id: np-vendors
+    station: "Vendors & Bills"
+    sequence: 7
+    routes:
+      - "/app/vendors"
+      - "/app/bills"
+    steps:
+      - "Navigate to /app/vendors"
+      - "Verify vendor list has data"
+      - "Scan vendor names for profanity/placeholders"
+      - "Navigate to /app/bills"
+      - "Verify bills exist with varied statuses"
+    checks:
+      - "Vendor list loads with data"
+      - "Vendor names realistic for NP (suppliers, contractors)"
+      - "Content scan: CLEAN"
+      - "Bills exist with open/paid statuses"
+    screenshot_prefix: "07_vendors"
+    content_scan: true
+    demo_impact: "MEDIUM"
+
+  # =====================================================================
+  # STATION 8: PROGRAMS (Products & Services)
+  # =====================================================================
+  - id: np-programs
+    station: "Programs"
+    sequence: 8
+    route: "/app/items"
+    steps:
+      - "Navigate to /app/items"
+      - "Verify program/service list has data"
+      - "Scan names for profanity/placeholders"
+      - "Check that names reflect NP programs (not commercial products)"
+    checks:
+      - "Programs list loads with data"
+      - "Names reflect nonprofit programs/services"
+      - "Content scan: CLEAN"
+      - "Prices/rates are appropriate for NP"
+    screenshot_prefix: "08_programs"
+    content_scan: true
+    demo_impact: "MEDIUM"
+
+  # =====================================================================
+  # STATION 9: PROJECTS (Grants)
+  # =====================================================================
+  - id: np-projects
+    station: "Projects (Grants)"
+    sequence: 9
+    route: "/app/projects"
+    steps:
+      - "Navigate to /app/projects"
+      - "Verify projects/grants list has data"
+      - "Check that project names reflect NP grants"
+      - "Verify P&L tracking per project works"
+    checks:
+      - "Projects page loads with data"
+      - "Project names reflect grants/programs"
+      - "Project P&L data visible"
+      - "No test data names (Project_test_1, etc.)"
+    screenshot_prefix: "09_projects"
+    demo_impact: "MEDIUM"
+
+  # =====================================================================
+  # STATION 10: CHART OF ACCOUNTS + BANKING
+  # =====================================================================
+  - id: np-coa-banking
+    station: "COA & Banking"
+    sequence: 10
+    routes:
+      - "/app/chartofaccounts?jobId=accounting"
+      - "/app/banking"
+    steps:
+      - "Navigate to /app/chartofaccounts?jobId=accounting"
+      - "Verify COA has NP-appropriate accounts"
+      - "Scan account names for profanity"
+      - "Navigate to /app/banking"
+      - "Verify bank connections exist"
+      - "Check for negative balances (red flag)"
+    checks:
+      - "COA loads with NP-appropriate accounts"
+      - "Content scan: CLEAN on all account names"
+      - "Banking page shows connected accounts"
+      - "No negative bank balances"
+    screenshot_prefix: "10_coa_banking"
+    content_scan: true
+    demo_impact: "HIGH"
+
+# =====================================================================
+# KNOWN 404 ROUTES — DO NOT USE
+# =====================================================================
+known_404_routes:
+  - "/app/dimensions"
+  - "/app/reportbuilder"
+  - "/app/apps"
+  - "/app/chart-of-accounts"
+
+# =====================================================================
+# CONTENT SCAN RULES (from CS methodology)
+# =====================================================================
+content_scan_rules:
+  - id: "CS_001"
+    rule: "No profanity in any user-facing text (EN + PT bilingual)"
+  - id: "CS_002"
+    rule: "No placeholder data (test123, foobar, lorem, asdf)"
+  - id: "CS_003"
+    rule: "No PII (SSN, credit cards, real emails)"
+  - id: "CS_004"
+    rule: "No nonsense strings (5+ consonants, 8+ uppercase)"
+  - id: "CS_005"
+    rule: "Scan ALL entities in multi-entity (parent + children)"
+  - id: "CS_006"
+    rule: "Scan dimensions, donors, vendors, programs, COA"
+  - id: "CS_007"
+    rule: "Flag child entity content separately from parent"
+  - id: "CS_008"
+    rule: "Content scan runs BEFORE any demo delivery"
+  - id: "CS_009"
+    rule: "Critical violations block delivery until remediated"

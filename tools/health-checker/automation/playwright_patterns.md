@@ -566,3 +566,167 @@ A typical UAT feature validation follows this sequence:
 | `browser_file_upload` | Simple file uploads (not GEM, not Drive -- use `browser_run_code` for those) |
 | `browser_fill_form` | Fill multiple form fields at once |
 | `browser_select_option` | Select dropdown options |
+
+---
+
+## NV2 Non-Profit Specific Patterns
+
+### Donor Combobox Selection (Pledge/Invoice Form)
+
+QBO Non-Profit uses cascading comboboxes on the Pledge form. The Donor (Customer) combobox is the **2nd** combobox on the page. After selecting a donor, the Terms combobox auto-populates but may need override.
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  // 1. Click Donor combobox (nth(2) — first is usually a hidden or header combo)
+  const donorCombo = page.getByRole('combobox').nth(2);
+  await donorCombo.click({ force: true });
+  await page.waitForTimeout(500);
+
+  // 2. Type donor name to filter
+  await donorCombo.fill('Summit Foundation');
+  await page.waitForTimeout(800);
+
+  // 3. Select from dropdown — skip "Add new" option
+  const options = page.getByRole('option');
+  const count = await options.count();
+  for (let i = 0; i < count; i++) {
+    const text = await options.nth(i).textContent();
+    if (text.includes('Summit Foundation') && !text.includes('Add new')) {
+      await options.nth(i).click();
+      break;
+    }
+  }
+  await page.waitForTimeout(1000);
+}
+```
+
+### Terms Combobox Override (After Donor Selection)
+
+After selecting a donor, the Terms field auto-fills. To override:
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  // Terms is the 3rd combobox after donor selection
+  const termsCombo = page.getByRole('combobox').nth(3);
+  await termsCombo.click({ force: true });
+  await page.waitForTimeout(500);
+
+  // Select desired terms
+  await page.getByRole('option', { name: 'Net 30' }).click();
+  await page.waitForTimeout(500);
+}
+```
+
+### Product/Program Combobox (Line Item)
+
+Product selection is the **4th** combobox on the pledge form:
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  const productCombo = page.getByRole('combobox').nth(4);
+  await productCombo.click({ force: true });
+  await page.waitForTimeout(500);
+
+  await productCombo.fill('Youth Program');
+  await page.waitForTimeout(800);
+
+  const option = page.getByRole('option', { name: 'Youth Program' });
+  if (await option.isVisible({ timeout: 3000 })) {
+    await option.click();
+  }
+  await page.waitForTimeout(500);
+}
+```
+
+### "Apply Price Rules?" Modal Handling
+
+QBO may show a modal asking to apply price rules after product selection:
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  // Check for price rules modal
+  const modal = page.getByRole('dialog');
+  if (await modal.isVisible({ timeout: 3000 }).catch(() => false)) {
+    // Click "No" to skip price rules (or "Yes" to apply)
+    const noBtn = modal.getByRole('button', { name: 'No' });
+    if (await noBtn.isVisible({ timeout: 2000 })) {
+      await noBtn.click();
+      await page.waitForTimeout(500);
+    }
+  }
+}
+```
+
+### Split Button Disambiguation
+
+QBO uses split buttons (button + dropdown arrow). Use `exact: true` to click the main action:
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  // Click "Save and send" main button (not the dropdown arrow)
+  const saveBtn = page.getByRole('button', { name: 'Save and send', exact: true });
+  await saveBtn.click();
+  await page.waitForTimeout(1000);
+
+  // Alternative: "Save and close"
+  const saveCloseBtn = page.getByRole('button', { name: 'Save and close', exact: true });
+  await saveCloseBtn.click();
+}
+```
+
+### Revenue Recognition Service Date Field
+
+NP pledge forms may have a service date field for revenue recognition:
+
+```javascript
+// Tool: browser_run_code
+async (page) => {
+  // Service date is typically a date input after the main invoice date
+  const dateInputs = page.locator('input[type="date"], input[placeholder*="MM/DD"]');
+  const count = await dateInputs.count();
+
+  if (count >= 2) {
+    // Second date input is typically service date
+    await dateInputs.nth(1).fill('03/15/2026');
+    await page.waitForTimeout(500);
+  }
+}
+```
+
+### Content Scan at Station (Reusable Pattern)
+
+Run content scan on any NP station page:
+
+```javascript
+// Tool: browser_evaluate
+async (page) => {
+  // Get all visible text on page
+  const bodyText = await page.innerText('body');
+
+  // Quick profanity check patterns (subset — full list in content_scanner.py)
+  const profanityPatterns = [
+    /\bdick/i, /\bfuck/i, /\bshit/i, /\bass(?:hole)/i,
+    /\bbitch/i, /\bcunt/i, /\bwhore/i, /\bslut/i,
+    /\bmerda/i, /\bporra/i, /\bcaralho/i, /\bputa/i
+  ];
+
+  const violations = [];
+  for (const pattern of profanityPatterns) {
+    const match = bodyText.match(pattern);
+    if (match) {
+      violations.push({ word: match[0], index: match.index });
+    }
+  }
+
+  return JSON.stringify({
+    textLength: bodyText.length,
+    violations: violations,
+    clean: violations.length === 0
+  });
+}
+```

@@ -1,0 +1,204 @@
+{
+  "product": "QBO Non-Profit (NV2)",
+  "version": "1.0",
+  "environment": "non_profit",
+  "dataset_id": "3e1337cc-70ca-4041-bc95-0fe29181bb12",
+  "terminology": {
+    "customers": "Donors",
+    "invoices": "Pledges",
+    "products": "Programs",
+    "projects": "Grants"
+  },
+  "companies": ["Parent", "Rise", "Response"],
+  "checks": [
+    {
+      "id": "login-works",
+      "name": "Login Works",
+      "type": "auth",
+      "priority": "critical",
+      "expect": {
+        "url_contains": "/app/"
+      }
+    },
+    {
+      "id": "homepage-loads",
+      "name": "Homepage Loads",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/homepage",
+      "expect": {
+        "selector": "[data-testid='homepage']"
+      }
+    },
+    {
+      "id": "company-switcher-works",
+      "name": "Company Switcher Works (Multi-Entity)",
+      "type": "ui",
+      "priority": "high",
+      "expect": {
+        "selector": "[data-testid='company-switcher']"
+      }
+    },
+    {
+      "id": "np-donors-exist",
+      "name": "Donors Page Has Data",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/customers",
+      "expect": {
+        "selector": ".customer-row",
+        "min_count": 1
+      },
+      "notes": "NP terminology: Customers = Donors"
+    },
+    {
+      "id": "np-pledges-exist",
+      "name": "Pledges Page Has Data",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/invoices",
+      "expect": {
+        "selector": ".invoice-row",
+        "min_count": 1
+      },
+      "notes": "NP terminology: Invoices = Pledges"
+    },
+    {
+      "id": "np-dimensions-configured",
+      "name": "Dimensions Hub Has Active Dimensions",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/class",
+      "expect": {
+        "url_contains": "/app/class"
+      },
+      "notes": "Dimensions Hub is /app/class NOT /app/dimensions (404)"
+    },
+    {
+      "id": "np-multi-entity",
+      "name": "Company Switcher Shows Parent + Children",
+      "type": "ui",
+      "priority": "high",
+      "expect": {
+        "selector": "[data-testid='company-switcher']"
+      },
+      "notes": "Must show Parent, Rise, Response entities"
+    },
+    {
+      "id": "np-statement-of-activity",
+      "name": "Statement of Activity Report Runs",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/reportlist",
+      "expect": {
+        "text": "Statement of Activity"
+      },
+      "notes": "NP equivalent of P&L report"
+    },
+    {
+      "id": "np-projects-exist",
+      "name": "Projects Page Has Data",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/projects",
+      "expect": {
+        "selector": ".project-row"
+      },
+      "notes": "NP terminology: Projects = Grants"
+    },
+    {
+      "id": "np-restriction-dimension",
+      "name": "Restriction Dimension Has Values",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/class",
+      "expect": {
+        "url_contains": "/app/class"
+      },
+      "notes": "NP-specific dimension for donor restrictions (With/Without)"
+    },
+    {
+      "id": "vendors-exist",
+      "name": "Vendors Have Data",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/vendors",
+      "expect": {
+        "selector": ".vendor-row",
+        "min_count": 1
+      }
+    },
+    {
+      "id": "banking-connected",
+      "name": "Banking Connected",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/banking",
+      "expect": {
+        "selector": ".bank-feed"
+      }
+    },
+    {
+      "id": "dimensions-content-clean",
+      "name": "Dimensions Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/class",
+      "expect": {
+        "url_contains": "/app/class",
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "customers-content-clean",
+      "name": "Donors Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/customers",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "vendors-content-clean",
+      "name": "Vendors Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/vendors",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "products-content-clean",
+      "name": "Programs Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/items",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      },
+      "notes": "NP terminology: Products = Programs"
+    },
+    {
+      "id": "coa-content-clean",
+      "name": "Chart of Accounts Content Clean",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/chartofaccounts?jobId=accounting",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    }
+  ]
+}

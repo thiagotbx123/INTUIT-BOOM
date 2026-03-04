@@ -180,3 +180,73 @@ Card types include: Finance Agent summaries, Project Management Agent suggestion
 7. **TestBox limitations**: No real payroll processing, no email integration, no QBDT migration path
 8. **Entity order**: Child entities appear alphabetically in switcher - rename with prefixes (01-, 02-) to control order
 9. **Entity rename**: Must switch TO each entity first, then Settings > Account and settings > Company name
+
+---
+
+## NV2 Non-Profit Navigation
+
+### NV2 URL Map
+
+| Area | Correct URL | Notes |
+|------|------------|-------|
+| Dimensions Hub | `/app/class` | NOT `/app/dimensions` (404!) |
+| Dimension Assignment | `/app/dimensions/assignment` | Works for assignment view |
+| Donors (Customers) | `/app/customers` | NP terminology: Donors |
+| Pledges (Invoices) | `/app/invoices` | NP terminology: Pledges |
+| Programs (Products) | `/app/items` | NP terminology: Programs |
+| Grants (Projects) | `/app/projects` | NP terminology: Grants |
+| Statement of Activity | via `/app/reportlist` | NP equivalent of P&L |
+| Chart of Accounts | `/app/chartofaccounts?jobId=accounting` | Same as standard QBO |
+| Banking | `/app/banking` | Same as standard QBO |
+| Dashboard | `/app/homepage` | Same as standard QBO |
+
+### NV2 Known 404 Routes (DO NOT USE)
+
+| Route | Why | Correct Alternative |
+|-------|-----|---------------------|
+| `/app/dimensions` | 404 in all environments | `/app/class` |
+| `/app/reportbuilder` | Not available in NP | Use `/app/reportlist` |
+| `/app/apps` | Not available | N/A |
+| `/app/chart-of-accounts` | Hyphenated URL never works | `/app/chartofaccounts?jobId=accounting` |
+
+### NV2 Entity Switching
+
+NV2 uses multi-entity with 3 companies:
+
+| Entity | Type | Description |
+|--------|------|-------------|
+| Parent | Parent | Main non-profit organization |
+| Rise | Child | Program/chapter entity |
+| Response | Child | Program/chapter entity |
+
+Switch pattern is identical to TCO:
+```
+browser_navigate → https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={ID}
+browser_wait_for time=5
+browser_snapshot → verify header shows correct entity
+```
+
+### NV2 Terminology Map
+
+When reading QBO UI in Non-Profit context:
+
+| Standard QBO Term | NP Term | Where Visible |
+|-------------------|---------|---------------|
+| Customers | Donors | Left nav, page headers |
+| Invoices | Pledges | Left nav, page headers |
+| Products & Services | Programs | Left nav, page headers |
+| Projects | Grants | Left nav, page headers |
+| Profit & Loss | Statement of Activity | Reports |
+| Revenue | Contributions & Grants | Reports |
+| COGS | Program Expenses | Reports |
+
+### NV2 Dimension Structure
+
+5 active dimensions documented:
+- **Class** — Program classification
+- **Department** — Organizational department
+- **Location** — Geographic location
+- **Fund** — Fund tracking
+- **Restriction** — Donor restriction (With/Without Donor Restrictions)
+
+Navigate to dimensions: `/app/class` (Dimensions Hub)

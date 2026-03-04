@@ -161,6 +161,70 @@ FASE 3: Decisoes
 
 ---
 
+### NV2 NON-PROFIT
+
+**Caracteristicas:**
+- Multi-entity completo (Parent + 2 children: Rise, Response)
+- Terminologia NP (Donors, Pledges, Programs, Grants)
+- Dimensions configuradas (5 ativas, incluindo Restriction)
+- Statement of Activity no lugar de P&L
+- Consolidated View disponivel
+- Dataset ID: `3e1337cc-70ca-4041-bc95-0fe29181bb12`
+
+**Terminologia NP:**
+| QBO Padrao | NP Term |
+|------------|---------|
+| Customers | Donors |
+| Invoices | Pledges |
+| Products & Services | Programs |
+| Projects | Grants |
+| Profit & Loss | Statement of Activity |
+| Revenue | Contributions & Grants |
+| COGS | Program Expenses |
+
+**Features especificas:**
+- Dimensions Hub: `/app/class` (NAO `/app/dimensions` que retorna 404)
+- Dimension Assignment: `/app/dimensions/assignment`
+- Restriction dimension: valores With/Without Donor Restrictions
+- Statement of Activity via `/app/reportlist`
+- Multi-entity: Parent, Rise, Response
+
+**Validacao NP-especifica:**
+- Content scan OBRIGATORIO em Dimensions, Donors, Vendors, Programs, COA
+- Content scan em TODAS as entities (parent + children)
+- Violations de child entities reportadas separadamente
+- Check profile: `config/checks/qbo-np.json`
+
+**Content Safety Shield Rules:**
+| Rule | Descricao |
+|------|-----------|
+| CS_001 | Nenhuma profanidade (EN + PT bilingual) |
+| CS_002 | Nenhum placeholder (test123, foobar, lorem, asdf) |
+| CS_003 | Nenhum PII (SSN, credit cards, emails reais) |
+| CS_004 | Nenhum nonsense (5+ consoantes, 8+ maiusculas) |
+| CS_005 | Scan TODAS as entities em multi-entity |
+| CS_006 | Scan dimensions, donors, vendors, programs, COA |
+| CS_007 | Child entity violations reportadas separadamente |
+| CS_008 | Content scan ANTES de entregar ambiente |
+| CS_009 | CRITICAL violations bloqueiam entrega |
+
+**URLs que funcionam:**
+- `/app/class` (Dimensions Hub)
+- `/app/customers` (Donors)
+- `/app/invoices` (Pledges)
+- `/app/items` (Programs)
+- `/app/projects` (Grants)
+- `/app/reportlist` (Statement of Activity via click)
+- `/app/chartofaccounts?jobId=accounting` (COA)
+
+**URLs que NAO funcionam (404):**
+- `/app/dimensions` — usar `/app/class`
+- `/app/reportbuilder` — nao disponivel
+- `/app/apps` — nao disponivel
+- `/app/chart-of-accounts` — usar `/app/chartofaccounts?jobId=accounting`
+
+---
+
 ### AMBIENTES FUTUROS (Framework)
 
 **Antes de validar um novo ambiente:**
