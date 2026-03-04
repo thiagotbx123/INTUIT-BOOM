@@ -1,0 +1,996 @@
+# Winter Release FY26 - UAT Playbook
+# Generated from uat_all_features.txt (33 features)
+# UAT Period: Feb 11-14, 2026
+# Results: 25 VALIDATED, 3 BLOCKED, 4 NOT TESTABLE, 1 EXCLUDED (updated 2026-02-14 post-audit)
+
+metadata:
+  release: "Winter Release FY26"
+  date_start: "2026-02-11"
+  date_end: "2026-02-14"
+  environment: "TestBox (quickbooks-construction-clone)"
+  sheet_id: "1dhkwUMQXQSzXAVDrKrZS26XMl4rN6bEe"
+  sheet_tab: "CONS.UAT"
+  drive_folder_id: "1qRheOtws5oFEdizef3IiDjppMd99Ssfi"
+
+columns:
+  status: "E"
+  evidence: "G"
+  hyperlinks: "H"
+  notes: "F"
+
+statuses:
+  validated: "VALIDATED"
+  blocked: "BLOCKED"
+  not_testable: "NOT TESTABLE"
+  excluded: "EXCLUDED"
+
+features:
+  # =====================================================================
+  # ROW 2 | Seq 1 | ID 16 - KPIs
+  # =====================================================================
+  - id: 16
+    name: "KPIs"
+    row: 2
+    sequence: 1
+    click_path: "Reports > KPIs > KPI Scorecard"
+    steps:
+      - "Click \"Reports\" in left nav"
+      - "Click \"KPIs\" to open KPI Scorecard"
+      - "Click \"Manage KPIs\" (top right)"
+      - "Scroll through KPI Library"
+      - "Click \"Create KPI\""
+      - "In formula builder, open account dropdown > verify CoA accounts appear"
+      - "Select time period (current/previous)"
+      - "Check if 3P data variables appear as options"
+      - "Save custom KPI"
+      - "Return to KPI Scorecard > verify custom KPI shows"
+      - "Add a KPI that compares against previous year/period (line or bar chart)"
+    checks:
+      - "KPI Scorecard loads with data"
+      - "KPI Library shows standard + custom KPIs"
+      - "Formula builder dropdown has CoA accounts"
+      - "Time period selection works"
+      - "3P data variables available"
+      - "Custom KPI saves and appears in Scorecard"
+      - "Custom KPI available in Management Reports & Dashboards"
+    screenshot_prefix: "02_ID16"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 3 | Seq 2 | ID 17 - Dashboards
+  # =====================================================================
+  - id: 17
+    name: "Dashboards"
+    row: 3
+    sequence: 2
+    click_path: "Reports > Dashboards"
+    steps:
+      - "From Reports, click \"Dashboards\""
+      - "Look for 3 NEW pre-built dashboards: Sales Performance (CRM), Payroll, Time Tracking"
+      - "Click Edit on a dashboard"
+      - "In KPI list, look for \"Create KPI\" CTA button"
+      - "Click it > verify builder opens inline"
+      - "Edit a chart widget"
+      - "Look for \"Compare\" option"
+      - "Select \"Previous Period\" or \"Previous Year\""
+      - "Verify comparison renders correctly"
+      - "Create/open a Sales Performance Dashboard to tell a story"
+    checks:
+      - "3 NEW pre-built dashboards exist"
+      - "\"Create KPI\" CTA exists in editor"
+      - "Builder opens inline from dashboard"
+      - "\"Compare\" option exists in chart widgets"
+      - "Comparison renders correctly"
+    screenshot_prefix: "03_ID17"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 4 | Seq 3 | ID 18 - 3P Data (Advanced App Integrations)
+  # =====================================================================
+  - id: 18
+    name: "3P Data (Advanced App Integrations)"
+    row: 4
+    sequence: 3
+    click_path: "Reports > KPIs > Manage KPIs > \"Connect to App\" CTA"
+    steps:
+      - "Go to Reports > KPIs > Manage KPIs"
+      - "Look for KPIs with \"Connect to App\" option"
+      - "Verify CRM connectors: Monday.com, HubSpot, Salesforce"
+      - "Verify Workforce connectors: Gusto, Hubstaff, Clockify"
+      - "Count 3P KPI library entries: CRM: 12 KPIs, Payroll: 13 KPIs, Time: 6 KPIs"
+      - "Go to Reports > Dashboards"
+      - "Check for 3 new pre-built 3P dashboards"
+    checks:
+      - "\"Connect to App\" CTA visible on KPIs"
+      - "CRM connectors listed (3 apps)"
+      - "Workforce connectors listed (3 apps)"
+      - "3P KPI counts match (12+13+6=31)"
+      - "3 new 3P dashboard templates exist"
+    screenshot_prefix: "04_ID18"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 5 | Seq 4 | ID 20 - Management Reports
+  # =====================================================================
+  - id: 20
+    name: "Management Reports"
+    row: 5
+    sequence: 4
+    click_path: "Reports > Management Reports"
+    steps:
+      - "Go to Reports > Management Reports"
+      - "Create/open a single-entity report with: Footer configured, Smart chip comparing period, Custom KPI added as chart widget"
+      - "Test email sharing: Share > Email as PDF"
+      - "Switch to Consolidated View"
+      - "Add monthly performance report to Consolidated View"
+      - "Show KPI charts and select which companies to include"
+      - "Verify non-admin RBAC access (log in as non-admin if possible)"
+    checks:
+      - "Email sharing works (PDF)"
+      - "Custom KPIs in chart widgets"
+      - "Placeholder chips (this/last period) present"
+      - "Footer, disclaimer, page number options"
+      - "ME KPIs visible in Consolidated View"
+      - "Non-admin RBAC access works"
+    screenshot_prefix: "05_ID20"
+    blockers: null
+    prereqs: null
+    notes: "AI-summary NOT shipping Feb (descoped Jan 9)"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 6 | Seq 5 | ID 21 - New Modern Reports
+  # =====================================================================
+  - id: 21
+    name: "New Modern Reports"
+    row: 6
+    sequence: 5
+    click_path: "Reports > Standard Reports"
+    steps:
+      - "Go to Reports > Standard Reports"
+      - "Open P&L report"
+      - "Check new UI: Cash vs Accrual toggle in header"
+      - "Check Display & Compare dropdowns"
+      - "Look for Customization in dedicated section"
+      - "Test page-level scroll (hover left/right of report)"
+      - "Set Display columns by month"
+      - "Test single-click Pivot functionality"
+      - "Open Balance Sheet > drill down into zero balance accounts"
+      - "Verify banded rows (from Nov release) still working"
+    checks:
+      - "Cash/Accrual toggle in header"
+      - "Display & Compare dropdowns work"
+      - "Customization section present"
+      - "Page-level scroll works"
+      - "Monthly columns display correctly"
+      - "Pivot works with single click"
+      - "Zero balance drill-down works on BS"
+      - "Banded rows present"
+    screenshot_prefix: "06_ID21"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 7 | Seq 6 | ID 13 - Finance AI
+  # =====================================================================
+  - id: 13
+    name: "Finance AI"
+    row: 7
+    sequence: 6
+    click_path: "Reports > Standard Reports > Finance AI banner \"Review summary\""
+    steps:
+      - "Go to Reports > Standard Reports (or BI > Standard Reports in Fusion)"
+      - "Look for banner: \"Finance AI generated a financial summary for <Previous Month>\""
+      - "Click \"Review summary\" CTA > financial summary opens in browser"
+      - "On any KPI, click \"Drill down on this insight\""
+      - "Verify 3 follow-up question suggestions appear"
+      - "Click a suggestion pill > verify drill-down data loads"
+      - "Go to Dashboard > Business Feed"
+      - "Look for DFY proactive summary card"
+      - "Click \"Review summary\" on the card"
+    checks:
+      - "Finance AI banner appears with monthly summary"
+      - "\"Review summary\" opens financial summary in browser"
+      - "\"Drill down\" shows 3 follow-up suggestions"
+      - "Suggestion pills drill into data"
+      - "Business Feed has DFY proactive summary card"
+    screenshot_prefix: "07_ID13"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 8 | Seq 7 | ID 19 - Calculated Fields on Reports
+  # =====================================================================
+  - id: 19
+    name: "Calculated Fields on Reports"
+    row: 8
+    sequence: 7
+    click_path: "Reports > Standard Reports > [report, must be in modern view] > Customize > Calculated Fields"
+    steps:
+      - "Open P&L or Balance Sheet (must be modern view)"
+      - "Click Customize > Calculated Fields"
+      - "Add custom formula COLUMN (e.g., profit margin %)"
+      - "Add custom formula ROW"
+      - "Save with new color"
+      - "Test on Balance Sheet, Trial Balance, AP/AR aging"
+      - "Verify formulas save and persist"
+      - "Test across at least 3 report types (44 supported)"
+    checks:
+      - "NEEDS FLAG ON - request to Intuit"
+      - "Custom formula column works"
+      - "Custom formula row works"
+      - "Works on 3+ report types"
+      - "Modern view required"
+      - "Formulas persist after save"
+    screenshot_prefix: "08_ID19"
+    blockers: "Feature Flag is OFF - need Intuit to enable"
+    prereqs: null
+    notes: ""
+    result: "BLOCKED"
+
+  # =====================================================================
+  # ROW 9 | Seq 8 | ID 24 - New ME Reports
+  # =====================================================================
+  - id: 24
+    name: "New ME Reports"
+    row: 9
+    sequence: 8
+    click_path: "Consolidated View > Reports > Standard Reports > Consolidated Reports section"
+    steps:
+      - "Switch to Consolidated View (top bar entity switcher)"
+      - "Go to Reports > Standard Reports"
+      - "Scroll to Consolidated Reports section"
+      - "Find and open 5 NEW reports: Invoice List, Transaction List by date, Transaction detail by account, Deposit detail, Check detail"
+      - "Open each report and verify data populates"
+      - "Test filter/display options"
+    checks:
+      - "Consolidated View accessible"
+      - "5 NEW consolidated reports exist"
+      - "All 5 populate with data"
+      - "Filter/display options match SE version"
+    screenshot_prefix: "09_ID24"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 10 | Seq 9 | ID 22 - Smart Dimension Assignment v2
+  # =====================================================================
+  - id: 22
+    name: "Smart Dimension Assignment v2"
+    row: 10
+    sequence: 9
+    click_path: "Settings > Dimensions > \"Dimension Assignment\" dropdown"
+    steps:
+      - "Go to Settings > Dimensions"
+      - "Click \"Dimension Assignment\" dropdown > verify tool opens"
+      - "Check for \"Save for Later\" option"
+      - "Click \"All Products and Services\" tab"
+      - "Select multiple items > Assign Dimensions > test bulk assignment"
+      - "NEW: Go to Accounting > Fixed Assets"
+      - "Click \"Dimension Assignment\" dropdown > verify works here too"
+      - "NEW: Go to Dashboard > Business Feed"
+      - "Look for Dimension assignment widget"
+      - "Click \"Review\" on Cost Group AI pop-up > validate suggestions"
+      - "Verify AI recommendations still working (sparkle icons)"
+    checks:
+      - "Dimension Assignment tool opens from Settings"
+      - "\"Save for Later\" option exists"
+      - "Bulk assignment works"
+      - "NEW: Fixed Assets access point works"
+      - "NEW: Business Feed widget visible"
+      - "AI recommendations active"
+    screenshot_prefix: "10_ID22"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 11 | Seq 10 | ID 23 - Dimensions on Workflow Automation
+  # =====================================================================
+  - id: 23
+    name: "Dimensions on Workflow Automation"
+    row: 11
+    sequence: 10
+    click_path: "Settings (gear) > Manage Workflows > + Custom workflow"
+    steps:
+      - "Click gear icon > Manage Workflows (under Tools)"
+      - "Click + Custom workflow"
+      - "Select record type and action > Next > name workflow"
+      - "In conditions: verify Dimensions appear as selectable option"
+      - "Create REMINDER workflow: Bill > \"Marketing\" dept dimension > amount > $5K > notify Manager"
+      - "Save and turn on"
+      - "Create APPROVAL workflow: Invoice > \"California\" region dimension > overdue > notify lead"
+      - "Save and turn on"
+      - "Verify both appear in workflow list"
+    checks:
+      - "Dimensions appear in workflow conditions"
+      - "Reminder workflow with dimension condition saves"
+      - "Approval workflow with dimension condition saves"
+      - "Both appear in workflow list"
+    screenshot_prefix: "11_ID23"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 12 | Seq 11 | ID 25 - Parallel Approval in Workflow Automation
+  # =====================================================================
+  - id: 25
+    name: "Parallel Approval in Workflow Automation"
+    row: 12
+    sequence: 11
+    click_path: "Settings (gear) > Manage Workflows > + Custom workflow > Approval"
+    steps:
+      - "Still in Manage Workflows > + Custom workflow"
+      - "Select record > action = \"Approval\" > Next > name it"
+      - "Under \"Do this\" > \"Request Approval\""
+      - "Add 2+ parallel approvers to same step (up to 5)"
+      - "Set minimum approvers required"
+      - "Create hybrid: Step 1 Sequential + Step 2 Parallel"
+      - "Under \"Notify via\" check Task and/or Email"
+      - "Save and turn on"
+      - "Run workflow against transactions: 1 pending approval, 1 approved by parallel approver, 1 declined"
+      - "Check \"History\" in Manage Workflows"
+      - "Check audit trail on transaction form (hover info icon)"
+    checks:
+      - "Multiple parallel approvers addable (up to 5)"
+      - "Minimum approvers setting works"
+      - "Hybrid sequential+parallel works"
+      - "Task/Email notifications configurable"
+      - "Parallel notifications sent"
+      - "Audit trail shows on transaction"
+      - "History section shows workflow runs"
+    screenshot_prefix: "12_ID25"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 13 | Seq 12 | ID 35 - Platform Customization
+  # =====================================================================
+  - id: 35
+    name: "Platform Customization"
+    row: 13
+    sequence: 12
+    click_path: "Settings > Platform customization"
+    steps:
+      - "Check Settings area for Platform Customization options"
+      - "Note: After industry selection, user receives Guided Tour: Construction > construction-tailored Guided Tour, Non-construction > generic Guided Tour"
+      - "Only applicable on NEW IES account sign-in at Set Up screen"
+      - "Document available customization options"
+    checks:
+      - "Document available options"
+      - "Note: Only on new account setup"
+      - "Not testable in existing environment"
+    screenshot_prefix: "13_ID35"
+    blockers: null
+    prereqs: null
+    notes: "Only applicable on new account setup - not testable in existing environment"
+    result: "NOT TESTABLE"
+
+  # =====================================================================
+  # ROW 14 | Seq 13 | ID 11 - Sales Tax AI (EA w/ Beta tag)
+  # =====================================================================
+  - id: 11
+    name: "Sales Tax AI (EA w/ Beta tag)"
+    row: 14
+    sequence: 13
+    click_path: "Business Feed > Review transactions in Sales Tax AI field"
+    steps:
+      - "Go to Business Feed > look for Sales Tax AI review prompt OR Taxes > Sales Tax > Sales tax returns"
+      - "Click dropdown next to \"View Summary\" in Action column"
+      - "Observe Filing Pre-Check: P&L vs Sales Tax Liability reconciliation"
+      - "Review task list of impacted transactions"
+      - "Check AI-generated explanations and suggested next steps"
+      - "Choose action: fix transaction or mark as safe to ignore"
+      - "Check tabs: For Review, Resolved, Ignored"
+      - "Look for EA badge + Beta tag"
+    checks:
+      - "Filing Pre-Check shows P&L vs STL comparison"
+      - "AI-generated explanations present"
+      - "For Review/Resolved/Ignored tabs work"
+      - "EA badge + Beta tag visible"
+      - "Fix or ignore actions work"
+    screenshot_prefix: "14_ID11"
+    blockers: null
+    prereqs: "Income LI assigned to expense account triggers the agent. Turning on sales tax requires business address + agencies."
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 15 | Seq 14 | ID 10 - Accounting AI
+  # =====================================================================
+  - id: 10
+    name: "Accounting AI"
+    row: 15
+    sequence: 14
+    click_path: "Accounting > Bank transactions > (if banner) Review > Batch post"
+    steps:
+      - "Go to Accounting > Bank Transactions"
+      - "Look for Ready-to-Post banner (Appears when bank account has 3+ data-backed matches)"
+      - "Click \"Review\" to see best predictions"
+      - "Review and batch post transactions"
+      - "Note: From/To is required for Ready-to-Post"
+      - "Test Ready-to-Post filter"
+    checks:
+      - "Ready-to-Post banner appears (needs 3+ matches)"
+      - "\"Review\" opens prediction view"
+      - "Batch post works"
+      - "Ready-to-Post filter available"
+      - "PREREQ: Sufficient data-backed transactions needed"
+    screenshot_prefix: "15_ID10"
+    blockers: null
+    prereqs: "Need 3+ transactions (Invoice, Expense, or Bill) that are data-backed within IES. UAT currently only has payroll."
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 16 | Seq 15 | ID 34 - Project Estimates: Automation & Integrations
+  # =====================================================================
+  - id: 34
+    name: "Project Estimates: Automation & Integrations"
+    row: 16
+    sequence: 15
+    click_path: "Sales > Estimates > [select project] > auto-opens Project Estimate"
+    steps:
+      - "Go to Sales > Estimates"
+      - "Create estimate against a project"
+      - "Verify Project Estimate form opens automatically"
+      - "Go to existing estimate list"
+      - "Click Actions > \"Convert to Project Estimate\""
+      - "Go to Estimates > Manage settings"
+      - "Find \"Auto-convert project-based estimates\" toggle"
+      - "Toggle ON > create new estimate against project"
+      - "Verify auto-conversion happens"
+      - "Check for first-time user explanation popup"
+    checks:
+      - "Project-based estimate auto-opens PE form"
+      - "\"Convert to Project Estimate\" action works"
+      - "Auto-convert toggle exists in settings"
+      - "Auto-conversion works when toggled ON"
+      - "First-time explanation appears"
+    screenshot_prefix: "16_ID34"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 17 | Seq 16 | ID 31 - Proposals
+  # =====================================================================
+  - id: 31
+    name: "Proposals"
+    row: 17
+    sequence: 16
+    click_path: "All Apps > Customer Hub > Proposals > Create Proposal"
+    steps:
+      - "Go to All Apps > Customer Hub > Proposals"
+      - "Click \"Create Proposal\""
+      - "Select customer > click Continue"
+      - "Use WYSIWYG editor: add text, images, logos, formatting"
+      - "Add element blocks of different formats"
+      - "Click \"Continue to Send\" > preview"
+      - "Verify customer details auto-populate"
+      - "Click Send"
+      - "Test Estimate > Proposal flow (line items carry over)"
+      - "Test Proposal > Estimate conversion on acceptance"
+      - "Verify e-signature on client portal"
+      - "Check draft/in-progress/completed views"
+    checks:
+      - "Proposal creation works"
+      - "WYSIWYG editor functional"
+      - "Customer details auto-populate"
+      - "Estimate>Proposal carries line items"
+      - "Proposal>Estimate conversion works"
+      - "E-signature capability works"
+      - "Multiple status views (Pending/Declined/Accepted)"
+    screenshot_prefix: "17_ID31"
+    blockers: null
+    prereqs: null
+    notes: "Create examples in Pending, Declined, and Accepted statuses"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 18 | Seq 17 | ID 41 - Sales Orders
+  # =====================================================================
+  - id: 41
+    name: "Sales Orders"
+    row: 18
+    sequence: 17
+    click_path: "Left Nav: Inventory > Sales Order"
+    steps:
+      - "Non-linked SO: +Create > Sales Order > Customer > Products > Save"
+      - "SO from Estimate: All Apps > Customer Hub > Estimates > Accepted estimate > dropdown > \"Convert to Sales Order\" > Save"
+      - "SO to Invoice: Open SO > dropdown next to \"Review and Send\" > \"Convert to invoice\""
+      - "SO to PO: Open SO > dropdown > \"Convert to purchase order\""
+      - "Verify various fulfillment statuses"
+      - "Check reporting on Sales Orders"
+    checks:
+      - "Non-linked SO creation works"
+      - "Estimate > SO conversion works"
+      - "SO > Invoice conversion works"
+      - "SO > PO conversion works"
+      - "Various fulfillment statuses visible"
+      - "SO data in reports"
+    screenshot_prefix: "18_ID41"
+    blockers: null
+    prereqs: null
+    notes: "Create examples linked to estimates, POs, invoices in various fulfillment statuses"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 19 | Seq 18 | ID 28 - Cost Groups
+  # =====================================================================
+  - id: 28
+    name: "Cost Groups"
+    row: 19
+    sequence: 18
+    click_path: "All Apps > Sales & Get Paid > Products & Services > Cost Group column"
+    steps:
+      - "Go to All Apps > Sales & Get Paid > Products & Services"
+      - "Verify Cost Group column (next to Category)"
+      - "Click Filter > verify filter by cost group"
+      - "Click Edit on product > select OOB cost group > Save OR: Click \"Review\" on Cost Group AI pop-up > validate > Approve all"
+      - "Click More > Manage cost groups"
+      - "Verify pre-populated: Labor, Materials, Equipment, Sub, Misc"
+      - "Create a new cost group"
+      - "Bulk select items > Assign cost group"
+      - "Add new product > verify Cost Group dropdown"
+      - "Go to Project > Budget > Group by > verify \"Cost Groups\""
+      - "Project Overview > Cost breakdown widget > \"View Report\""
+    checks:
+      - "Cost Group column visible"
+      - "Filter by cost group works"
+      - "Pre-populated groups exist (5 OOB)"
+      - "New cost group creation works"
+      - "Bulk assignment works"
+      - "Cost Group dropdown on new product"
+      - "\"Group by Cost Groups\" in Budget"
+      - "Cost breakdown widget in Project Overview"
+    screenshot_prefix: "19_ID28"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 20 | Seq 19 | ID 40 - Moving Average Cost Method
+  # =====================================================================
+  - id: 40
+    name: "Moving Average Cost Method"
+    row: 20
+    sequence: 19
+    click_path: "N/A: accounting methodology, no dedicated page"
+    steps:
+      - "Check Products & Services > inventory valuation settings"
+      - "Look for Moving Average Cost option (alongside FIFO)"
+      - "Note: New IES customers can select MAC instead of FIFO"
+      - "DT migrators seamlessly maintain MAC"
+      - "Check inventory reports with MAC valuation"
+      - "No dedicated UI page - methodology selection only"
+    checks:
+      - "MAC option available for new customers"
+      - "DT migration maintains MAC"
+      - "Inventory reports reflect MAC valuation"
+    screenshot_prefix: "20_ID40"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 21 | Seq 20 | ID 27 - Project Phases v2
+  # =====================================================================
+  - id: 27
+    name: "Project Phases v2"
+    row: 21
+    sequence: 20
+    click_path: "All Apps > Projects > Select project > Edit > Phases > Add Phase"
+    steps:
+      - "Go to All Apps > Projects > select a project"
+      - "Click Edit > expand Phases section"
+      - "Click Add Phase > define: Name, Description, Status, Start Date, End Date"
+      - "Add at least 3 phases contextual to project with sequential dates (some overlap OK)"
+      - "Save and close"
+      - "Open Project Details > verify Phases widget shows progress"
+      - "Mark a phase complete from widget"
+      - "Upload doc > verify PM Agent auto-generates phases"
+      - "Go to Budget > \"Group By\" dropdown > select \"Phases\""
+      - "Drag products/services under appropriate phases"
+      - "Save and Publish budget"
+      - "Click \"Convert to project estimate\""
+      - "Verify phases auto-populate in estimate"
+      - "Show/hide phases on estimate"
+      - "Open Bill/PO > verify Phase field selectable"
+    checks:
+      - "Phases section in project Edit"
+      - "Phases widget shows progress"
+      - "Phase completion from widget works"
+      - "PM Agent auto-generates phases from doc"
+      - "\"Group by Phase\" in Budget"
+      - "Budget converts to project estimate with phases"
+      - "Show/hide phases on estimate"
+      - "Phase field selectable on Bill/PO"
+    screenshot_prefix: "21_ID27"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 22 | Seq 21 | ID 30 - AIA Billing
+  # =====================================================================
+  - id: 30
+    name: "AIA Billing"
+    row: 22
+    sequence: 21
+    click_path: "Account & Settings > Sales > Progress Invoicing (enable)"
+    steps:
+      - "Enable: Account & Settings > Sales > Progress Invoicing ON"
+      - "Open Project with phases (from step 20)"
+      - "Budget > Create Estimate from budget"
+      - "Verify phases group line items in estimate"
+      - "Apply line-item markups"
+      - "Select PDF View > verify phases grouping on PDF"
+      - "Verify AIA columns: Est. Total, Invoiced, Amount, Remaining"
+      - "Click Add to project > Invoice"
+      - "Set billing: % of milestone OR $ amount per line item"
+      - "Save > create 2nd progress invoice"
+      - "Verify sequential: builds on previous (Invoiced to Date updates)"
+      - "Check PDF renders with AIA calculations"
+      - "Check client portal view"
+    checks:
+      - "Progress Invoicing enabled"
+      - "Phases group LIs in estimate"
+      - "Line-item markups work"
+      - "AIA columns correct (Est Total/Invoiced/Amount/Remaining)"
+      - "Sequential invoicing builds on previous"
+      - "PDF renders professionally"
+      - "Client portal view correct"
+    screenshot_prefix: "22_ID30"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 23 | Seq 22 | ID 29 - Budgets v3
+  # =====================================================================
+  - id: 29
+    name: "Budgets v3"
+    row: 23
+    sequence: 22
+    click_path: "Project > Budget Widget > \"Create new budget\" or drag-drop file"
+    steps:
+      - "Open project > Budget Widget"
+      - "Click \"Create new budget\" or drag-drop spreadsheet"
+      - "Import budget > verify import works"
+      - "Verify 0-click setup for ADV migrators"
+      - "Check budget overrun insights widget"
+      - "Export to Excel > verify"
+      - "Print to PDF > verify"
+      - "Check versioning across project cost reports"
+      - "Create Estimate from Budget > verify linking"
+      - "Verify \"Group by Phase\" option"
+      - "Verify \"Group by Cost Group\" option"
+    checks:
+      - "NEEDS FLAG ON - request to Intuit"
+      - "Budget creation/import works"
+      - "0-click setup for ADV migrators"
+      - "Overrun insights widget"
+      - "Excel export + PDF print"
+      - "Versioning across cost reports"
+      - "Budget>Estimate linking"
+      - "Group by Phase + Cost Group"
+    screenshot_prefix: "23_ID29"
+    blockers: null
+    prereqs: null
+    notes: "Reclassified post-audit: Budget found on BMH Landscaping project, PM Agent active"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 24 | Seq 23 | ID 32 - Negative Change Orders
+  # =====================================================================
+  - id: 32
+    name: "Negative Change Orders"
+    row: 24
+    sequence: 23
+    click_path: "Projects > [Project] > Add to project > Change Orders"
+    steps:
+      - "Open project with existing estimate"
+      - "Click Add to project > Change Orders"
+      - "Select project estimate"
+      - "Add items (positive) - verify works"
+      - "Remove items (negative) - verify net-negative CO allowed"
+      - "Verify system blocks if total estimate < $0"
+      - "Note: Discounts disabled for negative totals"
+      - "Save and send to customer"
+      - "Accept CO > verify project estimate income adjusted"
+      - "Check Change Order Reports for negative values"
+      - "Verify sales tax behaves like refund"
+    checks:
+      - "Positive change orders work"
+      - "Net-negative CO allowed"
+      - "System blocks total < $0"
+      - "Discounts disabled for negative totals"
+      - "Acceptance adjusts estimate income"
+      - "Reports reflect negative values"
+      - "Sales tax = refund behavior"
+    screenshot_prefix: "24_ID32"
+    blockers: null
+    prereqs: null
+    notes: "Validated with positive CO ($879) and negative CO (-$64K). System validates total estimate >= $0"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 25 | Seq 24 | ID 12 - Project Management AI
+  # =====================================================================
+  - id: 12
+    name: "Project Management AI"
+    row: 25
+    sequence: 24
+    click_path: "+Create > New Project > AI agent panel (left side)"
+    steps:
+      - "+Create > New Project"
+      - "Verify AI agent panel appears on left with insights"
+      - "Check cost, price, profitability insights"
+      - "Create estimate > verify PM agent helps"
+      - "Upload doc > verify phases auto-generated"
+      - "Attach estimates: ensure open estimates exist for customer > Create project with same customer > Transactions tab > banner to attach estimate (converting to PE)"
+      - "Project closing > verify AI-generated summary"
+      - "Verify improved UI for AI insights on project dashboard"
+    checks:
+      - "NEEDS FLAG ON + NOT WORKING IN UAT (2/11)"
+      - "AI agent panel appears on left"
+      - "Insights accurate (cost/price/profitability)"
+      - "PM agent helps with estimate"
+      - "Doc upload generates phases"
+      - "Estimate attachment banner on Transactions"
+      - "AI closing summary works"
+    screenshot_prefix: "25_ID12"
+    blockers: null
+    prereqs: null
+    notes: "Reclassified post-audit: PM Agent confirmed in project Edit dialog, console shows 'PM agent: project plan skill invoked'"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 26 | Seq 25 | ID 33 - PM AI Enhancements
+  # =====================================================================
+  - id: 33
+    name: "PM AI Enhancements"
+    row: 26
+    sequence: 25
+    click_path: "+Create > New Project > AI panel insights"
+    steps:
+      - "Same area as PM AI (ID 12)"
+      - "Verify proactive cost/price/profitability insights on project setup"
+      - "Verify recently created estimates banner on Transactions tab"
+      - "Verify improved UI for AI insights on project dashboard"
+      - "Compare with PM AI base - note specific enhancements"
+    checks:
+      - "Proactive insights on project setup"
+      - "Estimates banner on Transactions"
+      - "Improved UI for AI insights"
+      - "Document enhancements vs base PM AI"
+    screenshot_prefix: "26_ID33"
+    blockers: "Feature Flag is OFF - need Intuit to enable"
+    prereqs: null
+    notes: ""
+    result: "BLOCKED"
+
+  # =====================================================================
+  # ROW 27 | Seq 26 | ID 39 - Item Receipt
+  # =====================================================================
+  - id: 39
+    name: "Item Receipt"
+    row: 27
+    sequence: 26
+    click_path: "Settings > Account & Settings > Sales > \"Use item receipts to update quantity\" ON"
+    steps:
+      - "Enable: Settings > Account & Settings > Sales tab > Products & Services > Edit > \"Use item receipts to update qty\" ON > Save"
+      - "Go to Inventory > Create item receipt"
+      - "Select vendor"
+      - "Select purchase order (if linked) > OK"
+      - "Or enter items manually in detail area"
+      - "Save Item Receipt"
+      - "Test partial receipt: receive subset of items"
+      - "Verify inventory quantities update"
+      - "Create Bill from Item Receipt"
+      - "Check PO status updates"
+    checks:
+      - "\"Use item receipts\" setting works"
+      - "Item Receipt creation from PO works"
+      - "Manual IR (no PO) works"
+      - "Partial receipt works"
+      - "Inventory quantities update"
+      - "Bill creation from IR works"
+      - "PO status updates"
+    screenshot_prefix: "27_ID39"
+    blockers: null
+    prereqs: null
+    notes: "1 IR standalone + 1 IR linked to PO (contextual vendor/items)"
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 28 | Seq 27 | ID 37 - Garnishments
+  # =====================================================================
+  - id: 37
+    name: "Garnishments"
+    row: 28
+    sequence: 27
+    click_path: "Payroll > Employees > [Employee] > Deductions and Contributions > Start/Edit > Add garnishment"
+    steps:
+      - "Go to Payroll > Employees"
+      - "Select employee (one in most recent payroll)"
+      - "Navigate to Deductions and Contributions > Start or Edit"
+      - "Click \"Add garnishment\""
+      - "Select Garnishment type"
+      - "Add details: Agency (from Vendor list), amount, frequency - If agency not in vendors: \"Add vendor\" from dropdown"
+      - "Save garnishment"
+      - "Preview paycheck > verify garnishment deduction"
+      - "Run payroll for this employee"
+      - "Check Payroll Tax Center for garnishment liability"
+      - "Check payroll reports for garnishment data"
+    checks:
+      - "Garnishment setup accessible"
+      - "Garnishment types available"
+      - "Agency (vendor) linkage works"
+      - "Paycheck preview shows deduction"
+      - "Payroll run includes garnishment"
+      - "Payroll Tax Center shows liability"
+      - "Reports include garnishment data"
+    screenshot_prefix: "28_ID37"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 29 | Seq 28 | ID 38 - Time 2.0 - Assignments in QB Time
+  # =====================================================================
+  - id: 38
+    name: "Time 2.0 - Assignments in QB Time"
+    row: 29
+    sequence: 28
+    click_path: "Accounts and Settings > Time Settings > Timesheet fields"
+    steps:
+      - "Accounts and Settings > Time Settings > Timesheet fields"
+      - "Click Edit > for a field > Actions > \"Assign Customers\""
+      - "Select customers to assign > Save"
+      - "Time > Assignments > Customer tab"
+      - "Actions dropdown > \"Assign Workers\""
+      - "Assign workers to a project with lots of data"
+      - "Assign 2+ employees to same project"
+      - "Assign certain service items to some, others to different employees"
+      - "Time > Assignments > Worker tab"
+      - "Verify assignments from worker perspective"
+      - "Verify workers see only relevant projects/customers"
+      - "Check time entries against assignments"
+      - "Check reporting on assignments"
+    checks:
+      - "Timesheet field assignments work"
+      - "Worker-to-customer assignment works"
+      - "Multiple workers per project works"
+      - "Service item restriction by worker works"
+      - "Workers see only relevant projects"
+      - "Reporting on assignments works"
+    screenshot_prefix: "29_ID38"
+    blockers: null
+    prereqs: null
+    notes: ""
+    result: "VALIDATED"
+
+  # =====================================================================
+  # ROW 30 | Seq 29 | ID 36 - ME Employee Hub
+  # =====================================================================
+  - id: 36
+    name: "ME Employee Hub"
+    row: 30
+    sequence: 29
+    click_path: "Consolidated View > Workforce tab > Employee Hub"
+    steps:
+      - "Enter Consolidated View"
+      - "Left nav > Workforce tab"
+      - "Select \"Employee Hub\""
+      - "View unified table of W2 employees across all entities"
+      - "Click employee Name > auto-switch to their entity"
+      - "Verify profile page opens"
+      - "Check cross-entity data aggregation"
+    checks:
+      - "NEEDS FLAG ON - request to Intuit"
+      - "Employee Hub visible in Consolidated View"
+      - "Unified employee table across entities"
+      - "Deep-link switches entity context"
+      - "Profile page opens correctly"
+    screenshot_prefix: "30_ID36"
+    blockers: "Feature Flag is OFF - need Intuit to enable"
+    prereqs: null
+    notes: ""
+    result: "BLOCKED"
+
+  # =====================================================================
+  # ROW 31 | Seq 30 | ID 15 - Solutions Specialist - COA Standardization
+  # =====================================================================
+  - id: 15
+    name: "Solutions Specialist - COA Standardization"
+    row: 31
+    sequence: 30
+    click_path: "Business Feed > Solutions Specialist widget"
+    steps:
+      - "Go to Dashboard > Business Feed"
+      - "Look for COA standardization recommendations"
+      - "Same location where customers standardize COA + cleanup vendor lists"
+      - "Check Missing Attachments Checklist"
+      - "Check Unbilled Expense Checklist enhancements"
+      - "Check Accounting Mismatch Checklist enhancements"
+      - "Verify memo column, sorting by discrepancy magnitude"
+    checks:
+      - "COA standardization recommendations present"
+      - "Missing Attachments checklist works"
+      - "Unbilled Expense checklist enhanced"
+      - "Accounting Mismatch checklist enhanced"
+      - "Memo column + sorting works"
+    screenshot_prefix: "31_ID15"
+    blockers: "Post-migration hub, requires actual QBDT migration (not available in TestBox)"
+    prereqs: null
+    notes: "Reclassified to NOT TESTABLE: not a feature flag issue, requires QBDT migration path"
+    result: "NOT TESTABLE"
+
+  # =====================================================================
+  # ROW 32 | Seq 31 | ID 26 - DFY Migration Experience
+  # =====================================================================
+  - id: 26
+    name: "DFY Migration Experience"
+    row: 32
+    sequence: 31
+    click_path: "QBDT > top menu > \"Intuit Enterprise Suite\" > \"Initiate upgrade\""
+    steps:
+      - "Migration flow happens in QB Desktop"
+      - "No data needed within IES"
+      - "Document as N/A"
+      - "If accessible, check post-migration checklists: Missing Attachments, Unbilled Expense, Accounting Mismatch"
+    checks:
+      - "NOT TESTABLE - QBDT required"
+      - "Document as N/A"
+      - "Check post-migration checklists if visible in IES"
+    screenshot_prefix: "32_ID26"
+    blockers: null
+    prereqs: "QBDT environment required for migration flow"
+    notes: "Not testable in TestBox environment"
+    result: "NOT TESTABLE"
+
+  # =====================================================================
+  # ROW 33 | Seq 32 | ID 14 - Customer AI
+  # =====================================================================
+  - id: 14
+    name: "Customer AI"
+    row: 33
+    sequence: 32
+    click_path: "NOT LAUNCHING IN IES IN FEBRUARY"
+    steps:
+      - "EXCLUDED: Decision NOT to launch to IES (Jan 21, 2026)"
+      - "Do not include in demo validation"
+    checks: []
+    screenshot_prefix: "33_ID14"
+    blockers: null
+    prereqs: null
+    notes: "Decision NOT to launch to IES (Jan 21, 2026). Excluded from February release."
+    result: "EXCLUDED"

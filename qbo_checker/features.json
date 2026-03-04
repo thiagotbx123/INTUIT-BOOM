@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "features": [
+    {
+      "id": "F001",
+      "ref": "R2",
+      "name": "ME: Consolidated View",
+      "description": "Fusion UI for multi-entity IES customers with consolidated view dashboard",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "url",
+        "url": "https://qbo.intuit.com/app/homepage"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Business at a glance"
+        ]
+      },
+      "highlight": {
+        "text_target": "Business at a glance",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F002",
+      "ref": "R3",
+      "name": "ME: Reporting Enhancements",
+      "description": "Standard reports page with KPIs, Dashboards, and consolidated reports",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Standard reports"
+        ]
+      },
+      "highlight": {
+        "text_target": "Standard reports",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F003",
+      "ref": "R4",
+      "name": "ME: Intercompany Expense Allocations",
+      "description": "IC expense allocation mapping between companies",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "homepage_click",
+        "click_text": "Intercompany account mapping"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Intercompany"
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany account mapping",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F004",
+      "ref": "R5",
+      "name": "ME: Dynamic Allocations",
+      "description": "Dynamic allocation rules for intercompany transactions",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "url",
+        "url": "https://qbo.intuit.com/app/intercompany-allocations"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Allocation"
+        ]
+      },
+      "highlight": {
+        "text_target": "Dynamic",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F005",
+      "ref": "R6",
+      "name": "BI: KPIs (from 3P Apps)",
+      "description": "KPI Library with third-party app integrations",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "KPI"
+        ]
+      },
+      "highlight": {
+        "text_target": "KPI",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F006",
+      "ref": "R7",
+      "name": "BI: Dashboards",
+      "description": "Business Intelligence dashboards with visual analytics",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Dashboard"
+        ]
+      },
+      "highlight": {
+        "text_target": "Dashboard",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F007",
+      "ref": "R8",
+      "name": "BI: Advanced Reporting (Visual customization and Custom formula)",
+      "description": "Advanced reporting with visual customization and custom formulas",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Report"
+        ]
+      },
+      "highlight": {
+        "text_target": "Customize",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F008",
+      "ref": "R9",
+      "name": "BI: Advanced Reporting (Global Report Settings)",
+      "description": "Global settings for advanced reports",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Report"
+        ]
+      },
+      "highlight": {
+        "text_target": "Settings",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    },
+    {
+      "id": "F009",
+      "ref": "R10",
+      "name": "BI: Advanced Reporting (New Management Reports)",
+      "description": "New management reports for business analytics",
+      "projects": [
+        "TCO"
+      ],
+      "companies": [
+        "Apex"
+      ],
+      "navigation": {
+        "type": "sidebar_click",
+        "click_text": "Reports"
+      },
+      "wait_after_nav": 5,
+      "validation": {
+        "must_contain_text": [
+          "Report"
+        ]
+      },
+      "highlight": {
+        "text_target": "Management",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "interface": "Fusion"
+    }
+  ]
+}

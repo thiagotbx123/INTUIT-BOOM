@@ -1,0 +1,445 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "4.0.0",
+  "description": "Features for TCO project - based on prompt v2 with Ref as primary key",
+  "features": [
+    {
+      "ref": "TCO_001",
+      "name": "Fusion UI Updates for IES",
+      "description": "Fusion UI layout with left nav on IES homepage",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_002",
+      "name": "Dimensions: Dimension Assignment",
+      "description": "Review and save AI-suggested dimension values",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/settings?settingsPanel=dimensions"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_003",
+      "name": "DTM: Invoicing and Vendor Updates for QB Desktop Parity",
+      "description": "Multiple Shipping Addresses - add ship to addresses to customers",
+      "detail": "Multiple Shipping Addresses",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/customers"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_004",
+      "name": "DTM: Customer Updates for QB Desktop Parity",
+      "description": "Contacts and CC/BCC in vendor record",
+      "detail": "Contacts e CC BCC em vendor record",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/vendors"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_005",
+      "name": "DTM: Invoicing and Vendor Updates for QB Desktop Parity",
+      "description": "Vendor Notes - internal notes with comments",
+      "detail": "Vendor Notes",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/vendors"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_006",
+      "name": "BI: KPIs (from 3P Apps)",
+      "description": "KPI Library with third-party app integrations",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_007",
+      "name": "BI: KPIs (from custom formulas)",
+      "description": "KPIs from custom formulas",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_008",
+      "name": "BI: Dashboards",
+      "description": "Business Intelligence dashboards with visual analytics",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/business-intelligence/dashboards"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_009",
+      "name": "BI: Advanced Reporting (Visual customization and Custom formula)",
+      "description": "Advanced reporting with visual customization",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/reportlist"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_010",
+      "name": "BI: Advanced Reporting (Global Report Settings)",
+      "description": "Global settings for reports",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/reportsettings"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_011",
+      "name": "BI: Advanced Reporting (New Management Reports)",
+      "description": "Management reports with pre-built templates",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/managementreports"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_012",
+      "name": "Construction: Project Phases v2",
+      "description": "Project phases functionality v2",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_013",
+      "name": "Construction: Cost Groups",
+      "description": "Cost groups for construction",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_014",
+      "name": "Construction: Budgets v3",
+      "description": "Construction budgets v3",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/budgets"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_015",
+      "name": "Construction: AIA Billing",
+      "description": "AIA Billing for construction",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_016",
+      "name": "Construction: Certified Payroll Report",
+      "description": "Certified payroll report WH-347 format",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_017",
+      "name": "Bill Pay: Payment Release Approval Workflow",
+      "description": "Payment release approval workflow",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/billpay"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_018",
+      "name": "Bill Pay: Instant Payments",
+      "description": "Instant payments functionality",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/billpay"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_019",
+      "name": "WFS: W2 Scalability",
+      "description": "W2 scalability improvements",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_020",
+      "name": "WFS: Run Payroll Processing Improvements",
+      "description": "Payroll processing improvements",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_021",
+      "name": "WFS: Paycheck Corrections Improvements",
+      "description": "Paycheck corrections improvements",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_022",
+      "name": "AI Agents: Accounting Agent",
+      "description": "AI Accounting Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_023",
+      "name": "AI Agents: Payment Agent",
+      "description": "AI Payment Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_024",
+      "name": "AI Agents: Customer Agent",
+      "description": "AI Customer Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_025",
+      "name": "AI Agents: Payroll Agent",
+      "description": "AI Payroll Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_026",
+      "name": "AI Agents: Project Management Agent",
+      "description": "AI Project Management Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_027",
+      "name": "AI Agents: Finance Agent",
+      "description": "AI Finance Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_028",
+      "name": "AI Agents: Solutions Agent (setup and customization capabilities)",
+      "description": "AI Solutions Agent for setup and customization",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    },
+    {
+      "ref": "TCO_029",
+      "name": "AI Agents: Sales Tax Agent",
+      "description": "AI Sales Tax Agent via Intuit Assist",
+      "projects": ["TCO"],
+      "view": "company",
+      "company": "Apex Tire",
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      }
+    }
+  ]
+}

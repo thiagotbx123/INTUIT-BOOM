@@ -1,0 +1,234 @@
+{
+  "version": "1.0.0",
+  "description": "Checklist executavel para validacao de features - USAR EM TODA CAPTURA",
+  "created": "2025-12-29",
+
+  "pre_capture_checks": {
+    "description": "Verificar ANTES de navegar para a feature",
+    "checks": [
+      {
+        "id": "PC-01",
+        "question": "Sei EXATAMENTE o que esta feature deve mostrar?",
+        "action_if_no": "Ler FEATURE_VALIDATION_CANON.json para esta feature",
+        "critical": true
+      },
+      {
+        "id": "PC-02",
+        "question": "Esta feature e UI ou documentacao?",
+        "action_if_documentation": "Marcar N/A, nao tentar capturar",
+        "documentation_features": ["WR-023"]
+      },
+      {
+        "id": "PC-03",
+        "question": "Esta feature requer ambiente especifico?",
+        "action_if_yes": "Verificar se estou no ambiente correto",
+        "specific_requirements": {
+          "WR-029": "California tenant",
+          "WR-015": "Consolidated View",
+          "WR-026": "Consolidated View",
+          "Canada_features": "Canada tenant (sistema diferente)"
+        }
+      },
+      {
+        "id": "PC-04",
+        "question": "Estou na empresa/contexto correto?",
+        "action_if_no": "Trocar para contexto correto ANTES de capturar",
+        "how_to_verify": "Verificar nome da empresa no header do QBO"
+      }
+    ]
+  },
+
+  "navigation_checks": {
+    "description": "Verificar DURANTE a navegacao",
+    "checks": [
+      {
+        "id": "NC-01",
+        "question": "URL funcionou ou retornou 404?",
+        "action_if_404": [
+          "1. Tentar navegacao via menu",
+          "2. Pesquisar navegacao correta na web",
+          "3. Se nao funcionar: marcar NOT_AVAILABLE com justificativa"
+        ],
+        "never": "Aceitar screenshot de 404 como valido"
+      },
+      {
+        "id": "NC-02",
+        "question": "Pagina carregou completamente?",
+        "action_if_loading": "Esperar mais (minimo 30s, maximo 60s)",
+        "loading_indicators": ["spinner", "4 pontos azuis", "skeleton loading"]
+      },
+      {
+        "id": "NC-03",
+        "question": "E a pagina certa para esta feature?",
+        "action_if_wrong": "Navegar para a UI correta",
+        "common_mistake": "Homepage generica nao prova feature especifica"
+      }
+    ]
+  },
+
+  "capture_checks": {
+    "description": "Verificar NO MOMENTO da captura",
+    "checks": [
+      {
+        "id": "CC-01",
+        "question": "Header mostra empresa/contexto correto?",
+        "action_if_wrong": "Trocar empresa e recapturar",
+        "what_to_look_for": "Nome da empresa no canto superior esquerdo"
+      },
+      {
+        "id": "CC-02",
+        "question": "Conteudo visivel prova a feature?",
+        "action_if_no": "Navegar para UI correta ou interagir para mostrar feature",
+        "example": "Para Intuit Intelligence: clicar no icone para abrir chat"
+      },
+      {
+        "id": "CC-03",
+        "question": "Nao tem loading spinner visivel?",
+        "action_if_loading": "Esperar mais ou investigar problema"
+      }
+    ]
+  },
+
+  "post_capture_checks": {
+    "description": "Verificar APOS a captura",
+    "checks": [
+      {
+        "id": "POC-01",
+        "question": "Tamanho do arquivo > 100KB?",
+        "thresholds": {
+          "excellent": ">= 250KB",
+          "good": ">= 150KB",
+          "acceptable": ">= 100KB",
+          "investigate": "< 100KB",
+          "error_page": "~139KB (tipico de 404)"
+        },
+        "action_if_small": "Verificar se capturou conteudo real"
+      },
+      {
+        "id": "POC-02",
+        "question": "Screenshot prova a feature especifica?",
+        "validation_question": "Se mostrar para alguem, essa pessoa entenderia que a feature existe?",
+        "action_if_no": "Recapturar na UI correta"
+      },
+      {
+        "id": "POC-03",
+        "question": "Evidence notes documentadas?",
+        "required_fields": [
+          "Feature ref e nome",
+          "Ambiente",
+          "Empresa no header",
+          "URL navegada",
+          "Tamanho do arquivo",
+          "O que foi capturado",
+          "Status e justificativa"
+        ]
+      }
+    ]
+  },
+
+  "status_decision_tree": {
+    "description": "Como decidir o status correto",
+    "tree": {
+      "feature_is_documentation": {
+        "status": "N/A",
+        "justification": "Feature e documentacao, nao UI"
+      },
+      "feature_requires_unavailable_environment": {
+        "status": "N/A",
+        "justification": "Feature requer [ambiente] que nao temos acesso"
+      },
+      "url_returns_404_and_no_alternative": {
+        "status": "NOT_AVAILABLE",
+        "justification": "Feature nao habilitada neste ambiente",
+        "requires": "Investigacao previa de navegacao alternativa"
+      },
+      "feature_works_with_limitations": {
+        "status": "PARTIAL",
+        "justification": "Feature existe mas com [limitacao especifica]"
+      },
+      "feature_works_and_screenshot_proves": {
+        "status": "PASS",
+        "justification": "Feature funciona conforme esperado"
+      },
+      "feature_should_work_but_has_bug": {
+        "status": "FAIL",
+        "justification": "Bug identificado: [descricao]"
+      }
+    }
+  },
+
+  "common_mistakes_by_feature": {
+    "WR-006": {
+      "mistake": "Capturar Dashboard Homepage",
+      "correct": "Capturar Customers > Leads tab com import email"
+    },
+    "WR-007": {
+      "mistake": "Capturar Homepage com icone Intuit Assist nao clicado",
+      "correct": "CLICAR no icone e capturar chat interface aberta"
+    },
+    "WR-012": {
+      "mistake": "Aceitar 404",
+      "correct": "Navegar via Reports > Custom Reports > Create"
+    },
+    "WR-014": {
+      "mistake": "Capturar com loading spinner",
+      "correct": "Esperar 45-60s para Performance Center carregar"
+    },
+    "WR-015": {
+      "mistake": "Capturar em empresa individual (Apex)",
+      "correct": "Trocar para Consolidated View ANTES de capturar"
+    },
+    "WR-020": {
+      "mistake": "Capturar lista de workflows",
+      "correct": "Entrar em Edit e mostrar config de parallel approvers"
+    },
+    "WR-023": {
+      "mistake": "Tentar capturar UI que nao existe",
+      "correct": "Marcar N/A - e feature de documentacao"
+    },
+    "WR-026": {
+      "mistake": "Aceitar 404 ou capturar em empresa individual",
+      "correct": "Trocar para Consolidated View e navegar para Employee Hub"
+    },
+    "WR-029": {
+      "mistake": "Capturar Payroll generico em TCO",
+      "correct": "Marcar N/A - requer California tenant"
+    }
+  },
+
+  "environment_differences": {
+    "TCO": {
+      "type": "Multi-entity US",
+      "has_consolidated_view": true,
+      "has_workflow_automation": true,
+      "has_ai_sparkles": true,
+      "companies": ["Apex", "Global Tread", "Traction", "RoadReady", "Consolidated"]
+    },
+    "Construction": {
+      "type": "Industry vertical",
+      "has_consolidated_view": "verificar",
+      "has_workflow_automation": false,
+      "has_ai_sparkles": "limitado",
+      "special_features": ["Certified Payroll Report", "Projects"]
+    },
+    "Product": {
+      "type": "TBD",
+      "notes": "Verificar caracteristicas ao acessar"
+    },
+    "TCO_Demo": {
+      "type": "TBD",
+      "notes": "Verificar caracteristicas ao acessar"
+    }
+  },
+
+  "quick_reference": {
+    "consolidated_view_features": ["WR-015", "WR-026"],
+    "documentation_features": ["WR-023"],
+    "ca_specific_features": ["WR-029"],
+    "construction_specific_features": ["WR-024"],
+    "minimum_wait_time_seconds": 30,
+    "maximum_wait_time_seconds": 60,
+    "minimum_acceptable_size_kb": 100,
+    "typical_404_size_kb": 139
+  }
+}

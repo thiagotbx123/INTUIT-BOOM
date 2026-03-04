@@ -273,6 +273,8 @@ START:
 | 2026-02-23 | IC Account Mapping: View/Investigate | PLAYWRIGHT | 2 pairs found (Parent↔BlueCraft, Parent↔Terra), all accounts mapped | Yes - IC Mapping recipe |
 | 2026-02-23 | Shared COA: Add Terra to account 2030 | PLAYWRIGHT | SUCCESS - Terra added to "Due to Keystone BlueCraft" shared account | No |
 | 2026-02-23 | Calculated Field: Balance Sheet | PLAYWRIGHT | CREATED - custom calculated field visible in report | No |
+| 2026-02-23 | Bank Rules: Create 6 rules + auto-add | PLAYWRIGHT | 6 rules created, ~120 txns auto-posted, Ready to Post still 0 | No |
+| 2026-02-23 | Ready to Post: Final validation | PLAYWRIGHT | CONFIRMED IMPOSSIBLE on TestBox - 4 approaches tested, all 0 | No |
 
 ---
 

@@ -1,0 +1,172 @@
+{
+  "product": "QBO",
+  "version": "1.0",
+  "checks": [
+    {
+      "id": "login-works",
+      "name": "Login Works",
+      "type": "auth",
+      "priority": "critical",
+      "expect": {
+        "url_contains": "/app/"
+      }
+    },
+    {
+      "id": "homepage-loads",
+      "name": "Homepage Loads",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/homepage",
+      "expect": {
+        "selector": "[data-testid='homepage']"
+      }
+    },
+    {
+      "id": "customers-exist",
+      "name": "Customers Have Data",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/customers",
+      "expect": {
+        "selector": ".customer-row",
+        "min_count": 1
+      },
+      "highlight": {
+        "type": "box",
+        "selector": ".customer-list"
+      }
+    },
+    {
+      "id": "vendors-exist",
+      "name": "Vendors Have Data",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/vendors",
+      "expect": {
+        "selector": ".vendor-row",
+        "min_count": 1
+      }
+    },
+    {
+      "id": "invoices-exist",
+      "name": "Invoices Exist",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/invoices",
+      "expect": {
+        "selector": ".invoice-row",
+        "min_count": 1
+      }
+    },
+    {
+      "id": "reports-load",
+      "name": "Reports Load",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/reports",
+      "expect": {
+        "selector": ".report-list"
+      }
+    },
+    {
+      "id": "company-switcher-works",
+      "name": "Company Switcher Works",
+      "type": "ui",
+      "priority": "high",
+      "expect": {
+        "selector": "[data-testid='company-switcher']"
+      }
+    },
+    {
+      "id": "consolidated-view",
+      "name": "Consolidated View Available",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/consolidatedview",
+      "expect": {
+        "selector": ".consolidated-table"
+      }
+    },
+    {
+      "id": "create-invoice",
+      "name": "Can Create Invoice",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/invoice",
+      "expect": {
+        "selector": "form"
+      }
+    },
+    {
+      "id": "banking-connected",
+      "name": "Banking Connected",
+      "type": "navigation",
+      "priority": "medium",
+      "route": "/app/banking",
+      "expect": {
+        "selector": ".bank-feed"
+      }
+    },
+    {
+      "id": "dimensions-content-clean",
+      "name": "Dimensions Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/class",
+      "expect": {
+        "url_contains": "/app/class",
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "customers-content-clean",
+      "name": "Customers Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/customers",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "vendors-content-clean",
+      "name": "Vendors Content Clean (No Profanity/Gaffes)",
+      "type": "navigation",
+      "priority": "critical",
+      "route": "/app/vendors",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "products-content-clean",
+      "name": "Products & Services Content Clean",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/items",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    },
+    {
+      "id": "coa-content-clean",
+      "name": "Chart of Accounts Content Clean",
+      "type": "navigation",
+      "priority": "high",
+      "route": "/app/chart-of-accounts",
+      "expect": {
+        "content_scan": {
+          "sensitivity": "medium"
+        }
+      }
+    }
+  ]
+}

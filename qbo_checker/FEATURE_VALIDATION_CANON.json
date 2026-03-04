@@ -1,0 +1,460 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "3.0.0",
+  "description": "Canonical Feature Validation - Winter Release FY26 - REVISAO CRITICA",
+  "created": "2025-12-29",
+  "last_updated": "2025-12-29T20:00:00",
+  "purpose": "Define EXATAMENTE o que validar em cada feature - LEITURA OBRIGATORIA",
+
+  "CRITICAL_RULES": {
+    "RULE_1_SCREENSHOT_MUST_PROVE": {
+      "description": "Screenshot DEVE provar a feature especifica, nao apenas mostrar uma pagina",
+      "examples": {
+        "ERRADO": "Homepage dashboard para provar Customer Agent",
+        "CERTO": "Customers > Leads tab com opcao de import email para provar Customer Agent"
+      },
+      "check_question": "Este screenshot mostra EXATAMENTE o que a feature faz?"
+    },
+
+    "RULE_2_CORRECT_CONTEXT": {
+      "description": "Features DEVEM ser capturadas no contexto correto",
+      "contexts": {
+        "APEX_INDIVIDUAL": "Features de empresa individual - maioria das features",
+        "CONSOLIDATED_VIEW": "Features multi-entity - WR-015, WR-026",
+        "FRESH_TENANT": "Demos de migration - WR-021, WR-022",
+        "CA_TENANT": "Features California-specific - WR-029",
+        "CANADA_TENANT": "Features de payroll Canada - sistema completamente diferente"
+      },
+      "check_question": "O company picker mostra a entidade correta para esta feature?"
+    },
+
+    "RULE_3_NA_MEANS_DOCUMENTATION": {
+      "description": "N/A e para features de DOCUMENTACAO que nao tem UI, NAO para falhas de captura",
+      "valid_na": ["WR-023 Feature Compatibility"],
+      "invalid_na": "Usar N/A porque a captura falhou ou mostrou erro",
+      "check_question": "Esta feature e realmente de documentacao, ou eu apenas falhei em capturar?"
+    },
+
+    "RULE_4_ORGANIZE_BY_CONTEXT": {
+      "description": "Agrupar capturas por contexto para evitar troca constante",
+      "sequence": [
+        "1. Capturar TODAS as features Apex primeiro",
+        "2. Trocar para Consolidated View UMA VEZ",
+        "3. Capturar TODAS as features multi-entity",
+        "4. Marcar features N/A no tracker"
+      ],
+      "check_question": "Vou trocar de contexto? Capturei tudo do contexto atual?"
+    },
+
+    "RULE_5_404_REQUIRES_INVESTIGATION": {
+      "description": "Erro 404 requer investigacao, nao apenas screenshot",
+      "actions": [
+        "1. Verificar se URL esta correta",
+        "2. Verificar se feature existe neste tenant",
+        "3. Pesquisar na web a navegacao correta",
+        "4. Tentar navegacao alternativa (menu vs URL direta)",
+        "5. Se realmente indisponivel: marcar NOT_AVAILABLE com justificativa"
+      ],
+      "check_question": "Investiguei POR QUE o 404 aconteceu?"
+    },
+
+    "RULE_6_ENVIRONMENT_SPECIFIC": {
+      "description": "Algumas features REQUEREM ambientes especificos",
+      "mappings": {
+        "CA_specific": "Requer tenant California - nao disponivel em tenant US generico",
+        "Canada": "Sistema de payroll completamente diferente - CPP, EI, CRA, T4s",
+        "Fresh_tenant": "Requer tenant sem dados existentes para demo completo"
+      },
+      "check_question": "Esta feature requer um ambiente especifico que eu nao tenho acesso?"
+    }
+  },
+
+  "CONTEXT_REQUIREMENTS": {
+    "CONSOLIDATED_VIEW": {
+      "description": "Vista Consolidada - ponto unico para dados multi-entidade",
+      "how_to_access": "Company picker > Selecionar 'Consolidated' ou 'Vista Consolidada'",
+      "required_for": ["WR-015", "WR-026"],
+      "what_to_show": "Reports/dados mostrando MULTIPLAS entidades combinadas"
+    },
+
+    "APEX_INDIVIDUAL": {
+      "description": "Empresa individual Apex Tire & Auto Retail, LLC",
+      "company_id": "9341455130166501",
+      "required_for": "Maioria das features que nao requerem multi-entity"
+    },
+
+    "TCO_COMPANIES": {
+      "apex": {"name": "Apex Tire & Auto Retail, LLC", "id": "9341455130166501"},
+      "consolidated": {"name": "Vista consolidada", "id": "9341455649090852"},
+      "global_tread": {"name": "Global Tread Distributors, LLC", "id": "9341455130196737"},
+      "traction": {"name": "Traction Control Outfitters, LLC", "id": "9341455130188547"},
+      "roadready": {"name": "RoadReady Service Solutions, LLC", "id": "9341455130170608"}
+    }
+  },
+
+  "PROBLEM_FEATURES_IDENTIFIED": {
+    "WR-006": {
+      "name": "Customer Agent",
+      "problem": "Screenshot mostra Dashboard generico, NAO Leads/Email import",
+      "severity": "CRITICO",
+      "what_to_capture": "Sales > Customers > Leads tab com funcionalidade de import email",
+      "NOT": "Dashboard Homepage generico"
+    },
+    "WR-007": {
+      "name": "Intuit Intelligence",
+      "problem": "Screenshot mostra Dashboard com loading, NAO chat interface",
+      "severity": "CRITICO",
+      "what_to_capture": "Intuit Assist chat interface aberta e funcional",
+      "NOT": "Homepage com icone Intuit Assist nao clicado"
+    },
+    "WR-012": {
+      "name": "Calculated Fields",
+      "problem": "PAGINA 404",
+      "severity": "CRITICO",
+      "what_to_capture": "Report customization mostrando opcao Add Calculated Field",
+      "navigation": "Reports > Custom Reports > Create > Customize"
+    },
+    "WR-014": {
+      "name": "Benchmarking",
+      "problem": "Loading spinner, conteudo nao carregado",
+      "severity": "GRAVE",
+      "what_to_capture": "Performance Center com industry benchmarks carregados",
+      "wait_time": "45-60 segundos minimo"
+    },
+    "WR-015": {
+      "name": "Multi-Entity Reports",
+      "problem": "Capturado em Apex (individual), NAO em Consolidated View",
+      "severity": "CRITICO",
+      "what_to_capture": "Reports em CONSOLIDATED VIEW mostrando dados de multiplas empresas",
+      "context": "OBRIGATORIO estar em Consolidated View, NAO Apex individual"
+    },
+    "WR-020": {
+      "name": "Parallel Approval",
+      "problem": "Mostra lista de workflows, NAO configuracao de aprovadores paralelos",
+      "severity": "MEDIO",
+      "what_to_capture": "Configuracao de workflow mostrando multiplos aprovadores simultaneos",
+      "NOT": "Apenas lista de workflows"
+    },
+    "WR-023": {
+      "name": "Feature Compatibility",
+      "problem": "Loading spinner + e feature de DOCUMENTACAO",
+      "severity": "N/A",
+      "status": "N/A - Feature de documentacao, nao UI",
+      "action": "Nao precisa screenshot, referenciar documentacao"
+    },
+    "WR-026": {
+      "name": "Multi-Entity Payroll Hub",
+      "problem": "PAGINA 404",
+      "severity": "CRITICO",
+      "what_to_capture": "Employee Hub mostrando view cross-entity",
+      "context": "OBRIGATORIO estar em Consolidated View"
+    },
+    "WR-029": {
+      "name": "Enhanced Amendments (CA)",
+      "problem": "Payroll generico, feature e CA-specific",
+      "severity": "N/A para TCO",
+      "status": "N/A - TCO nao e tenant California",
+      "note": "Requer California-specific tenant para validar"
+    }
+  },
+
+  "validation_protocol": {
+    "pre_capture": [
+      "1. Verificar login no ambiente correto",
+      "2. Confirmar empresa/company selecionada NO HEADER",
+      "3. Verificar se feature requer contexto especifico (Consolidated View?)",
+      "4. Ler CRITICAL_RULES antes de capturar"
+    ],
+    "capture": [
+      "1. Navegar via URL ou menu (documentar qual)",
+      "2. Aguardar carregamento completo (30-60 segundos)",
+      "3. Verificar que conteudo carregou (nao spinner)",
+      "4. Verificar que nao e pagina 404",
+      "5. Capturar screenshot full viewport"
+    ],
+    "post_capture": [
+      "1. Verificar tamanho do arquivo (>100KB = valido)",
+      "2. Verificar se conteudo prova a feature especifica",
+      "3. Se 404 ou generico: INVESTIGAR antes de aceitar",
+      "4. Documentar evidence_notes detalhadas"
+    ]
+  },
+
+  "quality_thresholds": {
+    "excellent": { "min_kb": 250, "description": "Screenshot rico em conteudo" },
+    "good": { "min_kb": 150, "description": "Screenshot adequado" },
+    "acceptable": { "min_kb": 100, "description": "Screenshot minimo aceitavel" },
+    "weak": { "min_kb": 50, "description": "Requer investigacao" },
+    "error_page": { "typical_kb": 139, "description": "Pagina de erro 404" }
+  },
+
+  "status_definitions": {
+    "PASS": "Feature funciona E screenshot PROVA isso",
+    "PARTIAL": "Feature existe mas com limitacoes",
+    "NOT_AVAILABLE": "Feature nao habilitada/acessivel no ambiente",
+    "FAIL": "Feature deveria funcionar mas apresenta bug",
+    "N/A": "Feature e DOCUMENTACAO, nao tem UI para capturar"
+  },
+
+  "ANTI_PATTERNS": {
+    "generic_screenshot": {
+      "description": "Capturar homepage/dashboard para provar feature especifica",
+      "solution": "Navegar ate a UI real da feature"
+    },
+    "wrong_context": {
+      "description": "Capturar feature multi-entity em empresa individual",
+      "solution": "Trocar para Consolidated View primeiro"
+    },
+    "na_for_failures": {
+      "description": "Marcar N/A porque captura falhou",
+      "solution": "Investigar e recapturar, ou marcar NOT_AVAILABLE com razao"
+    },
+    "ignoring_404": {
+      "description": "Aceitar screenshot 404 como valido",
+      "solution": "Investigar URL, navegacao, disponibilidade da feature"
+    },
+    "context_switching": {
+      "description": "Trocar entre Apex e Consolidated repetidamente",
+      "solution": "Agrupar capturas por contexto, trocar uma vez"
+    }
+  },
+
+  "recapture_plan": {
+    "phase_1_apex": {
+      "description": "Capturar em Apex Tire sem trocar",
+      "features": [
+        {"ref": "WR-006", "nav": "Sales > Customers > Leads tab"},
+        {"ref": "WR-007", "nav": "Click Intuit Assist icon"},
+        {"ref": "WR-012", "nav": "Reports > Custom Reports > Create"},
+        {"ref": "WR-014", "nav": "Reports > Performance Center (45s wait)"},
+        {"ref": "WR-020", "nav": "Workflow > Edit existing > Show parallel config"}
+      ]
+    },
+    "phase_2_consolidated": {
+      "description": "Trocar para Vista Consolidada e capturar",
+      "features": [
+        {"ref": "WR-015", "nav": "Reports consolidados"},
+        {"ref": "WR-026", "nav": "Employee Hub cross-entity"}
+      ]
+    },
+    "phase_3_decisions": {
+      "description": "Marcar no tracker",
+      "features": [
+        {"ref": "WR-023", "decision": "N/A - Documentacao"},
+        {"ref": "WR-029", "decision": "N/A - Requer CA tenant"}
+      ]
+    }
+  },
+
+  "features": {
+    "WR-001": {
+      "name": "Accounting AI",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Banking > Bank Transactions com AI suggestions",
+      "navigation": "/app/banking"
+    },
+    "WR-002": {
+      "name": "Sales Tax AI",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Sales Tax Center com AI explanations",
+      "navigation": "/app/salestax"
+    },
+    "WR-003": {
+      "name": "Project Management AI",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Projects com AI budget/profitability",
+      "navigation": "/app/projects"
+    },
+    "WR-004": {
+      "name": "Finance AI",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Dashboard com KPIs e AI insights",
+      "navigation": "/app/homepage"
+    },
+    "WR-005": {
+      "name": "Solutions Specialist",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Business Feed com Dimensions widget",
+      "navigation": "/app/homepage"
+    },
+    "WR-006": {
+      "name": "Customer Agent",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Customers > Leads tab com email import",
+      "navigation": "/app/customers",
+      "NOT": "Dashboard generico"
+    },
+    "WR-007": {
+      "name": "Omni / Intuit Intelligence",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Intuit Assist chat interface ABERTA",
+      "navigation": "Click Intuit Assist icon",
+      "NOT": "Homepage com icone nao clicado"
+    },
+    "WR-008": {
+      "name": "Conversational BI",
+      "category": "AI Agents",
+      "context": "APEX",
+      "what_to_capture": "Reports com query interface AI",
+      "navigation": "/app/reports"
+    },
+    "WR-009": {
+      "name": "KPIs Customizados",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "KPI Scorecard com tiles customizaveis",
+      "navigation": "/app/business-intelligence/kpi-scorecard"
+    },
+    "WR-010": {
+      "name": "Dashboards",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "Dashboard gallery com templates",
+      "navigation": "/app/reportbuilder ou Reports > Dashboards"
+    },
+    "WR-011": {
+      "name": "3P Data Integrations",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "Apps marketplace com integracoes",
+      "navigation": "/app/apps ou Settings > Apps"
+    },
+    "WR-012": {
+      "name": "Calculated Fields",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "Report customization com Add Calculated Field",
+      "navigation": "Reports > Custom Reports > Create > Customize"
+    },
+    "WR-013": {
+      "name": "Management Reports",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "Management Reports templates",
+      "navigation": "/app/managementreports"
+    },
+    "WR-014": {
+      "name": "Benchmarking",
+      "category": "Reporting",
+      "context": "APEX",
+      "what_to_capture": "Performance Center com benchmarks carregados",
+      "navigation": "Reports > Performance center",
+      "wait_time": "45-60 segundos"
+    },
+    "WR-015": {
+      "name": "Multi-Entity Reports",
+      "category": "Reporting",
+      "context": "CONSOLIDATED_VIEW",
+      "what_to_capture": "Reports mostrando dados de MULTIPLAS empresas",
+      "navigation": "Company picker > Consolidated > Reports"
+    },
+    "WR-016": {
+      "name": "Dimension Assignment v2",
+      "category": "Dimensions",
+      "context": "APEX",
+      "what_to_capture": "Dimension assignment com AI sparkles",
+      "navigation": "/app/dimensions/assignment"
+    },
+    "WR-017": {
+      "name": "Hierarchical Dimension Reporting",
+      "category": "Dimensions",
+      "context": "APEX",
+      "what_to_capture": "Reports com dimension hierarchy filter",
+      "navigation": "Reports > Filter by dimension"
+    },
+    "WR-018": {
+      "name": "Dimensions on Workflow",
+      "category": "Dimensions",
+      "context": "APEX",
+      "what_to_capture": "Workflow com dimension conditions",
+      "navigation": "/app/workflowautomation ou Settings > Workflows"
+    },
+    "WR-019": {
+      "name": "Dimensions on Balance Sheet",
+      "category": "Dimensions",
+      "context": "APEX",
+      "what_to_capture": "Balance Sheet filtrado por dimension",
+      "navigation": "Reports > Balance Sheet > Filter"
+    },
+    "WR-020": {
+      "name": "Parallel Approval",
+      "category": "Workflow",
+      "context": "APEX",
+      "what_to_capture": "Workflow config com MULTIPLOS aprovadores simultaneos",
+      "navigation": "Workflow > Edit > Approval config"
+    },
+    "WR-021": {
+      "name": "Seamless Desktop Migration",
+      "category": "Migration",
+      "context": "APEX",
+      "status": "OK",
+      "what_to_capture": "Import from QuickBooks Desktop option",
+      "navigation": "Settings > Import data"
+    },
+    "WR-022": {
+      "name": "DFY Migration Experience",
+      "category": "Migration",
+      "context": "FRESH_TENANT",
+      "what_to_capture": "DFY migration wizard especifico",
+      "note": "Pode ser servico, nao UI. Investigar."
+    },
+    "WR-023": {
+      "name": "Feature Compatibility",
+      "category": "Migration",
+      "context": "DOCUMENTATION",
+      "status": "N/A",
+      "what_to_capture": "NADA - E DOCUMENTACAO",
+      "action": "Marcar N/A, referenciar docs"
+    },
+    "WR-024": {
+      "name": "Certified Payroll Report",
+      "category": "Construction",
+      "context": "CONSTRUCTION",
+      "what_to_capture": "CPR report option com WH-347 format",
+      "navigation": "Payroll > Reports > Certified Payroll"
+    },
+    "WR-025": {
+      "name": "Sales Order",
+      "category": "Construction",
+      "context": "APEX/CONSTRUCTION",
+      "what_to_capture": "Sales Order creation interface",
+      "navigation": "Sales menu"
+    },
+    "WR-026": {
+      "name": "Multi-Entity Payroll Hub",
+      "category": "Payroll",
+      "context": "CONSOLIDATED_VIEW",
+      "what_to_capture": "Employee Hub com view cross-entity",
+      "navigation": "Consolidated > Payroll > Employee Hub"
+    },
+    "WR-027": {
+      "name": "Garnishments - Child Support",
+      "category": "Payroll",
+      "context": "APEX",
+      "what_to_capture": "Garnishment config em employee",
+      "navigation": "Payroll > Employees > Garnishments"
+    },
+    "WR-028": {
+      "name": "Assignments in QBTime",
+      "category": "Payroll",
+      "context": "APEX",
+      "what_to_capture": "Time entries com Assignment field",
+      "navigation": "/app/time"
+    },
+    "WR-029": {
+      "name": "Enhanced Amendments (CA)",
+      "category": "Payroll",
+      "context": "CA_TENANT",
+      "status": "N/A for TCO",
+      "what_to_capture": "N/A - Requer California tenant",
+      "note": "TCO nao e CA tenant, nao pode validar"
+    }
+  }
+}

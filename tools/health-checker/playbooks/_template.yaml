@@ -1,0 +1,26 @@
+# QBO Health Checker - Playbook Template
+# Copy this file and fill in for each new UAT/health check cycle
+
+metadata:
+  release: ""
+  date_start: ""
+  date_end: ""
+  environment: ""
+  sheet_id: ""
+  sheet_tab: ""
+  drive_folder_id: ""
+
+columns:
+  status: "E"
+  evidence: "G"
+  hyperlinks: "H"
+  notes: "F"
+
+statuses:
+  validated: "VALIDATED"
+  blocked: "BLOCKED"
+  not_testable: "NOT TESTABLE"
+  excluded: "EXCLUDED"
+
+features: []
+# Copy feature entries from features_template.yaml

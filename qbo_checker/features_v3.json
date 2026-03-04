@@ -1,0 +1,543 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "3.1.0",
+  "description": "Features for Apex Tire & Auto Retail, LLC (single company focus)",
+  "features": [
+    {
+      "id": "F001",
+      "name": "Dimensions: Dimension Assignment",
+      "description": "Review and save AI-suggested dimension values for Products/Services and Fixed Assets",
+      "projects": ["TCO"],
+      "companies": ["Traction", "Global"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/dimensions/assignment"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Dimension assignment",
+        "fallback_text": "assignment",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F002",
+      "name": "Dimensions: Dimensions on Spreadsheet Sync",
+      "description": "Dimensions support in Spreadsheet Sync",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/spreadsheetsync"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Spreadsheet Sync",
+        "fallback_text": "Sync",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F009",
+      "name": "DTM: Invoicing and Vendor Updates for QB Desktop Parity",
+      "description": "Desktop parity updates for invoicing and vendor",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/invoices"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Invoice",
+        "fallback_text": "Invoices",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F010",
+      "name": "DTM: Customer Updates for QB Desktop Parity",
+      "description": "Desktop parity updates for customers",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/customers"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Customer",
+        "fallback_text": "Customers",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F011",
+      "name": "BI: KPIs (from 3P Apps)",
+      "description": "KPI Library with third-party app integrations",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "KPI",
+        "fallback_text": "Scorecard",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F012",
+      "name": "BI: KPIs (from custom formulas)",
+      "description": "KPIs from custom formulas",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Custom",
+        "fallback_text": "KPI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F013",
+      "name": "BI: Dashboards",
+      "description": "Business Intelligence dashboards with visual analytics",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/reportbuilder"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Dashboard",
+        "fallback_text": "Create",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F014",
+      "name": "BI: Advanced Reporting (Visual customization and Custom formula)",
+      "description": "Advanced reporting with visual customization",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Custom reports", "selector": "text=Custom reports"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Custom reports",
+        "fallback_text": "Custom",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F015",
+      "name": "BI: Advanced Reporting (Global Report Settings)",
+      "description": "Global settings for reports",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/reportsettings"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Report settings",
+        "fallback_text": "Default",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F016",
+      "name": "BI: Advanced Reporting (New Management Reports)",
+      "description": "Management reports with pre-built templates",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/managementreports"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Management",
+        "fallback_text": "Report",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F017",
+      "name": "Construction: Project Phases v2",
+      "description": "Project phases functionality v2",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Project",
+        "fallback_text": "Projects",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F018",
+      "name": "Construction: Cost Groups",
+      "description": "Cost groups for construction",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Cost",
+        "fallback_text": "Project",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F019",
+      "name": "Construction: Budgets v3",
+      "description": "Construction budgets v3",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/budgets"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Budget",
+        "fallback_text": "Budgets",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F020",
+      "name": "Construction: AIA Billing",
+      "description": "AIA Billing for construction",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/projects"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "AIA",
+        "fallback_text": "Billing",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F021",
+      "name": "Construction: Certified Payroll Report",
+      "description": "Certified payroll report for construction",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll/employees"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Certified",
+        "fallback_text": "Payroll",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F022",
+      "name": "Bill Pay: Payment Release Approval Workflow",
+      "description": "Payment release approval workflow",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/billpay"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Approval",
+        "fallback_text": "Bill Pay",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F023",
+      "name": "Bill Pay: Instant Payments",
+      "description": "Instant payments functionality",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/billpay"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Instant",
+        "fallback_text": "Payment",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F024",
+      "name": "WFS: W2 Scalability",
+      "description": "W2 scalability improvements",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "W-2",
+        "fallback_text": "Payroll",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F025",
+      "name": "WFS: Run Payroll Processing Improvements",
+      "description": "Payroll processing improvements",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Run payroll",
+        "fallback_text": "Payroll",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F026",
+      "name": "WFS: Paycheck Corrections Improvements",
+      "description": "Paycheck corrections improvements",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/payroll"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Paycheck",
+        "fallback_text": "Payroll",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F027",
+      "name": "AI Agents: Accounting Agent",
+      "description": "AI Accounting Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F028",
+      "name": "AI Agents: Payment Agent",
+      "description": "AI Payment Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F029",
+      "name": "AI Agents: Customer Agent",
+      "description": "AI Customer Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F030",
+      "name": "AI Agents: Payroll Agent",
+      "description": "AI Payroll Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F031",
+      "name": "AI Agents: Project Management Agent",
+      "description": "AI Project Management Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F032",
+      "name": "AI Agents: Finance Agent",
+      "description": "AI Finance Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F033",
+      "name": "AI Agents: Solutions Agent (AKA setup and customization capabilities)",
+      "description": "AI Solutions Agent for setup and customization",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F034",
+      "name": "AI Agents: Sales Tax Agent",
+      "description": "AI Sales Tax Agent",
+      "projects": ["TCO"],
+      "companies": ["Traction"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intuit Assist",
+        "fallback_text": "AI",
+        "type": "box"
+      }
+    }
+  ]
+}

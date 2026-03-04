@@ -1,0 +1,920 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "Winter Release FY26 (February 2026) - Feature Tracker",
+  "release": "IES February Release FY26",
+  "early_access_date": "2026-02-04",
+  "features": [
+    {
+      "ref": "WR-001",
+      "name": "Accounting AI",
+      "category": "AI Agents",
+      "priority": "P0",
+      "sku": "Ledger+, Essentials+, Plus+",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-025",
+      "setup_required": false,
+      "setup_details": "Dados existentes OK - bank feeds, transactions",
+      "sub_features": [
+        "AI-Powered Bank Feed",
+        "NTTF Automation Setup",
+        "Ready to Post (batch - NEW)",
+        "Purchase Notifications (multi-user - NEW)",
+        "AI-Powered Reconciliation",
+        "Anomaly Detection"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/banking",
+        "steps": [
+          "Banking > Bank Transactions"
+        ],
+        "wait_for": "Bank transactions with AI suggestions"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Bank feed com sugestoes AI funcionando"
+      }
+    },
+    {
+      "ref": "WR-002",
+      "name": "Sales Tax AI",
+      "category": "AI Agents",
+      "priority": "P0",
+      "sku": "Plus, Advanced, IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-032",
+      "setup_required": true,
+      "setup_details": "Sales tax agencies configured, transactions with tax",
+      "sub_features": [
+        "Filing Pre-Check workflow (NEW)",
+        "AI-generated explanations",
+        "Discrepancy identification P&L vs Sales Tax Liability"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/salestax",
+        "steps": [
+          "Taxes > Sales Tax"
+        ],
+        "wait_for": "Sales Tax Overview with Pre-file check"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Sales tax categories com sugestoes AI funcionando"
+      }
+    },
+    {
+      "ref": "WR-003",
+      "name": "Project Management AI",
+      "category": "AI Agents",
+      "priority": "P0",
+      "sku": "Advanced (limited), IES (full)",
+      "environment": [
+        "TCO",
+        "Construction"
+      ],
+      "fall_release_ref": "TCO-029",
+      "setup_required": true,
+      "setup_details": "Projects with budgets, estimates, time entries",
+      "sub_features": [
+        "Budget creation (IES only - NEW)",
+        "Estimate creation",
+        "Project setup",
+        "Project planning (IES only)",
+        "Project cost allocation",
+        "Project profitability (IES only - NEW)",
+        "Project closing summary (IES only)"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/projects",
+        "steps": [
+          "Projects"
+        ],
+        "wait_for": "Projects list with AI features"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Profitability tracking OK"
+      }
+    },
+    {
+      "ref": "WR-004",
+      "name": "Finance AI",
+      "category": "AI Agents",
+      "priority": "P1",
+      "sku": "TBD",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-030",
+      "setup_required": false,
+      "setup_details": "Financial data already available",
+      "sub_features": [
+        "Financial summary with KPIs",
+        "Budget analysis",
+        "Monthly insights"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Review summary"
+        ],
+        "wait_for": "Financial summary loading"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-004_*.png",
+        "notes": "Intuit Assist e insights presentes no dashboard"
+      }
+    },
+    {
+      "ref": "WR-005",
+      "name": "Solutions Specialist",
+      "category": "AI Agents",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-031",
+      "setup_required": true,
+      "setup_details": "Business Feed with Dimensions widget",
+      "sub_features": [
+        "Dimensions widget in Business Feed",
+        "IES-exclusive AI recommendations"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/homepage",
+        "steps": [
+          "Dashboard > Business Feed"
+        ],
+        "wait_for": "Business Feed with AI widgets"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-005_*.png",
+        "notes": "Business Feed com Cash Flow e metricas"
+      }
+    },
+    {
+      "ref": "WR-006",
+      "name": "Customer Agent",
+      "category": "AI Agents",
+      "priority": "P2",
+      "sku": "TBD",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-027",
+      "setup_required": true,
+      "setup_details": "Gmail/Outlook connection for lead import",
+      "sub_features": [
+        "Import leads from Gmail/Outlook",
+        "Draft estimates",
+        "Draft email responses",
+        "Schedule meetings"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/customers",
+        "steps": [
+          "Sales > Customers > Leads tab"
+        ],
+        "wait_for": "Leads with import button"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Customers e Leads tab presente, integracao email disponivel"
+      }
+    },
+    {
+      "ref": "WR-007",
+      "name": "Omni / Intuit Intelligence",
+      "category": "AI Agents",
+      "priority": "P2",
+      "sku": "Beta/Handraiser Feb 2026",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Beta enrollment required",
+      "sub_features": [
+        "Conversational AI assistant",
+        "Cross-product intelligence"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/homepage",
+        "steps": [
+          "Look for Intuit Assist icon"
+        ],
+        "wait_for": "Intuit Assist chat interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Intuit Assist icon presente no dashboard"
+      }
+    },
+    {
+      "ref": "WR-008",
+      "name": "Conversational BI",
+      "category": "AI Agents",
+      "priority": "P3",
+      "sku": "Part of Intuit Intelligence",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Requires Intuit Intelligence",
+      "sub_features": [
+        "Natural language queries for reports",
+        "AI-generated insights"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Conversational interface"
+        ],
+        "wait_for": "Chat interface for reports"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Reports interface com AI insights presente"
+      }
+    },
+    {
+      "ref": "WR-009",
+      "name": "KPIs Customizados",
+      "category": "Reporting",
+      "priority": "P0",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-006, TCO-007",
+      "setup_required": false,
+      "setup_details": "No setup needed",
+      "sub_features": [
+        "KPI Library",
+        "Custom KPI formulas",
+        "KPI Scorecard"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard",
+        "steps": [
+          "Reports > KPIs > KPI Scorecard"
+        ],
+        "wait_for": "KPI Scorecard with metrics"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "27 KPIs incluindo custom"
+      }
+    },
+    {
+      "ref": "WR-010",
+      "name": "Dashboards",
+      "category": "Reporting",
+      "priority": "P0",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-008",
+      "setup_required": false,
+      "setup_details": "No setup needed",
+      "sub_features": [
+        "Pre-built dashboards",
+        "Custom dashboards",
+        "Visual analytics"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reportbuilder",
+        "steps": [
+          "Reports > Dashboards"
+        ],
+        "wait_for": "Dashboard gallery"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Multiplos dashboards disponiveis"
+      }
+    },
+    {
+      "ref": "WR-011",
+      "name": "3P Data Integrations",
+      "category": "Reporting",
+      "priority": "P2",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Connect 3P apps (Salesforce, HubSpot, Monday.com)",
+      "sub_features": [
+        "CRM data integration",
+        "Cross-platform KPIs"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/apps",
+        "steps": [
+          "Apps > Connected apps"
+        ],
+        "wait_for": "Apps marketplace"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Apps marketplace disponivel, conexoes 3P listadas"
+      }
+    },
+    {
+      "ref": "WR-012",
+      "name": "Calculated Fields",
+      "category": "Reporting",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-009",
+      "setup_required": false,
+      "setup_details": "No setup needed",
+      "sub_features": [
+        "Custom calculations in reports",
+        "Formula builder"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Customize > Add calculated field"
+        ],
+        "wait_for": "Report customization with calculations"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-012_*.png",
+        "notes": "Calculated fields disponiveis em reports"
+      }
+    },
+    {
+      "ref": "WR-013",
+      "name": "Management Reports",
+      "category": "Reporting",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-011",
+      "setup_required": false,
+      "setup_details": "No setup needed",
+      "sub_features": [
+        "Combined financial statements",
+        "Custom text and formatting",
+        "Publish and share"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/managementreports",
+        "steps": [
+          "Reports > Management reports"
+        ],
+        "wait_for": "Management Reports page"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-013_*.png",
+        "notes": "Management Reports visivel"
+      }
+    },
+    {
+      "ref": "WR-014",
+      "name": "Benchmarking",
+      "category": "Reporting",
+      "priority": "P2",
+      "sku": "TBD",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "TBD",
+      "sub_features": [
+        "Industry benchmarks",
+        "Performance comparison"
+      ],
+      "navigation": {
+        "route": "TBD",
+        "steps": [
+          "TBD"
+        ],
+        "wait_for": "Benchmarking interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Benchmarking mencionado no dashboard/reports, detalhes TBD"
+      }
+    },
+    {
+      "ref": "WR-015",
+      "name": "Multi-Entity Reports",
+      "category": "Reporting",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Multi-entity structure (Parent + Children)",
+      "sub_features": [
+        "Consolidated reporting",
+        "Entity comparison",
+        "Intercompany eliminations"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Switch to Consolidated view"
+        ],
+        "wait_for": "Consolidated reports"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-015_*.png",
+        "notes": "Multi-Entity/Consolidated reports disponiveis"
+      }
+    },
+    {
+      "ref": "WR-016",
+      "name": "Dimension Assignment v2",
+      "category": "Dimensions",
+      "priority": "P0",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": "TCO-001",
+      "setup_required": true,
+      "setup_details": "Dimensions configured, Products/Services with dimension values",
+      "sub_features": [
+        "AI-suggested dimension values",
+        "Bulk assignment",
+        "Enhanced UI"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/dimensions/assignment",
+        "steps": [
+          "Direct URL"
+        ],
+        "wait_for": "Dimension assignment table"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "AI suggestions com sparkle funcionando"
+      }
+    },
+    {
+      "ref": "WR-017",
+      "name": "Hierarchical Dimension Reporting",
+      "category": "Dimensions",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Dimension hierarchy configured",
+      "sub_features": [
+        "Roll-up reporting by dimension hierarchy",
+        "Drill-down capabilities"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Filter by dimension hierarchy"
+        ],
+        "wait_for": "Hierarchical dimension filter"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-017_*.png",
+        "notes": "Hierarchical dimensions com parent/child"
+      }
+    },
+    {
+      "ref": "WR-018",
+      "name": "Dimensions on Workflow",
+      "category": "Dimensions",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Workflow automation + Dimensions",
+      "sub_features": [
+        "Dimension-based workflow triggers",
+        "Dimension conditions in automations"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/workflowautomation",
+        "steps": [
+          "Settings > Workflow automation"
+        ],
+        "wait_for": "Workflow with dimension options"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-018_*.png",
+        "notes": "Dimensions em Workflow rules"
+      }
+    },
+    {
+      "ref": "WR-019",
+      "name": "Dimensions on Balance Sheet",
+      "category": "Dimensions",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Transactions with dimension tags",
+      "sub_features": [
+        "Balance Sheet by dimension",
+        "Dimension filtering on BS accounts"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": [
+          "Reports > Balance Sheet > Filter by dimension"
+        ],
+        "wait_for": "Balance Sheet with dimension filter"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-019_*.png",
+        "notes": "Dimension filters em Balance Sheet"
+      }
+    },
+    {
+      "ref": "WR-020",
+      "name": "Parallel Approval",
+      "category": "Workflow",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO",
+        "Construction"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Approval workflow with multiple approvers",
+      "sub_features": [
+        "Multiple simultaneous approvers",
+        "Parallel approval paths"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/workflowautomation",
+        "steps": [
+          "Settings > Workflow automation > Approval"
+        ],
+        "wait_for": "Parallel approval configuration"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-020_*.png",
+        "notes": "Parallel Approval em workflows"
+      }
+    },
+    {
+      "ref": "WR-021",
+      "name": "Seamless Desktop Migration",
+      "category": "Migration",
+      "priority": "P2",
+      "sku": "IES",
+      "environment": [
+        "Fresh tenant"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Fresh tenant for migration demo",
+      "sub_features": [
+        "Desktop to QBO migration",
+        "PBB customer support"
+      ],
+      "navigation": {
+        "route": "Migration flow",
+        "steps": [
+          "Migration wizard"
+        ],
+        "wait_for": "Migration interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Migration option visivel em Settings, requer fresh tenant para demo completo"
+      }
+    },
+    {
+      "ref": "WR-022",
+      "name": "DFY Migration Experience",
+      "category": "Migration",
+      "priority": "P2",
+      "sku": "IES",
+      "environment": [
+        "Fresh tenant"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Fresh tenant",
+      "sub_features": [
+        "Done-For-You migration",
+        "Guided setup"
+      ],
+      "navigation": {
+        "route": "Migration flow",
+        "steps": [
+          "DFY migration wizard"
+        ],
+        "wait_for": "DFY interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "DFY option presente, requer fresh tenant para demo completo"
+      }
+    },
+    {
+      "ref": "WR-023",
+      "name": "Feature Compatibility",
+      "category": "Migration",
+      "priority": "P3",
+      "sku": "IES",
+      "environment": [
+        "Documentation"
+      ],
+      "fall_release_ref": null,
+      "setup_required": false,
+      "setup_details": "Documentation review",
+      "sub_features": [
+        "Desktop feature parity documentation"
+      ],
+      "navigation": {
+        "route": "Documentation",
+        "steps": [
+          "Review compatibility docs"
+        ],
+        "wait_for": "N/A"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Documentacao de compatibilidade disponivel"
+      }
+    },
+    {
+      "ref": "WR-024",
+      "name": "Certified Payroll Report",
+      "category": "Construction",
+      "priority": "P1",
+      "sku": "IES Construction",
+      "environment": [
+        "Construction"
+      ],
+      "fall_release_ref": "TCO-021",
+      "setup_required": true,
+      "setup_details": "Payroll data for government projects",
+      "sub_features": [
+        "WH-347 format report",
+        "Government project compliance"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": [
+          "Reports > Certified Payroll Report"
+        ],
+        "wait_for": "CPR report"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-024_*.png",
+        "notes": "Certified Payroll mencionado"
+      }
+    },
+    {
+      "ref": "WR-025",
+      "name": "Sales Order",
+      "category": "Construction",
+      "priority": "P2",
+      "sku": "TBD",
+      "environment": [
+        "Construction"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "TBD",
+      "sub_features": [
+        "Sales order creation",
+        "Order to invoice flow"
+      ],
+      "navigation": {
+        "route": "TBD",
+        "steps": [
+          "TBD"
+        ],
+        "wait_for": "Sales Order interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Sales flow presente, detalhes TBD para Winter Release"
+      }
+    },
+    {
+      "ref": "WR-026",
+      "name": "Multi-Entity Payroll Hub",
+      "category": "Payroll",
+      "priority": "P1",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Multi-entity structure with employees in each entity",
+      "sub_features": [
+        "Centralized employee management",
+        "Cross-entity payroll view"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": [
+          "Payroll > Employee Hub"
+        ],
+        "wait_for": "Employee Hub interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": "evidence/WR-026_*.png",
+        "notes": "Multi-Entity Payroll Hub disponivel"
+      }
+    },
+    {
+      "ref": "WR-027",
+      "name": "Garnishments - Child Support",
+      "category": "Payroll",
+      "priority": "P2",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Employee with garnishment setup",
+      "sub_features": [
+        "Child support garnishment",
+        "Automatic deductions"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll/employees",
+        "steps": [
+          "Payroll > Employees > Garnishments"
+        ],
+        "wait_for": "Garnishment configuration"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Garnishments option presente em Payroll, requer employee setup"
+      }
+    },
+    {
+      "ref": "WR-028",
+      "name": "Assignments in QBTime",
+      "category": "Payroll",
+      "priority": "P2",
+      "sku": "IES",
+      "environment": [
+        "TCO"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "Time entries with assignments",
+      "sub_features": [
+        "Assignment tracking in time entries",
+        "Project/task assignments"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/time",
+        "steps": [
+          "Time > Time entries > Assignments"
+        ],
+        "wait_for": "Assignment field in time entry"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Time tracking com assignments presente"
+      }
+    },
+    {
+      "ref": "WR-029",
+      "name": "Enhanced Amendments (CA)",
+      "category": "Payroll",
+      "priority": "P3",
+      "sku": "IES",
+      "environment": [
+        "CA-specific tenant"
+      ],
+      "fall_release_ref": null,
+      "setup_required": true,
+      "setup_details": "California payroll data",
+      "sub_features": [
+        "CA-specific amendment handling",
+        "Enhanced correction workflow"
+      ],
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": [
+          "Payroll > Amendments"
+        ],
+        "wait_for": "Amendment interface"
+      },
+      "validation": {
+        "status": "pass",
+        "last_check": "2025-12-29",
+        "evidence": null,
+        "notes": "Amendments section presente em Payroll, CA-specific features BETA"
+      }
+    }
+  ],
+  "summary": {
+    "total_features": 29,
+    "by_priority": {
+      "P0": 6,
+      "P1": 10,
+      "P2": 9,
+      "P3": 4
+    },
+    "by_category": {
+      "AI Agents": 8,
+      "Reporting": 7,
+      "Dimensions": 4,
+      "Workflow": 1,
+      "Migration": 3,
+      "Construction": 2,
+      "Payroll": 4
+    },
+    "setup_required": 19,
+    "no_setup": 10,
+    "has_fall_ref": 15,
+    "new_features": 14
+  }
+}

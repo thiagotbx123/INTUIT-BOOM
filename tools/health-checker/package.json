@@ -1,0 +1,21 @@
+{
+  "name": "qbo-health-checker",
+  "version": "1.0.0",
+  "description": "Automated UAT/Health Check methodology for QuickBooks Online and Intuit Enterprise Suite using Claude Code + Playwright MCP",
+  "author": "Thiago (TSA Lead)",
+  "license": "UNLICENSED",
+  "private": true,
+  "keywords": [
+    "qbo",
+    "quickbooks",
+    "ies",
+    "uat",
+    "health-check",
+    "playwright",
+    "automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

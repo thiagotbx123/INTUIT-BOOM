@@ -1,0 +1,215 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "2.0.0",
+  "features": [
+    {
+      "id": "F001",
+      "ref": "R2",
+      "name": "ME: Consolidated View",
+      "description": "Fusion UI for multi-entity IES customers with consolidated view dashboard",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3},
+          {"action": "verify_text", "text": "Consolidated View"}
+        ]
+      },
+      "highlight": {
+        "text_target": "Consolidated View",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show Consolidated View dropdown in header proving multi-entity mode is active"
+    },
+    {
+      "id": "F002",
+      "ref": "R3",
+      "name": "ME: Reporting Enhancements",
+      "description": "Drill down from consolidated reports, Transaction Journal with Dimensions",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Consolidated profit and loss"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Consolidated",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show consolidated report open with drill-down capability visible"
+    },
+    {
+      "id": "F003",
+      "ref": "R4",
+      "name": "ME: Intercompany Expense Allocations",
+      "description": "Vendor Credits and Credit Cards in intercompany transactions",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Accounting"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Intercompany transactions"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show intercompany transactions list"
+    },
+    {
+      "id": "F004",
+      "ref": "R5",
+      "name": "ME: Dynamic Allocations",
+      "description": "Dynamic allocation rules for intercompany transactions",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Intercompany account mapping"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany account mapping",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show Intercompany account mapping with configured mappings"
+    },
+    {
+      "id": "F005",
+      "ref": "R6",
+      "name": "BI: KPIs (from 3P Apps)",
+      "description": "KPI Library with third-party app integrations",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "KPIs"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "KPI",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show KPI Library with available KPIs"
+    },
+    {
+      "id": "F006",
+      "ref": "R7",
+      "name": "BI: Dashboards",
+      "description": "Business Intelligence dashboards with visual analytics",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Dashboards"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Dashboard",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show Dashboards section"
+    },
+    {
+      "id": "F007",
+      "ref": "R8",
+      "name": "BI: Advanced Reporting (Visual customization and Custom formula)",
+      "description": "Advanced reporting with visual customization and custom formulas",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Profit and Loss"},
+          {"action": "wait", "seconds": 3},
+          {"action": "click", "text": "Customize"},
+          {"action": "wait", "seconds": 2}
+        ]
+      },
+      "highlight": {
+        "text_target": "Customize",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show report customization panel"
+    },
+    {
+      "id": "F008",
+      "ref": "R9",
+      "name": "BI: Advanced Reporting (Global Report Settings)",
+      "description": "Global settings for advanced reports",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Standard reports"},
+          {"action": "wait", "seconds": 2}
+        ]
+      },
+      "highlight": {
+        "text_target": "Settings",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show report settings options"
+    },
+    {
+      "id": "F009",
+      "ref": "R10",
+      "name": "BI: Advanced Reporting (New Management Reports)",
+      "description": "New management reports for business analytics",
+      "projects": ["TCO"],
+      "companies": ["Apex"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2},
+          {"action": "click", "text": "Custom reports"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Management",
+        "fallback_text": "Custom reports",
+        "fallback_type": "arrow",
+        "type": "box"
+      },
+      "evidence_requirements": "Screenshot must show Custom/Management reports"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "QBO",
+  "base_url": "https://qbo.intuit.com",
+  "auth": {
+    "type": "oauth_totp",
+    "login_url": "https://accounts.intuit.com/app/sign-in",
+    "email_selector": "#ius-identifier",
+    "email_submit": "#ius-sign-in-submit-btn",
+    "password_selector": "#ius-sign-in-mfa-password-collection-current-password",
+    "password_submit": "#ius-sign-in-mfa-password-collection-continue-btn",
+    "totp_selector": "#ius-mfa-soft-token",
+    "totp_submit": "#ius-mfa-soft-token-submit-btn",
+    "logged_in_indicators": [
+      { "type": "url_contains", "value": "/app/" }
+    ]
+  },
+  "projects": {
+    "TCO": {
+      "name": "TCO Multi-Entity",
+      "companies": ["Apex", "Global Tread", "Traction", "RoadReady"]
+    },
+    "Construction": {
+      "name": "Construction",
+      "companies": ["Sales", "Events"]
+    }
+  }
+}

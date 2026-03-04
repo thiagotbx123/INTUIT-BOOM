@@ -1,0 +1,44 @@
+# QBO Health Checker - Feature Template
+# Use this template to define features for validation
+# Copy and adapt for each UAT/health check cycle
+
+metadata:
+  release: "Release Name FY##"
+  date_start: "YYYY-MM-DD"
+  date_end: "YYYY-MM-DD"
+  environment: "TestBox | Production | Staging"
+  sheet_id: ""           # Google Sheets ID for tracking
+  sheet_tab: ""          # Tab name in the sheet
+  drive_folder_id: ""    # Google Drive folder for evidence
+
+# Column mapping for the tracking spreadsheet
+columns:
+  status: "E"            # Column letter for status
+  evidence: "G"          # Column letter for evidence filenames
+  hyperlinks: "H"        # Column letter for hyperlinked evidence
+  notes: "F"             # Column letter for notes
+
+# Status values
+statuses:
+  validated: "VALIDATED"
+  blocked: "BLOCKED"
+  not_testable: "NOT TESTABLE"
+  excluded: "EXCLUDED"
+
+# Feature definition template
+# features:
+#   - id: 16
+#     name: "KPIs"
+#     row: 2                          # Row number in the spreadsheet
+#     sequence: 1                     # Order of execution
+#     click_path: "Reports > KPIs"    # Navigation path in QBO
+#     steps:
+#       - "Navigate to KPI scorecard"
+#       - "Verify KPIs loaded"
+#     checks:
+#       - "KPI scorecard loads with data"
+#       - "Custom KPI creation works"
+#     screenshot_prefix: "02_ID16"    # Naming: {row}_{ID}{seq}
+#     blockers: null                  # null or description of blocker
+#     prereqs: null                   # null or prerequisites needed
+#     notes: ""                       # Additional notes

@@ -45,8 +45,39 @@ test_*.png
 *.pptx
 *.docx
 *.xlsb
+*.xlsx
+*.csv
+*.pdf
+
+# Screenshots/images (evidence stored on Google Drive)
+*.png
+*.jpg
+*.jpeg
 
 # Evidence packs (stored on Google Drive, not git)
 EvidencePack/
-wfs_mapping/exploration/
+wfs_mapping/
 screenshots/
+evidence/
+
+# Chrome profiles
+chrome_profile_*/
+chrome_gsheets/
+chrome_profile_sheets*/
+
+# Claude local settings (may contain sensitive data)
+.claude/settings.local.json
+
+# Temporary/generated data
+*.html
+construction_capture_results.json
+temp_*.json
+drive_links_*.json
+
+# Feature checker output
+tools/feature-checker/output/
+tools/health-checker/output/
+!tools/health-checker/output/examples/
+
+# Content PDFs
+content*.pdf

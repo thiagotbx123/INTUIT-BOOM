@@ -1,0 +1,1289 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "4.0.0",
+  "description": "Features enriquecidas com conhecimento acumulado - TCO/Traction/Apex Tire",
+  "project": "TCO",
+  "company": "Apex Tire & Auto Retail, LLC",
+  "features": [
+    {
+      "ref": "TCO-001",
+      "id": "F001",
+      "name": "Dimensions / Dimension Assignment",
+      "category": "Dimensions",
+      "view": "company",
+
+      "objective": "Permitir atribuicao de dimensoes customizadas (Customer Type, CX, Division) a Products/Services e Fixed Assets usando sugestoes de AI",
+      "expected_behavior": "Pagina mostra lista de items com colunas de dimensao e botoes Confirm para aceitar sugestoes AI",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/dimensions/assignment",
+        "steps": ["Goto URL direto"],
+        "wait_for": "Dimension assignment table"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Traction_DimensionsDimensionAssignment.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Dimension assignment",
+          "fallback_text": "assignment"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Dimension assignment page working correctly. Shows Products/Services with AI-suggested values for Customer Type, CX, Division. Confirm buttons active.",
+        "internal": "Navigation via direct URL: https://qbo.intuit.com/app/dimensions/assignment"
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-002",
+      "id": "F002",
+      "name": "Dimensions on Spreadsheet Sync",
+      "category": "Dimensions",
+      "view": "company",
+
+      "objective": "Suporte a dimensoes no Spreadsheet Sync para exportar dados dimensionais para Excel/Sheets",
+      "expected_behavior": "Spreadsheet Sync inclui colunas de dimensao nos exports",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/spreadsheetsync",
+        "steps": ["Goto URL direto"],
+        "wait_for": "Spreadsheet Sync page"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Traction_DimensionsDimensionAssignment.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Spreadsheet Sync",
+          "fallback_text": "Sync"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Spreadsheet Sync available with dimension column support for data exports.",
+        "internal": "Shares evidence with Dimension Assignment feature."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-003",
+      "id": "F003",
+      "name": "DTM Multiple Shipping Addresses",
+      "category": "DTM",
+      "view": "company",
+
+      "objective": "Permitir multiplos enderecos de entrega por cliente (parity com QB Desktop)",
+      "expected_behavior": "Customer edit panel mostra billing e shipping addresses separados com valores diferentes",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/customers",
+        "steps": ["Sales > Customers", "Selecionar cliente", "Edit"],
+        "wait_for": "Customer edit panel"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Traction_DTM_MultipleShippingAddresses.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Shipping",
+          "fallback_text": "Address"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Customer edit panel shows billing and shipping addresses with different values",
+        "internal": "Navigation: Sales > Customers > Select customer > Edit"
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-004",
+      "id": "F004",
+      "name": "DTM Vendor CC/BCC",
+      "category": "DTM",
+      "view": "company",
+
+      "objective": "Adicionar campos CC/BCC para emails de vendor (parity com QB Desktop)",
+      "expected_behavior": "Vendor edit mostra campos CC e BCC alem de Email principal",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/vendors",
+        "steps": ["Expenses > Vendors", "Selecionar vendor", "Edit"],
+        "wait_for": "Vendor edit panel with email fields"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Traction_DTM_VendorCCBCC.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "CC",
+          "fallback_text": "Email"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "CC/BCC fields not visible. Only Email and Other fields shown. Feature flag likely not enabled.",
+        "internal": "Navigation works: Expenses and Bills, Vendors, select vendor, Edit. Need CC/BCC fields enabled."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "NO"
+      }
+    },
+    {
+      "ref": "TCO-005",
+      "id": "F005",
+      "name": "DTM Vendor Notes",
+      "category": "DTM",
+      "view": "company",
+
+      "objective": "Adicionar notas e comentarios a registros de vendor",
+      "expected_behavior": "Vendor mostra aba Notes com multiplas notas, icones star, timestamps, campos Add comment",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/vendors",
+        "steps": ["Expenses > Vendors", "Selecionar vendor", "Notes tab"],
+        "wait_for": "Notes tab with entries"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Traction_DTM_VendorNotes.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Notes",
+          "fallback_text": "Add comment"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Notes tab with multiple notes, star icons, timestamps, Add comment fields",
+        "internal": "Feature flag may not be enabled for comments/star functionality"
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-006",
+      "id": "F011",
+      "name": "BI KPIs Library",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Biblioteca de KPIs pre-definidos com integracao de apps 3P (Salesforce, HubSpot)",
+      "expected_behavior": "KPI Library mostra categorias: Finance, Sales, Projects, HR, Inventory Management. Growth KPIs, Revenue, Churn Rate visiveis.",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard",
+        "steps": ["Reports > KPIs > KPI Scorecard > Manage KPIs"],
+        "wait_for": "KPI Library modal"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_KPIs_Library.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "KPI Library",
+          "fallback_text": "Manage KPIs"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "KPI Library accessible via Manage KPIs. Shows Finance, Sales, Projects, HR, Inventory Management categories. Growth KPIs, Revenue, Churn Rate visible.",
+        "internal": "CRM KPIs require 3P app integration (Salesforce, HubSpot). No 3P apps connected in test environment."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-007",
+      "id": "F012",
+      "name": "BI KPIs Custom Formula",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Criar KPIs customizados com formulas personalizadas",
+      "expected_behavior": "Form Create KPI com campos: KPI name, Category, Formula editor, Unit",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/business-intelligence/kpi-scorecard",
+        "steps": ["Reports > KPIs > KPI Scorecard > Manage KPIs > Create KPI"],
+        "wait_for": "Create KPI form"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_KPIs_CustomFormula.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Create KPI",
+          "fallback_text": "Formula"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Create KPI form accessible via Reports > KPIs > KPI Scorecard > Manage KPIs > Create KPI",
+        "internal": "Custom KPI creation with Formula editor requires Company View (not Consolidated). Form shows KPI name, Category, Formula, and Unit fields."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-008",
+      "id": "F013",
+      "name": "BI Dashboards",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Dashboards visuais de BI com metricas pre-definidas e customizaveis",
+      "expected_behavior": "Dashboards nativos: Profitability, Cash Flow, Balance Sheet, Accounts Receivable, Revenue",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reportbuilder",
+        "steps": ["Reports > Dashboards"],
+        "wait_for": "Dashboard gallery"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_Dashboards.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Dashboard",
+          "fallback_text": "Create"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Pre-canned dashboards available: Profitability, Cash Flow, Balance Sheet, Accounts Receivable, Revenue. Sales Performance dashboard requires 3P app (Monday.com) connection. Projects Performance needs project data.",
+        "internal": "Navigation works: Reports > Dashboards. Users can open pre-built or create custom. 3P dashboards unavailable without app connection."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-009",
+      "id": "F014",
+      "name": "BI Advanced Reporting",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Customizacao visual de reports e formulas customizadas",
+      "expected_behavior": "Profit and Loss com: Switch to modern view, Customize, Save customization, filters, toolbar (Collapse, Sort, Add notes, See chart), export",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": ["Reports > Standard reports > Profit and Loss > Customize"],
+        "wait_for": "Report with customization toolbar"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_AdvancedReporting.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Customize",
+          "fallback_text": "Custom reports"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Report customization available: visual formatting, add rows/columns with custom calculations, print/export with formatting preserved.",
+        "internal": "All customization tools visible: Switch to modern view, Customize, Save customization. Filters and toolbar complete. Export via Email, Print, Excel, PDF."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-010",
+      "id": "F015",
+      "name": "BI Global Report Settings",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Configuracoes globais de report que cascateiam para todos os reports",
+      "expected_behavior": "Panel com Visual (highlights, banded rows, gridlines) e Formatting (header, footer, number, view)",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reportsettings",
+        "steps": ["Gear icon > Default report settings"],
+        "wait_for": "Report settings panel"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_GlobalReportSettings.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Report settings",
+          "fallback_text": "Default"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Global report settings cascade across all standard reports for consistency.",
+        "internal": "Settings panel shows Visual and Formatting sections. Confirms 'These customizations apply to standard and custom reports'."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-011",
+      "id": "F016",
+      "name": "BI Management Reports",
+      "category": "BI",
+      "view": "company",
+
+      "objective": "Reports gerenciais combinando multiplos statements financeiros com texto e formatacao customizada",
+      "expected_behavior": "Management Reports page com Drafts/Published tabs, Create report button, lista de reports existentes",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/managementreports",
+        "steps": ["Reports > Management reports"],
+        "wait_for": "Management Reports page"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_BI_ManagementReports.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Management",
+          "fallback_text": "Report"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Create, edit, and publish management reports combining multiple financial statements with custom text and formatting.",
+        "internal": "Page shows Drafts/Published tabs, Create report button, existing reports. Filter by Date Range, Created by, Search. Legacy option available."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-012",
+      "id": "F017a",
+      "name": "Project Phases - Create Project",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar projetos com fases para tracking de construction",
+      "expected_behavior": "Projects page com Create project button e lista de projetos",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/projects",
+        "steps": ["Projects"],
+        "wait_for": "Projects list"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_ProjectPhases_1_CreateProject.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Create project",
+          "fallback_text": "Project"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Project creation with phase tracking for construction management.",
+        "internal": "Entry point for Project Phases v2 flow."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-013",
+      "id": "F017b",
+      "name": "Project Phases - Create Estimate",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar estimates vinculados a fases de projeto",
+      "expected_behavior": "Estimate form com Phase dropdown",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/estimate",
+        "steps": ["Projects > Project > Add to project > Estimate"],
+        "wait_for": "Estimate form"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_ProjectPhases_2_CreateEstimate.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Estimate",
+          "fallback_text": "Phase"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Estimates linked to project phases for construction cost tracking.",
+        "internal": "Part of Project Phases v2 workflow - 5 screenshots total."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-014",
+      "id": "F017c",
+      "name": "Project Phases - Create Budget",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar budgets com opcao Group by Phase",
+      "expected_behavior": "Budget form com Group by Phase option",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/budgets",
+        "steps": ["Reports > Budgets > Create"],
+        "wait_for": "Budget form"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_ProjectPhases_3_CreateBudget.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Budget",
+          "fallback_text": "Phase"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Budgets with Group by Phase option for construction phase tracking.",
+        "internal": "Part of Project Phases v2 workflow."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-015",
+      "id": "F017d",
+      "name": "Project Phases - Create Expense",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar expenses vinculados a fases de projeto",
+      "expected_behavior": "Expense form com Phase dropdown",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/expense",
+        "steps": ["Expenses > Expense > Link to project"],
+        "wait_for": "Expense form with phase"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_ProjectPhases_4_CreateExpense.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Expense",
+          "fallback_text": "Phase"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Expenses linked to project phases for cost allocation.",
+        "internal": "Part of Project Phases v2 workflow."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-016",
+      "id": "F017e",
+      "name": "Project Phases - Create PO",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar Purchase Orders vinculados a fases de projeto",
+      "expected_behavior": "PO form com Phase dropdown",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/purchaseorder",
+        "steps": ["Expenses > Purchase Order > Link to project"],
+        "wait_for": "PO form with phase"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_TCO_ProjectPhases_5_CreatePO.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Purchase Order",
+          "fallback_text": "Phase"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Purchase Orders linked to project phases for procurement tracking.",
+        "internal": "Part of Project Phases v2 workflow - final of 5 screenshots."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-017",
+      "id": "F018a",
+      "name": "Cost Groups - List",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Visualizar e gerenciar Cost Groups para construction",
+      "expected_behavior": "Products & Services com coluna COST GROUP, DFY banner com Review button",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/items",
+        "steps": ["Sales > Products & Services"],
+        "wait_for": "Products list with Cost Group column"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_CostGroups_1.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "COST GROUP",
+          "fallback_text": "Cost"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Cost groups visible in Products & Services list. DFY experience suggests cost groups automatically.",
+        "internal": "Products page shows COST GROUP column and assignment banner."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-018",
+      "id": "F018b",
+      "name": "Cost Groups - Detail",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Gerenciar Cost Groups (Equipment, Labor, Material, etc.)",
+      "expected_behavior": "Manage Cost Groups page com lista de grupos e Add Cost Group button",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/items",
+        "steps": ["Sales > Products & Services > More > Manage cost groups"],
+        "wait_for": "Manage Cost Groups page"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_CostGroups_2.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Manage Cost Groups",
+          "fallback_text": "Add Cost Group"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Create and assign cost groups to products/services. Track performance by cost group.",
+        "internal": "Manage Cost Groups shows existing groups: Equipment, Labor, Material, etc. Add button available."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-019",
+      "id": "F019",
+      "name": "Budgets V3",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Budgets enhanced com print e download capability",
+      "expected_behavior": "Budget editor com Print/Download options",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/budgets",
+        "steps": ["Reports > Budgets > Select budget"],
+        "wait_for": "Budget detail with print options"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_BudgetsV3_FIX.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Budget",
+          "fallback_text": "Print"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Enhanced budgets with print and download capability.",
+        "internal": "Print/Download option at bottom of budget detail screen."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-020",
+      "id": "F020",
+      "name": "AIA Billing",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Progress invoicing com colunas estilo AIA para construction",
+      "expected_behavior": "Project Summary com Actual vs Estimated comparacao, barras de progresso",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/projects",
+        "steps": ["Projects > Select project > Summary"],
+        "wait_for": "Project Summary with progress bars"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_AIABilling_CORRECTED.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Actual",
+          "fallback_text": "Estimated"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Progress invoicing from estimates with AIA-style columns.",
+        "internal": "Project Summary mostra Actual vs Estimated para Income, Costs, Profit. Barras de progresso mostram percentual de conclusao."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-021",
+      "id": "F021",
+      "name": "Certified Payroll",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Gerar Certified Payroll Report em formato WH-347 para projetos governamentais",
+      "expected_behavior": "Reports > Certified Payroll Report disponivel",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll/employees",
+        "steps": ["Payroll > Employees", "ou Reports > Certified Payroll Report"],
+        "wait_for": "Certified Payroll option"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_CertifiedPayroll_FIX.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Certified",
+          "fallback_text": "Payroll"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Generate Certified Payroll Report in WH-347 format for government projects.",
+        "internal": "URL /certifiedpayrollreport returned 404. Feature may require QBO Payroll subscription or specific feature flag."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-022",
+      "id": "F022a",
+      "name": "Project Estimate",
+      "category": "Construction",
+      "view": "company",
+
+      "objective": "Criar Project Estimates para construction",
+      "expected_behavior": "Add to project dropdown com Project estimate option",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/projects",
+        "steps": ["Projects > Select project > Add to project > Project estimate"],
+        "wait_for": "Add to project dropdown"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_Construction_ProjectEstimate.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Project estimate",
+          "fallback_text": "Add to project"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Project Estimate feature available from Add to project dropdown within project details.",
+        "internal": "Screenshot shows Add to project dropdown expanded with Project estimate option visible."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-023",
+      "id": "F022",
+      "name": "Approval Workflow",
+      "category": "Bill Pay",
+      "view": "company",
+
+      "objective": "Workflow de aprovacao para pagamento de bills",
+      "expected_behavior": "Bills page com coluna BILL APPROVAL e status Approved/Pending",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/bills",
+        "steps": ["Expenses > Bills"],
+        "wait_for": "Bills page with approval column"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_BillPay_Workflows_FIX.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "BILL APPROVAL",
+          "fallback_text": "Approved"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Bill payment approval workflow with waiting for approval status.",
+        "internal": "Bills page shows BILL APPROVAL column with Approved status (green checkmark). Schedule payment action available."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-024",
+      "id": "F023",
+      "name": "Instant Payments / Bill Pay",
+      "category": "Bill Pay",
+      "view": "company",
+
+      "objective": "Pagamentos instantaneos para vendors (business days ate 5 PM PT)",
+      "expected_behavior": "Bills page com scheduling options incluindo instant payment",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/bills",
+        "steps": ["Expenses > Bills > Schedule payment"],
+        "wait_for": "Payment scheduling options"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_BillPay_Bills_FIX.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Schedule payment",
+          "fallback_text": "Instant"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Instant Payments available on business days until 5 PM PT with 1% fee (min $10, max $500).",
+        "internal": "Bills page accessible with Unpaid tab. BILL APPROVAL column visible."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-025",
+      "id": "F027",
+      "name": "AI Agent - Accounting",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "AI para reconciliacao, Ready to post, colaboracao em transacoes",
+      "expected_behavior": "Bank Transactions com AI suggestions baseadas em bank description, vendor patterns, historico",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/banking",
+        "steps": ["Banking > Bank Transactions"],
+        "wait_for": "Bank transactions with AI suggestions"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_AIAgent_Accounting.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Intuit Assist",
+          "fallback_text": "AI"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "AI-powered reconciliation, Ready to post suggestions, Collaboration features. Banking-level intelligence for transaction categorization.",
+        "internal": "Accounting Agent active. Bank Transactions shows AI suggestions. Reconcile PDF upload requires flag enablement."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-026",
+      "id": "F028",
+      "name": "AI Agent - Payment",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "AI para invoicing: Invoice Assist, Smart Draft Messages, Business Feed cards, Reminders",
+      "expected_behavior": "Invoice com Assist panel, Smart Draft email, Business Feed payment cards",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/invoices",
+        "steps": ["Sales > Invoices > Select invoice"],
+        "wait_for": "Invoice with Assist panel"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_AIAgent_Payment.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Intuit Assist",
+          "fallback_text": "Smart Draft"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Payments agent for invoicing: Invoice-level Assist, Smart Draft Messages, Business Feed with AI cards, Invoice Reminders.",
+        "internal": "Invoice Assist panel on left. Smart Draft generates context-aware emails. Business Feed shows Finance and Cost Groups Agent cards."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-027",
+      "id": "F029",
+      "name": "AI Agent - Customer",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "Import leads from Gmail/Outlook, draft estimates, draft email responses, schedule meetings",
+      "expected_behavior": "Customers > Leads com Import leads from inbox button, Google connection modal",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/customers",
+        "steps": ["Sales > Customers > Leads tab"],
+        "wait_for": "Leads with import button"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_AIAgent_Customer.png",
+        "highlight": {
+          "type": "arrow",
+          "text_target": "Import leads",
+          "fallback_text": "Leads"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Import leads from Gmail/Outlook integration. AI helps draft estimates, email responses, schedule meetings.",
+        "internal": "Leads shows Import from inbox button. Google connection modal with 3-step flow. Gmail not connected in demo."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-028",
+      "id": "F030",
+      "name": "AI Agent - Payroll",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "AI assistant para tarefas de payroll",
+      "expected_behavior": "Payroll Overview com AI Agent UI elements",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": ["Payroll > Overview"],
+        "wait_for": "Payroll Overview"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_AIAgent_Payroll.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Payroll",
+          "fallback_text": "Overview"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Payroll Agent: AI-powered assistant for payroll tasks. VALIDATION STATUS: PARTIAL - Payroll module is active but AI Agent feature NOT enabled by Intuit.",
+        "internal": "APRENDIZADO: Algumas features nao podem ser 100% validadas. Payroll funciona mas AI Agent UI nao presente. Requer habilitacao pela Intuit."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "PARTIAL"
+      }
+    },
+    {
+      "ref": "TCO-029",
+      "id": "F031",
+      "name": "AI Agent - Project",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "AI para project management: budget import, estimates, cost allocation, profitability",
+      "expected_behavior": "Projects com AI Agent features",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/projects",
+        "steps": ["Projects"],
+        "wait_for": "Projects list"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_ProjectAgent_01_ProjectsList.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Projects",
+          "fallback_text": "Project"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "AI-powered project management with budget import, estimates, cost allocation, profitability tracking.",
+        "internal": "Interface manual 100% funcional. AI Agent propriamente dito requer habilitacao pela Intuit."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "PARTIAL"
+      }
+    },
+    {
+      "ref": "TCO-030",
+      "id": "F032",
+      "name": "AI Agent - Finance",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "AI financial summary com KPIs, budgets analysis, monthly insights",
+      "expected_behavior": "Financial summary loading com: Analyzing company health, Identifying KPIs, Fetching budgets",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/reports",
+        "steps": ["Reports > Review summary"],
+        "wait_for": "Financial summary loading"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_FinanceAgent_Summary.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Financial summary",
+          "fallback_text": "Analyzing"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "AI-powered financial summary with KPIs, budgets analysis, monthly insights.",
+        "internal": "Finance Agent DISPONIVEL. Summary mostra: Analyzing company health, Identifying KPIs, Fetching budgets, Building monthly summary."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "TCO-031",
+      "id": "F033",
+      "name": "AI Agent - Solutions",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "IES-exclusive AI agent para Dimensions widget in Business Feed",
+      "expected_behavior": "Business Feed com Dimensions widget",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/homepage",
+        "steps": ["Dashboard > Business Feed"],
+        "wait_for": "Business Feed widgets"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_SolutionsAgent_BusinessFeed.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Business Feed",
+          "fallback_text": "generative AI"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "IES-exclusive AI agent for Dimensions widget in Business Feed.",
+        "internal": "Business Feed DISPONIVEL com AI widgets (Overdue bills, Bill due soon). Dimensions widget pode requerer IES tier especifico."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "PARTIAL"
+      }
+    },
+    {
+      "ref": "TCO-032",
+      "id": "F034",
+      "name": "AI Agent - Sales Tax",
+      "category": "AI Agents",
+      "view": "company",
+
+      "objective": "Early Access - Pre-file check widget in Business Feed",
+      "expected_behavior": "Sales Tax Overview com AI pre-file check",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/salestax",
+        "steps": ["Taxes > Sales Tax"],
+        "wait_for": "Sales Tax Overview"
+      },
+
+      "evidence": {
+        "type": "ui",
+        "screenshot_count": 1,
+        "filename_pattern": "2025-12-03_TCO_SalesTaxAgent_Overview.png",
+        "highlight": {
+          "type": "box",
+          "text_target": "Sales Tax",
+          "fallback_text": "Overview"
+        }
+      },
+
+      "notes_template": {
+        "intuit": "Early Access - Pre-file check widget in Business Feed.",
+        "internal": "Sales Tax Overview funcional com 4 agencias (CA, LA, OH, OK). AI widget Pre-file check pode aparecer em epoca de filing."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "PARTIAL"
+      }
+    },
+    {
+      "ref": "WFS-001",
+      "id": "F024",
+      "name": "WFS: W2 Scalability",
+      "category": "WFS",
+      "view": "company",
+
+      "objective": "Backend performance - improved load time for W-2 lists with large payroll volumes",
+      "expected_behavior": "N/A - Backend enhancement only",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": ["N/A - Backend"],
+        "wait_for": "N/A"
+      },
+
+      "evidence": {
+        "type": "backend",
+        "screenshot_count": 0,
+        "filename_pattern": "N/A - Backend Performance"
+      },
+
+      "notes_template": {
+        "intuit": "Backend performance enhancement - improved load time and rendering for W-2 lists with large payroll volumes. Uses virtual scrolling, lazy loading, and CDN caching.",
+        "internal": "Performance-only enhancement. No UI changes to validate. Demo tenant does not run Payroll at scale."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "WFS-002",
+      "id": "F025",
+      "name": "WFS: Run Payroll Processing Improvements",
+      "category": "WFS",
+      "view": "company",
+
+      "objective": "Backend performance - faster payroll processing for high employee counts",
+      "expected_behavior": "N/A - Backend enhancement only",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": ["N/A - Backend"],
+        "wait_for": "N/A"
+      },
+
+      "evidence": {
+        "type": "backend",
+        "screenshot_count": 0,
+        "filename_pattern": "N/A - Backend Performance"
+      },
+
+      "notes_template": {
+        "intuit": "Backend performance enhancement - faster payroll processing for high employee counts. Uses async job queuing, DB sharding, and connection pooling.",
+        "internal": "Performance-only enhancement. No UI changes to validate. Demo tenant lacks scale to observe improvement."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    },
+    {
+      "ref": "WFS-003",
+      "id": "F026",
+      "name": "WFS: Paycheck Corrections Improvements",
+      "category": "WFS",
+      "view": "company",
+
+      "objective": "Backend workflow - consolidates multiple amendment tickets into single correction case",
+      "expected_behavior": "N/A - Backend workflow only",
+
+      "navigation": {
+        "route": "https://qbo.intuit.com/app/payroll",
+        "steps": ["N/A - Backend"],
+        "wait_for": "N/A"
+      },
+
+      "evidence": {
+        "type": "backend",
+        "screenshot_count": 0,
+        "filename_pattern": "N/A - Backend Performance"
+      },
+
+      "notes_template": {
+        "intuit": "Back-office workflow improvement - consolidates multiple amendment tickets into single correction case using event sourcing pattern.",
+        "internal": "Backend workflow change. Customer-facing UI unchanged. No seeding or automation needed."
+      },
+
+      "last_validation": {
+        "date": "2025-12-03",
+        "status": "YES"
+      }
+    }
+  ]
+}

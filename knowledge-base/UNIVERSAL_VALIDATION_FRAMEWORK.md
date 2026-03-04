@@ -216,6 +216,12 @@ FASE 3: Decisoes
 - Elements visiveis sao os corretos?
 - Header mostra contexto correto?
 
+### [ ] 6. Conteudo e demo-safe?
+- Content scan executado na pagina? (profanity, placeholders, PII)
+- NENHUMA palavra ofensiva nos dados visiveis?
+- Se multi-entity: scan feito em TODAS as entidades (parent + children)?
+- Ferramenta: `tbx-feature-checker` ContentScanner ou scan manual das listas
+
 ---
 
 ## PARTE 4: ANTI-PATTERNS COM EXEMPLOS REAIS
@@ -321,7 +327,37 @@ CERTO: Entender que Feature Compatibility e DOCUMENTACAO
 
 ---
 
-### ANTI-PATTERN 5: Ambiente Errado
+### ANTI-PATTERN 5: Conteudo Inapropriado em Demo
+
+**Exemplo real (NV2 Dimensions - Mar 2026):**
+```
+ERRADO: Entregar ambiente sem content scan
+  - Prospect abre Dimensions e encontra palavra obscena
+  - Dados gerados por automacao sem curadoria
+  - Ninguem verificou antes do demo
+
+CERTO: Executar content scan ANTES de entregar
+  - Rodar tbx-feature-checker com content_scan checks
+  - Verificar TODAS as paginas com dados user-facing
+  - Cobrir parent + TODOS os child entities
+  - Scan bilingual (EN + PT)
+```
+
+**Porque acontece:**
+- Dados gerados automaticamente (activity plans, ingestion)
+- Nomes/valores inseridos sem revisao humana
+- Foco apenas em funcionalidade, nao em conteudo
+- Child entities nao verificadas (so olham parent)
+
+**Como evitar:**
+- Content scan automatizado como parte do health check
+- 7 paginas obrigatorias: Dimensions, Customers, Vendors, Products, COA, Employees, Projects
+- Scan TODAS as entidades em ambientes multi-entity
+- Nunca entregar sem scan
+
+---
+
+### ANTI-PATTERN 6: Ambiente Errado
 
 **Exemplo real (WR-029 Enhanced Amendments CA):**
 ```
@@ -400,7 +436,14 @@ INICIO
   +---> < 100KB ---> Investigar
   |
   v
-[11. Documentar evidence notes]
+[11. Content scan da pagina]
+  |
+  +---> Profanity found ---> CRITICAL: Remediar ANTES de entregar
+  |
+  +---> Placeholder found ---> MEDIUM: Substituir por dados realisticos
+  |
+  v
+[12. Documentar evidence notes]
   |
   v
 FIM
@@ -483,7 +526,7 @@ WR-001 a WR-014, WR-016 a WR-020, WR-021, WR-022, WR-024, WR-025, WR-027, WR-028
 
 ---
 
-*Framework Universal de Validacao v1.0*
-*Aplicavel a: TCO, Construction, Product, TCO Demo, e ambientes futuros*
-*Criado: 2025-12-29*
+*Framework Universal de Validacao v1.1*
+*Aplicavel a: TCO, Construction, Non-Profit (NV2), Product, TCO Demo, e ambientes futuros*
+*Criado: 2025-12-29 | Atualizado: 2026-03-04 (Content Safety Shield)*
 *Claude Code + Feedback Usuario*

@@ -1,0 +1,7 @@
+line-length = 120
+
+[lint]
+# E402: Module imports not at top — intentional in scripts that modify sys.path
+ignore = ["E402"]
+
+[format]

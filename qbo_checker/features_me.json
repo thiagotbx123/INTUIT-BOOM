@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "ME Features - Consolidated View only (rodada separada)",
+  "features": [
+    {
+      "id": "F001",
+      "name": "ME: Consolidated View",
+      "description": "Fusion UI for multi-entity IES customers with consolidated view dashboard",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Consolidated View",
+        "fallback_text": "Consolidated",
+        "type": "arrow"
+      }
+    },
+    {
+      "id": "F002",
+      "name": "ME: Reporting Enhancements",
+      "description": "Drill down from consolidated reports, Transaction Journal with Dimensions",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "sidebar_click", "text": "Reports"},
+          {"action": "wait", "seconds": 2}
+        ]
+      },
+      "highlight": {
+        "text_target": "Consolidated",
+        "fallback_text": "Standard reports",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F003",
+      "name": "ME: Intercompany Expense Allocations",
+      "description": "Vendor Credits and Credit Cards in intercompany transactions",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "sidebar_click", "text": "Accounting"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany transactions",
+        "fallback_text": "Intercompany",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F004",
+      "name": "ME: Dynamic Allocations",
+      "description": "Dynamic allocation rules for intercompany transactions",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "sidebar_click", "text": "Accounting"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany account mapping",
+        "fallback_text": "account mapping",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F005",
+      "name": "ME: Intercompany Sales Enhancements",
+      "description": "Enhanced intercompany sales transactions",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/homepage"},
+          {"action": "wait", "seconds": 2},
+          {"action": "sidebar_click", "text": "Accounting"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Intercompany",
+        "fallback_text": "IC Type",
+        "type": "box"
+      }
+    },
+    {
+      "id": "F006",
+      "name": "ME: New Shared Chart of Accounts Access Point",
+      "description": "New access point for shared chart of accounts",
+      "projects": ["TCO"],
+      "companies": ["Consolidated"],
+      "navigation": {
+        "type": "multi_step",
+        "steps": [
+          {"action": "goto", "url": "https://qbo.intuit.com/app/sharedcoa"},
+          {"action": "wait", "seconds": 3}
+        ]
+      },
+      "highlight": {
+        "text_target": "Shared chart of accounts",
+        "fallback_text": "Account",
+        "type": "box"
+      }
+    }
+  ]
+}
