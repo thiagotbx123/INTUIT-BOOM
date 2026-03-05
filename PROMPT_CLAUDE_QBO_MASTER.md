@@ -769,11 +769,130 @@ SELECT 'bills', COUNT(*) FROM quickbooks_bills WHERE dataset_id = '{ID}';
 
 ---
 
-## 14. CHANGELOG & VERSIONING
+## 14. RETROSPECTIVA — APRENDIZADO PÓS-SWEEP
+
+**Após cada sweep, ANTES do resumo final, executar esta rotina de aprendizado.**
+
+### 14.1 O que capturar
+
+```
+Para cada sweep, registrar:
+
+1. ROTAS
+   - Alguma rota nova que funcionou e não estava documentada?
+   - Alguma rota documentada que deu 404 agora?
+   - Algum redirect inesperado?
+   → Atualizar seção 3 (Rotas QBO Confirmadas) se houver mudança
+
+2. UI CHANGES
+   - O QBO mudou algum label, botão ou fluxo desde o último sweep?
+   - Algum campo moveu de lugar? (ex: "Notes" mudou de aba)
+   - Algum seletor/ref que funcionava antes não funciona mais?
+   → Anotar para atualizar as instruções de estação
+
+3. PADRÕES DE ERRO RECORRENTES
+   - Qual tipo de erro apareceu mais? (placeholder? campo vazio? preço invertido?)
+   - Qual entity/company teve mais problemas?
+   - Qual estação demorou mais? Por quê?
+   → Ajustar prioridade das próximas estações
+
+4. DADOS DO AMBIENTE
+   - Revenue/Net Income atual por entity (snapshot financeiro)
+   - Número de customers, vendors, products, invoices, bills
+   - Novos records que apareceram desde o último sweep
+   → Servem como baseline para detectar anomalias no próximo sweep
+
+5. BLOQUEIOS
+   - O que travou e não consegui resolver?
+   - Foi 2FA? Feature flag? Permissão? Bug do QBO?
+   - Existe workaround que descobri?
+   → Registrar para não perder tempo na próxima vez
+
+6. EFICIÊNCIA
+   - Quanto tempo levou o sweep total?
+   - Quais estações foram skip (nada a corrigir)?
+   - Quais estações consumiram mais tempo?
+   → Otimizar ordem e profundidade para próximo sweep
+```
+
+### 14.2 Onde salvar
+
+```
+ARQUIVO: C:\Users\adm_r\Clients\intuit-boom\knowledge-base\sweep-learnings\{DATASET}_{DATA}.md
+
+FORMATO:
+# Sweep Learnings — {DATASET} — {DATA}
+
+## Snapshot Financeiro
+| Entity | Revenue | Net Income | Margin | Customers | Vendors | Invoices |
+...
+
+## Rotas
+- NOVA: /app/xxx funciona para yyy
+- QUEBROU: /app/zzz agora dá 404 (antes funcionava)
+
+## UI Changes
+- Campo "Notes" moveu para aba "Details" em vendor edit
+- Botão "Save" agora é "Save and close" por default
+
+## Padrões de Erro
+- 8/10 customers sem company name (padrão: dataset tire_shop sempre vem assim)
+- Products com nomes em português (dataset construction tem mistura EN/PT)
+
+## Bloqueios
+- Employee edit: 2FA toda vez (não tem workaround via UI)
+- WR-012 Calculated Fields: feature flag OFF desde Jan/2026
+
+## Eficiência
+- Tempo total: 35 min
+- Mais demorado: Estação 5 (customers) — 12 min para enrichar 5 records
+- Skip: Estação 7 (employees — 2FA bloqueia, não vale tentar)
+
+## Melhorias pro Prompt
+- Adicionar: sempre checar se "Terms" dropdown tem opções carregadas antes de selecionar
+- Adicionar: vendor edit em IES tem delay de 3s após clicar Edit antes de fields aparecerem
+```
+
+### 14.3 Como usar na próxima vez
+
+```
+ANTES de iniciar um novo sweep no mesmo dataset:
+1. Ler o último arquivo de learnings: knowledge-base/sweep-learnings/{DATASET}_*.md
+2. Pegar o snapshot financeiro anterior como baseline
+3. Pular estações que são consistentemente skip
+4. Aplicar workarounds conhecidos
+5. Comparar: Revenue mudou? Novos records apareceram? Algo quebrou?
+
+ISSO CRIA UM CICLO:
+  Sweep 1 → aprende rotas, tempos, padrões
+  Sweep 2 → mais rápido, foca onde importa
+  Sweep 3 → quase automático, só valida e corrige delta
+  Sweep N → rotina de 15 min em vez de 45 min
+```
+
+### 14.4 Atualizar o PROMPT_MASTER
+
+```
+Se o learning revelar algo que muda o prompt:
+1. Editar a seção relevante do PROMPT_CLAUDE_QBO_MASTER.md
+2. Atualizar o CHANGELOG (seção 15)
+3. Commitar com: "fix(sweep): [descrição curta do learning]"
+
+EXEMPLOS de updates:
+- Rota /app/dimensions passou a funcionar → atualizar seção 3.3 (rotas que não funcionam)
+- Employee 2FA é 100% bloqueio → mudar Estação 7 para "skip by default"
+- Novo campo "Secondary Email" em customer edit → adicionar no checklist da Estação 5
+```
+
+---
+
+## 15. CHANGELOG & VERSIONING
 
 | Versão | Data | Mudança |
 |--------|------|---------|
 | 1.0 | 2026-03-05 | Versão inicial — consolidação de todos os prompts existentes |
+| 2.0 | 2026-03-05 | Rewrite: modo autônomo ver-corrigir-avançar, login via Playwright, sem screenshots |
+| 2.1 | 2026-03-05 | Adicionada seção 14: Retrospectiva e aprendizado pós-sweep com ciclo de melhoria |
 
 ---
 
