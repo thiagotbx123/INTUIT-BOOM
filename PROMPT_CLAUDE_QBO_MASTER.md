@@ -685,6 +685,7 @@ Salvar em `C:\Users\adm_r\Downloads\QBO_SWEEP_{PROJETO}_{DATA}.md` apenas quando
 4. Switch → BlueCraft (main child) → Estações 1, 2, 7
 5. Switch → Consolidated → Estações 2, 3
 6. Resumo final no chat
+7. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
 ### NV2 (non_profit) — Sweep completo
@@ -695,6 +696,7 @@ Salvar em `C:\Users\adm_r\Downloads\QBO_SWEEP_{PROJETO}_{DATA}.md` apenas quando
 4. Switch → Rise → Estações 1, 2, 5 (corrigir inline)
 5. Switch → Response → Estações 1, 2, 5 (corrigir inline)
 6. Resumo final no chat
+7. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
 ### NV1 / NV3 / CANADA — Sweep rápido
@@ -703,6 +705,7 @@ Salvar em `C:\Users\adm_r\Downloads\QBO_SWEEP_{PROJETO}_{DATA}.md` apenas quando
 2. FASE ZERO: P&L + BS rápido
 3. Estações 1-6 (core financial health, corrigir inline)
 4. Resumo final no chat
+5. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
 ---
@@ -818,10 +821,17 @@ Para cada sweep, registrar:
    → Otimizar ordem e profundidade para próximo sweep
 ```
 
-### 14.2 Onde salvar
+### 14.2 Onde salvar e COMMITAR
 
 ```
 ARQUIVO: C:\Users\adm_r\Clients\intuit-boom\knowledge-base\sweep-learnings\{DATASET}_{DATA}.md
+
+REGRA OBRIGATÓRIA: Após salvar o arquivo de learnings, SEMPRE commitar:
+  git add knowledge-base/sweep-learnings/{DATASET}_{DATA}.md
+  git add PROMPT_CLAUDE_QBO_MASTER.md  (se houve update no prompt)
+  git commit -m "sweep({DATASET}): learnings {DATA} — [resumo curto]"
+
+O aprendizado SÓ TEM VALOR se estiver no Git. Arquivo local sem commit = conhecimento perdido.
 
 FORMATO:
 # Sweep Learnings — {DATASET} — {DATA}
