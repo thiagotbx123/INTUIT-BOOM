@@ -272,12 +272,20 @@ VER:
   → Calcular margem mentalmente
 CORRIGIR SE:
   → Categoria com nome placeholder → ir para COA (/app/chartofaccounts?jobId=accounting), renomear
-  → P&L negativo → investigar via DB (query de produto com cost > price), reportar ao usuário
+  → P&L negativo → CORRIGIR INLINE (criar journal entry de receita para inverter o saldo)
   → Zerado → mudar período do report para "All Dates" ali mesmo
 MARGENS ESPERADAS:
   - Tire/Auto: 25-35% | Construction: 3-15% | Prof Services: 20-40%
-  - Non-Profit: breakeven ±5% | Manufacturing: 15-25%
-AVANÇAR quando: P&L mostra números realistas e positivos
+  - Non-Profit: 2-10% positivo (surplus) | Manufacturing: 15-25%
+
+⚠️ REGRA OBRIGATÓRIA: Net Income DEVE ser POSITIVO em TODAS as entidades.
+   → Ambiente de demo = empresa saudável. Negativo = impressão ruim.
+   → Non-Profit NÃO é exceção. ONGs viáveis têm surplus (excedente), não déficit.
+   → Se P&L negativo: criar Journal Entry com receita realista (Grant Revenue, Donations)
+     até Net Income ficar positivo com margem confortável (+$50K a +$200K).
+   → Não basta "quase zero" — precisa ser claramente positivo no dashboard.
+
+AVANÇAR quando: P&L mostra números realistas e NET INCOME POSITIVO em todas as entidades
 ```
 
 ### Estação 3: BALANCE SHEET

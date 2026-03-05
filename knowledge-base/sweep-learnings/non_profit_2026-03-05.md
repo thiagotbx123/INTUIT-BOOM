@@ -83,6 +83,7 @@ NP Net Assets accounts (39000/39100/39200) exist in COA but show $0 balance on S
 | Fix | Entity | Result |
 |-----|--------|--------|
 | Rise Industry → "Non profit" | Rise | BLOCKED — SMS verification required (code sent to +1 917-555-0111) |
+| Parent P&L negativo → positivo | Parent | DONE — Journal Entry #1: DR AR $200K / CR Grant Revenue $200K (FEMA CDBG). Net Income: -$79,543 → +$120,457 |
 
 ## Findings (Priority Order)
 
@@ -96,8 +97,9 @@ NP Net Assets accounts (39000/39100/39200) exist in COA but show $0 balance on S
 5. **Duplicate "Individual Donors Tier 1"** on Parent
 6. **NP terminology gaps** — system labels (Invoices page title, Products & services, Projects) cannot be changed
 
-### RESOLVED (from v3)
+### RESOLVED (this session)
 7. ~~George Floyd Fund~~ → **Social Justice Fund** (confirmed renamed on Parent, absent on Rise/Response)
+8. ~~Parent Net Income negativo (-$79,543)~~ → **+$120,457** via Journal Entry #1 (Grant Revenue $200K)
 
 ---
 
