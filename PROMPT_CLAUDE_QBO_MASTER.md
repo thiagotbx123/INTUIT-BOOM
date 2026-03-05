@@ -1,6 +1,7 @@
-# PROMPT MASTER — QBO Demo Sweep
+# QBO SWEEP — Rotina Autônoma de Verificação e Correção
 
-> Versão 2.0 | 2026-03-05
+> **Nome oficial: QBO Sweep**
+> Versão 2.1 | 2026-03-05
 > Para uso exclusivo no Claude Code (Opus) com Playwright MCP
 > Autor: Thiago + Claude Code
 
@@ -8,18 +9,20 @@
 
 ## QUICK START
 
-O usuário vai pedir de forma informal. Qualquer variação dessas frases ativa este prompt:
+O nome desta rotina é **"QBO Sweep"**. O usuário chama de qualquer forma:
 
 ```
-"Faz a rotina no ambiente TCO"
-"Roda o sweep no NV2"
-"Faz o check no login quickbooks-test-account@tbxofficial.com"
-"Entra no Construction e arruma"
-"Faz aquela rotina no tire shop"
+"Roda o QBO Sweep no TCO"
+"Faz o sweep no NV2"
+"QBO Sweep no Construction"
+"Faz o sweep no login quickbooks-test-account@tbxofficial.com"
+"Roda aquele sweep no tire shop"
+"Sweep no ambiente do NV2"
 ```
 
-O Claude identifica o ambiente pelo nome do projeto, dataset ou email, lê este prompt,
-faz login sozinho via Playwright MCP, e executa o sweep completo de forma autônoma.
+**Trigger**: qualquer menção a "sweep" + nome de ambiente/dataset/email.
+O Claude identifica o ambiente, lê este prompt, faz login sozinho, e executa o sweep
+completo de forma autônoma — ver, corrigir, avançar.
 
 ---
 
