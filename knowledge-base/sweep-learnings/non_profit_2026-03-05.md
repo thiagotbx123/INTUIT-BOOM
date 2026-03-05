@@ -126,5 +126,33 @@ All stations across all 3 entities scanned for:
 - Stations audited: 16 (10 Parent + 3 Rise + 3 Response)
 - Content scans: 16 stations x multiple areas
 - Violations: 0
-- Fixes attempted: 1 (blocked by SMS)
-- Fixes completed: 0
+- Fixes attempted: 4 (1 blocked by SMS)
+- Fixes completed: 3 (P&L fix, 3 projects added, duplicate donor verified)
+
+---
+
+## Playwright Patterns Learned
+
+### Journal Entry (`/app/journal`)
+- Account inputs: `aria-label="Choose an account N"` (N=line number)
+- Amount: `aria-label="Amount"` — auto-balances credits when debit filled
+- Description: `aria-label="account_line_descriptionV3_N"`
+- Name/Donor: `aria-label="Choose a payee line N"` — **REQUIRED for AR lines**
+- Rows are **lazy-activated** — line 2+ inputs only exist after clicking on the row
+- Error "must choose a donor in the Name field" → select a donor from combobox
+
+### Project Creation (`/app/projects` → "New project")
+- Dialog has AI Project Management Agent panel (ignore it)
+- Project name: `textbox "project name"`
+- Customer/Donor: `combobox "Who's the project for?"` → listbox with all donors
+- Dates: `textbox "Start date Start date Calendar"` format MM/DD/YYYY
+- Notes: last `textarea` in dialog
+- Save: `button "Save and close"` (use exact: true)
+- Donor selection auto-fills email + billing address
+- Batch creation: navigate → click → fill → save → navigate back → repeat
+
+### Financial Health Rule
+- Net Income MUST be positive on ALL entities, no exceptions
+- Non-Profit target: 2-10% surplus (not breakeven)
+- Fix method: Journal Entry with Grant Revenue / Donations to offset deficit
+- Always verify via Statement of Activity report after fix
