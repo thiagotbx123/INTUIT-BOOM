@@ -81,3 +81,19 @@ tools/health-checker/output/
 
 # Content PDFs
 content*.pdf
+
+# PPT template extracted (large, generated)
+template_extracted/
+template_pptx.zip
+
+# Drive import cache
+drive-import/
+
+# Data cache files
+data/hyperlink_cache.json
+data/knowledge_extracted.json
+data/winter_release_content.txt
+
+# One-off prompt/doc copies
+tbx_vps_master_prompt*.md
+QBO_DEEP_MASTER_v1*.txt

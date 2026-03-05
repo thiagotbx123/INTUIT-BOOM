@@ -19,20 +19,19 @@ from qbo_checker.login import start_round, is_in_qbo, ACCOUNTS
 # ── Config ────────────────────────────────────────────────────
 ACCOUNTS["NV2_NP"] = {
     "name": "NV2 Non-Profit",
-    "email": "quickbooks-np-tbxdemo@tbxofficial.com",
-    "password": "TestBox!23",
-    "totp_secret": "",  # Fill with actual TOTP secret
+    "email": "quickbooks-test-account-nv2@tbxofficial.com",
+    "password": "TestBox123!",
+    "totp_secret": "UEQVBRBXS4TDUMDZJJUZ6Z3JAB5ODR3Q",
     "companies": {
-        "parent": "Parent",
-        "rise": "Rise",
-        "response": "Response",
-        "consolidated": "Consolidated",
+        "parent": "Vala Non Profit (Par.)",
+        "rise": "Rise (Ch.)",
+        "response": "Response (Ch)",
+        "consolidated": "Vista consolidada",
     },
     "company_ids": {
-        "parent": "",  # Fill with actual company IDs
-        "rise": "",
-        "response": "",
-        "consolidated": "",
+        "parent": "9341454156795459",
+        "rise": "9341454156776829",
+        "response": "9341454156790557",
     },
     "default_company": "parent",
 }
