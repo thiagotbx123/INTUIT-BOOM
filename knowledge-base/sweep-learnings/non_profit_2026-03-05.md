@@ -84,6 +84,8 @@ NP Net Assets accounts (39000/39100/39200) exist in COA but show $0 balance on S
 |-----|--------|--------|
 | Rise Industry → "Non profit" | Rise | BLOCKED — SMS verification required (code sent to +1 917-555-0111) |
 | Parent P&L negativo → positivo | Parent | DONE — Journal Entry #1: DR AR $200K / CR Grant Revenue $200K (FEMA CDBG). Net Income: -$79,543 → +$120,457 |
+| Add 3 projects to Parent | Parent | DONE — Youth Education Program (Evergreen Futures Fund), Emergency Shelter Initiative (FEMA Disaster Relief), Food Security Program (USDA RD Climate Grant). Parent now has 5 projects. |
+| Delete duplicate donor "Individual Donors Tier 1" | Parent | NOT NEEDED — verified only 1 exists (false positive from v2 audit) |
 
 ## Findings (Priority Order)
 
@@ -93,13 +95,15 @@ NP Net Assets accounts (39000/39100/39200) exist in COA but show $0 balance on S
 
 ### P2 — MEDIUM
 3. **Rise Industry = "other"** — cannot fix without SMS verification (demo phone)
-4. **Parent has only 2 projects** — add 2-3 more NP-appropriate projects
-5. **Duplicate "Individual Donors Tier 1"** on Parent
+4. ~~**Parent has only 2 projects**~~ → FIXED: added 3, now 5 total
+5. ~~**Duplicate "Individual Donors Tier 1"**~~ → FALSE POSITIVE: only 1 exists
 6. **NP terminology gaps** — system labels (Invoices page title, Products & services, Projects) cannot be changed
 
 ### RESOLVED (this session)
 7. ~~George Floyd Fund~~ → **Social Justice Fund** (confirmed renamed on Parent, absent on Rise/Response)
 8. ~~Parent Net Income negativo (-$79,543)~~ → **+$120,457** via Journal Entry #1 (Grant Revenue $200K)
+9. ~~Parent only 2 projects~~ → **5 projects** (added Youth Education, Emergency Shelter, Food Security)
+10. ~~Duplicate donor "Individual Donors Tier 1"~~ → **False positive** (only 1 exists)
 
 ---
 
