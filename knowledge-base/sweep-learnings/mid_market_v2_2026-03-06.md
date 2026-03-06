@@ -125,7 +125,7 @@
 
 ---
 
-### [6/12] Vendors + Bills — Score: 5/10
+### [6/12] Vendors + Bills — Score: 4/10
 
 | Metric | Value |
 |--------|-------|
@@ -143,6 +143,36 @@
 | Daniel Green | -$544,001.67 | Massive negative |
 
 **P2 — Test Vendor:** "Mr IDT TEst Tester" (test@idt.com)
+
+#### Bills Realism Analysis (Deep Dive)
+
+**2026 Unpaid Bills (12 total, ~$35K):**
+
+| Vendor | Frequency | Amount Range | Pattern |
+|--------|-----------|-------------|---------|
+| Abdi Structural Engineering | 4x (Jan-Mar) | $620-$820 | Monthly recurring |
+| Blue Bird Insurance | 4x (Jan-Mar) | $1,100-$21,237 | Monthly + annual premium |
+| Al-Farsi Security Services | 1x (Jan) | $346 | One-time |
+| Costa Masonry | 1x (Feb) | $5,000 | One-time |
+| Concrete Depot | 1x (Mar) | $1,950 | One-time (due soon) |
+
+**Aging Distribution:**
+| Bucket | Count | Notes |
+|--------|-------|-------|
+| Overdue (>0 days) | 10 | 5-64 days overdue |
+| Due Soon (0-7 days) | 1 | Concrete Depot |
+| Due Later (7+ days) | 1 | — |
+
+**Realism Verdict: NOT REALISTIC (P1)**
+
+1. **Zero bill payments** — `$0 paid in last 30 days`. A real construction company pays its vendors. The recurring bills (insurance, engineering) would be autopaid or paid monthly.
+2. **100% open balance on ALL bills** — No partial payments on any bill. Every single bill shows full amount = open balance, meaning literally nothing has ever been paid.
+3. **$11.1M AP with $0 payments = impossible** — A company with $531K monthly income cannot sustain $11.1M in unpaid bills. Construction Materials Inc. alone ($5.4M) exceeds annual revenue expectations.
+4. **Recurring vendor pattern is GOOD** — Abdi (structural engineering monthly) and Blue Bird (insurance monthly) are realistic construction vendor patterns. The amounts ($620-$1,100/mo) are reasonable.
+5. **Missing vendor diversity** — Only 5 vendors have 2026 bills. A construction company of this size would have 15-20+ active vendors monthly (subcontractors, suppliers, equipment rental, utilities).
+6. **No bill payment history** — Combined with zero payments, this means the AP workflow is completely dormant. In a demo, the "Pay bills" feature would show nothing has ever been used.
+
+**Recommendation:** Create 5-10 bill payments (mark some bills as paid) to show realistic AP workflow. Prioritize paying the recurring vendors (Abdi, Blue Bird) to demonstrate bill payment flow.
 
 ---
 
@@ -297,30 +327,31 @@
 
 ## Findings (Priority Order)
 
-### P1 — HIGH (6 findings)
+### P1 — HIGH (7 findings)
 1. **Jason Cioran $20B open balance** — Customer "Cioran's Acorns" with $19,999,999,999 AR. Makes Balance Sheet show $7.7B in assets. UNFIXABLE without admin access to delete/void invoice.
-2. **Petty Cash $20.8M** — Highest bank inflation across any environment. No corresponding real balance.
-3. **Guardian Growth MMA $10.9M inflation** — Same issue across all construction environments.
-4. **1010 Checking discrepancy** — Bank $460K vs QB -$1.83M. Error 103 on bank feed.
-5. **AP $11.1M** — 28 overdue bills. Construction Materials Inc. alone = $5.4M (50% of AP). Daniel Green -$544K.
-6. **262 pending bank transactions** — Uncategorized, stale bank connections (449 days).
+2. **Bills/AP completely dormant — $0 payments ever made** — 12 unpaid bills in 2026 (~$35K), ALL with 100% open balance. $11.1M total AP with literally zero bill payments recorded. Construction Materials Inc. alone = $5.4M. The "Pay bills" workflow has never been used. A real construction company pays its vendors monthly — this makes AP demos unusable.
+3. **Petty Cash $20.8M** — Highest bank inflation across any environment. No corresponding real balance.
+4. **Guardian Growth MMA $10.9M inflation** — Same issue across all construction environments.
+5. **1010 Checking discrepancy** — Bank $460K vs QB -$1.83M. Error 103 on bank feed.
+6. **Daniel Green vendor -$544K** — Massive negative vendor balance (overpayment or data error).
+7. **262 pending bank transactions** — Uncategorized, stale bank connections (449 days).
 
 ### P2 — MEDIUM (9 findings)
-7. **5 test customer names** — 12345 Auction, Andrew Allen Test x2, TESTER, IDT Tester, Gov Agency XYZ.
-8. **6 test project names** — IDT TEST, Project 1, Project A, Example Proj, Test x2, Title 1.
-9. **1 test vendor** — "Mr IDT TEst Tester" (test@idt.com).
-10. **Product "nnnn..." spam** — 70+ character test input.
-11. **Customer address** — "abc New Court, Sunnyvale, CO 94087-3204" (placeholder + wrong state).
-12. **Keystone Construction self-reference** — $880K customer balance owed to itself.
-13. **3 projects with extreme negative margins** (>-800%).
-14. **Abigail Patel on 42% of projects** — Customer concentration risk.
-15. **Cash account -$1.46M** — Negative cash balance.
+8. **5 test customer names** — 12345 Auction, Andrew Allen Test x2, TESTER, IDT Tester, Gov Agency XYZ.
+9. **6 test project names** — IDT TEST, Project 1, Project A, Example Proj, Test x2, Title 1.
+10. **1 test vendor** — "Mr IDT TEst Tester" (test@idt.com).
+11. **Product "nnnn..." spam** — 70+ character test input.
+12. **Customer address** — "abc New Court, Sunnyvale, CO 94087-3204" (placeholder + wrong state).
+13. **Keystone Construction self-reference** — $880K customer balance owed to itself.
+14. **3 projects with extreme negative margins** (>-800%).
+15. **Abigail Patel on 42% of projects** — Customer concentration risk.
+16. **Cash account -$1.46M** — Negative cash balance.
 
 ### P3 — LOW (4 findings)
-16. **15+ overdue payroll filings** — Q4 2025 tax filings, new hire reports.
-17. **No website** in company settings.
-18. **$0 paid to vendors** in last 30 days.
-19. **$3.7M unbilled income** — Large unbilled backlog.
+17. **15+ overdue payroll filings** — Q4 2025 tax filings, new hire reports.
+18. **No website** in company settings.
+19. **Low vendor diversity in 2026** — Only 5 vendors have 2026 bills. Construction company this size should have 15-20+ active vendors.
+20. **$3.7M unbilled income** — Large unbilled backlog.
 
 ---
 
