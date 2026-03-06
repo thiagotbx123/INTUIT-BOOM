@@ -1,7 +1,7 @@
 # QBO SWEEP — Rotina Autônoma de Verificação e Correção
 
 > **Nome oficial: QBO Sweep**
-> Versão 2.1 | 2026-03-05
+> Versão 3.0 | 2026-03-06
 > Para uso exclusivo no Claude Code (Opus) com Playwright MCP
 > Autor: Thiago + Claude Code
 
@@ -172,48 +172,106 @@ print(totp.now())
 
 ## 3. ROTAS QBO CONFIRMADAS
 
-### 3.1 Rotas core (funcionam em todos os ambientes)
+### 3.1 ACCOUNTING (8 rotas)
 
-| Área | Rota | Notas |
-|------|------|-------|
-| Homepage | `/app/homepage` | Dashboard principal |
-| Customers | `/app/customers` | NP: "Donors" |
-| Invoices | `/app/invoices` | NP: "Pledges" |
-| Vendors | `/app/vendors` | |
-| Bills | `/app/bills` | |
-| Employees | `/app/employees` | |
-| Payroll | `/app/payroll` | |
-| Products/Services | `/app/items` | NP: "Programs" |
-| Projects | `/app/projects` | NP: "Grants" |
-| Banking | `/app/banking` | Bank feeds + reconciliação |
-| Chart of Accounts | `/app/chartofaccounts?jobId=accounting` | OBRIGATÓRIO usar `?jobId=accounting` |
-| Reports | `/app/reportlist` | SEMPRE usar lista, nunca URL direto do report |
-| Settings | `/app/settings` | |
-| Journal Entry | `/app/journal` | |
-| Reconcile | `/app/reconcile` | |
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/homepage` | Dashboard | DEEP 1 | Dashboard principal |
+| `/app/chartofaccounts?jobId=accounting` | Chart of Accounts | DEEP 11 | OBRIGATÓRIO `?jobId=accounting` |
+| `/app/journal` | Journal Entry | DEEP | Criar JEs inline |
+| `/app/reconcile` | Reconcile | SURFACE S10 | Status de reconciliação |
+| `/app/banking` | Banking | DEEP 4 | Bank feeds + categorização |
+| `/app/class` | Dimensions/Classes | SURFACE S14 | NP: hub de dimensions |
+| `/app/budgets` | Budgets | SURFACE S13 | Construction: budget tracking |
+| `/app/auditlog` | Audit Log | SURFACE S19 | Atividade recente |
 
-### 3.2 Rotas avançadas (podem não existir em todos os ambientes)
+### 3.2 SALES (7 rotas)
 
-| Área | Rota | Requer |
-|------|------|--------|
-| KPI Scorecard | `/app/business-intelligence/kpi-scorecard` | Feature flag BI |
-| Report Builder | `/app/reportbuilder` | Feature flag BI |
-| Management Reports | `/app/managementreports` | Feature flag BI |
-| Bill Pay | `/app/billpay` | Feature flag |
-| Dimension Assignment | `/app/dimensions/assignment` | IES |
-| Dimensions Hub (NP) | `/app/class` | NP only (NÃO usar `/app/dimensions` = 404) |
-| Shared COA | `/app/sharedcoa` | Multi-Entity |
-| Workflow Automation | `/app/workflowautomation` | IES |
-| Time Tracking | `/app/time` | QBTime |
-| Sales Tax | `/app/salestax` | |
-| Inventory | `/app/inventory` | Feature flag |
-| Budgets | `/app/budgets` | Construction |
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/customers` | Customers | DEEP 5 | NP: "Donors" |
+| `/app/invoices` | Invoices | DEEP 5 | NP: "Pledges" |
+| `/app/estimates` | Estimates | SURFACE S1 | Orçamentos |
+| `/app/salesorders` | Sales Orders | SURFACE S2 | Construction only |
+| `/app/paymentlinks` | Payment Links | SURFACE S16 | Online payments |
+| `/app/subscriptions` | Subscriptions | SURFACE S17 | Recurring revenue |
+| `/app/receipts` | Receipts | SURFACE S12 | Receipt capture |
 
-### 3.3 Rotas que NÃO funcionam
+### 3.3 EXPENSES (5 rotas)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/vendors` | Vendors | DEEP 6 | Top 5 enrichment |
+| `/app/bills` | Bills | DEEP 6 | AP health + overdue check |
+| `/app/expenses` | Expenses | SURFACE S4 | Direct expenses |
+| `/app/purchaseorders` | Purchase Orders | SURFACE S3 | PO tracking |
+| `/app/recurring` | Recurring Transactions | SURFACE S5 | Automated transactions |
+
+### 3.4 WORKFORCE (4 rotas)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/employees` | Employees | DEEP 7 | 2FA may block edits |
+| `/app/payroll` | Payroll | DEEP 7 | Payroll runs + history |
+| `/app/time` | Time Tracking | SURFACE S8 | QBTime entries |
+| `/app/myaccountant` | My Accountant | SURFACE S18 | Accountant invite status |
+
+### 3.5 OPERATIONS (4 rotas)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/items` | Products/Services | DEEP 8 | NP: "Programs" |
+| `/app/projects` | Projects | DEEP 9 | NP: "Grants" |
+| `/app/fixedassets` | Fixed Assets | SURFACE S6 | Advanced feature |
+| `/app/revenuerecognition` | Revenue Recognition | SURFACE S7 | Advanced feature |
+
+### 3.6 REPORTS & BI (6 rotas)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/reportlist` | Report List | DEEP 2,3,10 | SEMPRE usar lista, nunca URL direto |
+| `/app/business-intelligence/kpi-scorecard` | KPI Scorecard | DEEP 10 | Feature flag BI |
+| `/app/reportbuilder` | Report Builder | DEEP 10 | Custom reports |
+| `/app/managementreports` | Management Reports | CONDITIONAL C14 | Advanced |
+| `/app/workflows` | Workflows | SURFACE S15 | Automations |
+| `/app/salestax` | Sales Tax | SURFACE S9 | Tax filing status |
+
+### 3.7 SETTINGS (2 rotas)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/settings` | Settings Hub | DEEP 12 | All settings panels |
+| `/app/settings?panel=company` | Company Info | DEEP 12 | Legal name, industry, address |
+
+### 3.8 MULTI-ENTITY (4 rotas — só em ambientes multi-entity)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/sharedcoa` | Shared COA | CONDITIONAL C2 | Contas compartilhadas |
+| `/app/multi-entity-transactions?jobId=accounting` | IC Transactions | CONDITIONAL C3 | Intercompany |
+| `/app/homepage?switchToConsolidated=true` | Consolidated View | CONDITIONAL C1 | Vista consolidada |
+| `/app/multiEntitySwitchCompany?companyId={ID}` | Entity Switch | — | Troca de empresa |
+
+### 3.9 ADVANCED FEATURES (5 rotas — podem não existir)
+
+| Rota | Página | Tier | Notas |
+|------|--------|------|-------|
+| `/app/billpay` | Bill Pay | — | Feature flag |
+| `/app/dimensions/assignment` | Dimension Assignment | — | IES only |
+| `/app/workflowautomation` | Workflow Automation | — | IES only |
+| `/app/inventory` | Inventory | — | Feature flag |
+| Via menu | Lending | SURFACE S20 | May not be visible |
+
+### 3.10 Rotas que NÃO funcionam (known 404s)
 ```
 /app/dimensions          → 404 (usar /app/class para NP ou settings para standard)
 /app/reports/profitandloss → 404 no IES (usar /app/reportlist → clicar no report)
 /app/chart-of-accounts   → 404 (usar /app/chartofaccounts?jobId=accounting)
+/app/customerlist        → 404 (usar /app/customers)
+/app/vendorlist          → 404 (usar /app/vendors)
+/app/donors              → 404 (usar /app/customers — NP label automático)
+/app/company             → 404 (usar /app/settings?panel=company)
+/app/accounts            → 404 (usar /app/chartofaccounts?jobId=accounting)
 ```
 
 ---
@@ -247,7 +305,7 @@ OUTPUT MENTAL: "Esta demo é sobre [descrição]. Revenue ~$X, Net ~$Y, X entiti
 
 ---
 
-## 5. AS 10 ESTAÇÕES — MODO VER-CORRIGIR-AVANÇAR
+## 5. AS 12 ESTAÇÕES (TIER 1 — DEEP) — MODO VER-CORRIGIR-AVANÇAR
 
 Cada estação: entrar na tela, ler tudo via snapshot, corrigir o que estiver errado
 ali mesmo, validar a correção, passar para a próxima. **Sem parar para reportar.**
@@ -350,7 +408,17 @@ CORRIGIR SE (ali mesmo no detail):
 DEPOIS:
   → /app/bills → browser_snapshot() → verificar que há bills
   → CUIDADO: NÃO criar bills sem necessidade (aumenta COGS, pode negativar P&L)
-AVANÇAR quando: top 5 vendors estão completos
+OVERDUE BILLS CHECK (obrigatório):
+  → Na lista de bills, verificar aging distribution:
+    - Quantas bills Overdue vs Current?
+    - Bills overdue > 90 dias com valores altos = RED FLAG (demo não parece real)
+    - Bills overdue de 2+ anos = data stale, anotar
+  → /app/reportlist → clicar "A/P Aging Summary"
+    - Ler distribuição: Current, 1-30, 31-60, 61-90, 91+ dias
+    - Se 80%+ está em 91+ dias → P1: AP aging is unrealistic
+    - Se AP total é absurdamente alto vs Revenue → P1: inflated AP
+  → Anotar: total bills, total overdue, aging distribution, AP total
+AVANÇAR quando: top 5 vendors estão completos e AP aging foi verificado
 ```
 
 ### Estação 7: EMPLOYEES & PAYROLL
@@ -408,43 +476,145 @@ CORRIGIR SE:
 AVANÇAR quando: reports principais mostram dados
 ```
 
+### Estação 11: CHART OF ACCOUNTS (COA)
+```
+Rota: /app/chartofaccounts?jobId=accounting
+VER:
+  → browser_snapshot() → ler lista completa de contas
+  → Verificar hierarquia: Assets, Liabilities, Equity, Revenue, COGS, Expenses
+  → Contar total de contas
+  → Verificar se subtipos fazem sentido para o setor
+CORRIGIR SE:
+  → Conta com nome placeholder ("Account 1", "Test Account") → renomear
+  → Conta duplicada aparente → investigar (pode ser legítima)
+  → Hierarquia incompleta (ex: sem COGS para empresa que vende produtos) → anotar
+  → Non-Profit: verificar Unrestricted/Restricted Net Assets, Grant Revenue, Donations,
+    FASB expense categories (Program, Management, Fundraising)
+AVANÇAR quando: COA tem estrutura lógica completa para o tipo de negócio
+```
+
+### Estação 12: SETTINGS — COMPANY INFO
+```
+Rota: /app/settings?panel=company
+VER:
+  → browser_snapshot() → ler informações da empresa
+  → Verificar: Legal Name, DBA, Industry, Address, Phone, EIN/Tax ID
+  → Verificar: Fiscal Year start, Tax Form
+CORRIGIR SE:
+  → NÃO corrigir settings automaticamente (TIER 8.3 — reportar ao usuário)
+  → Apenas REGISTRAR problemas encontrados:
+    - Industry errado (ex: "other" em vez de indústria real)
+    - Address vazio ou placeholder
+    - Phone vazio
+    - Legal name vs DBA inconsistente
+    - EIN ausente
+AVANÇAR quando: settings verificados, problemas anotados para report final
+```
+
 ---
 
-## 5. CHECKS ADICIONAIS POR TIPO DE AMBIENTE
+## 5B. TIER 2 — SURFACE SCAN PROTOCOL (20 páginas)
 
-### 5.1 Multi-Entity (TCO, Construction, NV2)
+Páginas visitadas rapidamente. Protocolo: carregou? tem dados? placeholder/profanity? Anotar e seguir.
+**Regra: surface scan NÃO corrige, só registra.**
+
+### Tabela de páginas
+
+| # | Página | Rota | Verifica |
+|---|--------|------|----------|
+| S1 | Estimates | `/app/estimates` | Quantidade, nomes realistas |
+| S2 | Sales Orders | `/app/salesorders` | Existe? Tem dados? |
+| S3 | Purchase Orders | `/app/purchaseorders` | Existe? Tem dados? |
+| S4 | Expenses | `/app/expenses` | Tem expenses registradas? |
+| S5 | Recurring Transactions | `/app/recurring` | Recorrências configuradas? |
+| S6 | Fixed Assets | `/app/fixedassets` | Módulo existe? Tem assets? |
+| S7 | Revenue Recognition | `/app/revenuerecognition` | Módulo existe? (Advanced) |
+| S8 | Time Tracking | `/app/time` | Módulo existe? Tem entries? |
+| S9 | Sales Tax | `/app/salestax` | Configurado? Filing status? |
+| S10 | Reconcile | `/app/reconcile` | Contas reconciliadas? Pendentes? |
+| S11 | Bank Rules | Via `/app/banking` → Rules tab | Quantas rules ativas? |
+| S12 | Receipts | `/app/receipts` | Tem receipts capturados? |
+| S13 | Budgets | `/app/budgets` | Tem budgets? (Construction) |
+| S14 | Dimensions/Classes | `/app/class` | Quantas ativas? Nomes? |
+| S15 | Workflows | `/app/workflows` | Tem automações configuradas? |
+| S16 | Payment Links | `/app/paymentlinks` | Feature existe? |
+| S17 | Subscriptions | `/app/subscriptions` | Feature existe? Tem dados? |
+| S18 | My Accountant | `/app/myaccountant` | Status do convite? |
+| S19 | Audit Log | `/app/auditlog` | Acessível? Tem atividade? |
+| S20 | Lending | Via menu | Feature visível? |
+
+### Protocolo por página (~30s cada, ~10 min total)
+
 ```
-□ Consolidated View acessível via dropdown
-□ Entity switcher funciona sem logout
-□ Relatórios consolidados mostram dados de todas as entities
-□ Intercompany transactions visíveis
-□ Shared COA (/app/sharedcoa) acessível
-□ Cada entity tem dados próprios (não são cópias)
+Para cada página TIER 2:
+1. browser_navigate(rota)
+2. browser_wait_for(time=3)
+3. browser_evaluate(() => {
+     const text = document.body.innerText;
+     const lines = text.split('\n').filter(l => l.trim().length > 0);
+     return {
+       title: document.title,
+       lineCount: lines.length,
+       first20: lines.slice(0, 20),
+       hasData: lines.length > 10,
+       hasPlaceholder: /\b(TBX|Lorem|Sample|Foo|Bar|TODO)\b/i.test(text),
+       has404: /not found|404|page doesn't exist/i.test(text)
+     };
+   })
+4. Anotar: ✓ (tem dados) | ○ (vazio) | ✗ (404) | ⚠ (conteúdo suspeito)
+5. Próxima página (sem parar para corrigir no surface scan)
 ```
 
-### 5.2 Construction (Keystone, Canada)
-```
-□ Project Phases v2 configurados
-□ Cost Groups definidos
-□ Budgets v3 com dados
-□ AIA Billing (lien waiver workflow)
-□ Certified Payroll Report (WH-347)
-□ Sales Orders (se disponível)
-□ Change Orders em projetos
-```
+### Símbolos de status
 
-### 5.3 Non-Profit (NV2)
-```
-□ Terminologia NP aplicada (Donors, Pledges, Programs, Grants)
-□ Statement of Activity (não P&L)
-□ Statement of Financial Position (não BS)
-□ Net Assets (Unrestricted/Restricted) no COA
-□ Dimensions: 5+ ativas (Classes, Functional Expense, Funding, Program, Restriction)
-□ Nenhuma dimension com nome ofensivo ou insensível
-□ Form 990 structure no COA
-```
+| Símbolo | Significado | Ação |
+|---------|-------------|------|
+| ✓ | Página carregou com dados | Nenhuma |
+| ○ | Página carregou mas vazia | Anotar no resumo final |
+| ✗ | 404 ou page not found | Anotar como BLOCKED |
+| ⚠ | Placeholder/profanity detectado | Flag como P2 no resumo |
 
-### 5.4 AI Features (todos os ambientes IES)
+---
+
+## 5C. TIER 3 — CONDITIONAL CHECKS (14 checks)
+
+Checks executados **somente se o ambiente suportar**. Cada um com condição de ativação.
+
+### Multi-Entity (condição: ambiente tem IES multi-entity)
+
+| # | Feature | Rota | O que verifica |
+|---|---------|------|----------------|
+| C1 | Consolidated View | Entity switcher → Consolidated | Acesso funcional, dados aparecem |
+| C2 | Shared COA | `/app/sharedcoa` | Contas compartilhadas entre entities |
+| C3 | IC Transactions | `/app/multi-entity-transactions?jobId=accounting` | Transações intercompany existem |
+| C4 | Consolidated Reports | `/app/reportlist` no Consolidated | Reports consolidados com dados |
+
+### Construction (condição: dataset = construction)
+
+| # | Feature | Rota | O que verifica |
+|---|---------|------|----------------|
+| C5 | Project Phases | Dentro de `/app/projects` | Phases v2 configurados |
+| C6 | Cost Groups | Via Products | Cost groups definidos |
+| C7 | AIA Billing | Via Projects | Lien waiver workflow |
+| C8 | Certified Payroll | Via Payroll Reports | WH-347 report |
+
+### Non-Profit (condição: dataset = non_profit)
+
+| # | Feature | Rota | O que verifica |
+|---|---------|------|----------------|
+| C9 | NP Terminology | Verificar labels em cada tela | Donors, Pledges, Programs, Grants |
+| C10 | Statement of Activity | Via reportlist | NP P&L equivalent |
+| C11 | Dimensions (NP) | `/app/class` | 5+ ativas, nomes adequados |
+
+### Advanced / IES (condição: feature flag ativo)
+
+| # | Feature | Rota | O que verifica |
+|---|---------|------|----------------|
+| C12 | Customer Hub | `/app/customers` → Leads, Proposals | CRM features avançadas |
+| C13 | Intuit Intelligence | Conversational BI em reports | NL queries funcionam |
+| C14 | Management Reports | `/app/managementreports` | Reports personalizáveis |
+
+### AI Features (verificar em TODOS os ambientes IES)
 ```
 □ Intuit Assist icon visível no header/homepage
 □ Accounting AI: Ready-to-Post no banking
@@ -455,7 +625,7 @@ AVANÇAR quando: reports principais mostram dados
 □ Conversational BI: NL queries em reports
 ```
 
-### 5.5 Winter Release Features (WR-001 a WR-029)
+### Winter Release Features (WR-001 a WR-029)
 ```
 Verificar cada WR feature conforme o FEATURE_VALIDATION_CANON.json:
 - WR-001 a WR-008: AI Agents
@@ -491,7 +661,7 @@ COMO SCANEAR:
 
 ## 7. DEMO REALISM AUDIT
 
-Após as 10 estações, avaliar realismo geral:
+Após as 12 estações + surface scan, avaliar realismo geral:
 
 ```
 CRITÉRIOS (1-10 cada):
@@ -582,16 +752,27 @@ SCORE FINAL = média dos 10 critérios
 ### 9.1 Durante execução (chat) — mínimo
 ```
 Logado em TCO → Apex Tire
-[1/10] Dashboard ✓
-[2/10] P&L ✓ Revenue $5.2M, Net $1.3M (25%)
-[3/10] BS ✓ Assets $8.1M, balanced
-[4/10] Banking — categorizei 8 transações
-[5/10] Customers — enriched top 5 (company name, email, address, notes)
-[6/10] Vendors ✓ top 5 já completos
-[7/10] Employees ✓ 13 employees, payroll ok
-[8/10] Products — renomei 3 placeholders, fixei 1 preço invertido
-[9/10] Projects — criei 2 projetos novos
-[10/10] Reports ✓ KPI ok, dashboards ok
+
+--- TIER 1: Deep Stations (12) ---
+[1/12] Dashboard ✓
+[2/12] P&L ✓ Revenue $5.2M, Net $1.3M (25%)
+[3/12] BS ✓ Assets $8.1M, balanced
+[4/12] Banking — categorizei 8 transações
+[5/12] Customers — enriched top 5 (company name, email, address, notes)
+[6/12] Vendors ✓ top 5 completos, AP aging ok
+[7/12] Employees ✓ 13 employees, payroll ok
+[8/12] Products — renomei 3 placeholders, fixei 1 preço invertido
+[9/12] Projects — criei 2 projetos novos
+[10/12] Reports ✓ KPI ok, dashboards ok
+[11/12] COA ✓ 45 contas, estrutura ok
+[12/12] Settings ✓ nome legal, industry, endereço ok
+
+--- TIER 2: Surface Scan (20 pages) ---
+[S1-S20] ✓14 ○4 ✗2 (details below if issues found)
+
+--- TIER 3: Conditional (N applicable) ---
+[C1-C14] ✓8 N/A 6
+
 → Switching to Global Tread...
 ```
 
@@ -599,15 +780,23 @@ Logado em TCO → Apex Tire
 ```
 SWEEP COMPLETO — TCO (tire_shop)
 Conta: quickbooks-testuser-tco-tbxdemo
-Duração: ~45 min
+Duração: ~55 min
 Companies: Apex ✓ | Global ✓ | RoadReady ✓ | Consolidated ✓
 
+--- TIER 1: Deep Stations (12/12) ---
 CORRIGIDO (17 items):
 - 5 customers enriched (company name + email + address)
 - 3 products renomeados (placeholder → realista)
 - 1 preço invertido corrigido (Lot Clearing: $111→$866 sell, $866→$111 cost)
 - 8 bank transactions categorizadas
 - 2 projetos criados
+
+--- TIER 2: Surface Scan (20 pages) ---
+✓14 | ○4 (Estimates, Subscriptions, Lending, Payment Links — sem dados)
+✗2 (Fixed Assets 404, Revenue Recognition 404)
+
+--- TIER 3: Conditional (8/14 applicable) ---
+✓6 | ⚠2 (Consolidated reports slow, IC txns limited)
 
 PENDENTE (3 items):
 - Employee "John Test2" — 2FA bloqueou edit
@@ -678,21 +867,22 @@ Salvar em `C:\Users\adm_r\Downloads\QBO_SWEEP_{PROJETO}_{DATA}.md` apenas quando
 ```
 1. Login → Apex Tire
 2. FASE ZERO: Consolidated P&L + BS → mapear contexto
-3. Estações 1-10 em Apex (ver-corrigir-avançar)
-4. Switch → Global Tread → Estações 1, 5, 6, 8 (corrigir inline)
-5. Switch → RoadReady → Estações 1, 5, 9 (corrigir inline)
-6. Switch → Consolidated View → Estações 2, 3, 10 (validar consolidação)
-7. Resumo final no chat
+3. Estações 1-12 em Apex (ver-corrigir-avançar)
+4. SURFACE SCAN: 20 páginas TIER 2 em Apex (~10 min)
+5. Switch → Global Tread → Estações 1, 5, 6, 8 (corrigir inline)
+6. Switch → RoadReady → Estações 1, 5, 9 (corrigir inline)
+7. Switch → Consolidated View → Estações 2, 3, 10 + CONDITIONAL CHECKS (validar consolidação)
+8. Resumo final no chat (formato 3-tier)
 ```
 
 ### CONSTRUCTION — Sweep completo
 ```
 1. Login → Keystone Parent
 2. FASE ZERO: Consolidated P&L + BS
-3. Estações 1-10 + checks construction (Phases, Budgets, AIA, Certified Payroll)
+3. Estações 1-12 + SURFACE SCAN + CONDITIONAL checks construction (Phases, Budgets, AIA, Certified Payroll)
 4. Switch → BlueCraft (main child) → Estações 1, 2, 7
-5. Switch → Consolidated → Estações 2, 3
-6. Resumo final no chat
+5. Switch → Consolidated → Estações 2, 3 + Conditional C1-C4
+6. Resumo final no chat (formato 3-tier)
 7. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
@@ -700,20 +890,22 @@ Salvar em `C:\Users\adm_r\Downloads\QBO_SWEEP_{PROJETO}_{DATA}.md` apenas quando
 ```
 1. Login → Parent (Vala NP)
 2. FASE ZERO: Statement of Activity + Statement of Financial Position
-3. Estações 1-10 com terminologia NP + Dimensions (/app/class)
-4. Switch → Rise → Estações 1, 2, 5 (corrigir inline)
-5. Switch → Response → Estações 1, 2, 5 (corrigir inline)
-6. Resumo final no chat
-7. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
+3. Estações 1-12 com terminologia NP + SURFACE SCAN + Dimensions (/app/class)
+4. CONDITIONAL: C9-C11 (NP-specific) + C1-C4 (Multi-Entity)
+5. Switch → Rise → Estações 1, 2, 5 (corrigir inline)
+6. Switch → Response → Estações 1, 2, 5 (corrigir inline)
+7. Resumo final no chat (formato 3-tier)
+8. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
 ### NV1 / NV3 / CANADA — Sweep rápido
 ```
 1. Login → empresa principal
 2. FASE ZERO: P&L + BS rápido
-3. Estações 1-6 (core financial health, corrigir inline)
-4. Resumo final no chat
-5. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
+3. Estações 1-8 (core financial health, corrigir inline)
+4. SURFACE SCAN: 20 páginas TIER 2 (~10 min)
+5. Resumo final no chat (formato 3-tier)
+6. Commitar learnings: `git add knowledge-base/sweep-learnings/ && git commit`
 ```
 
 ---
@@ -914,6 +1106,7 @@ EXEMPLOS de updates:
 | 1.0 | 2026-03-05 | Versão inicial — consolidação de todos os prompts existentes |
 | 2.0 | 2026-03-05 | Rewrite: modo autônomo ver-corrigir-avançar, login via Playwright, sem screenshots |
 | 2.1 | 2026-03-05 | Adicionada seção 14: Retrospectiva e aprendizado pós-sweep com ciclo de melhoria |
+| 3.0 | 2026-03-06 | Cobertura total — 12 deep + 20 surface + 14 conditional = 46 checks. Overdue bills check na Estação 6. 50+ rotas mapeadas. |
 
 ---
 
