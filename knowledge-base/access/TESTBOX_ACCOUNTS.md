@@ -1,19 +1,30 @@
 # TestBox QBO Accounts
 
-> Extracted on 2026-03-05 from TestBox admin CSV export. Total: **58 accounts**.
+> Extracted on 2026-03-05 from TestBox admin CSV export + Linear/Slack discovery.
+> Updated: 2026-03-06. Total: **~70+ accounts** (58 CSV + 12+ Linear discovery).
 
 ## Summary
 
-| Dataset | Count |
-|---------|-------|
-| (no dataset) | 30 |
-| canada_construction | 2 |
-| construction | 16 |
-| manufacturing | 2 |
-| non_profit | 1 |
-| professional_services | 2 |
-| tire_shop | 5 |
-| **TOTAL** | **58** |
+| Dataset | Count (CSV) | Linear Discovery |
+|---------|-------------|-----------------|
+| (no dataset) | 30 | +4 |
+| canada_construction | 2 | +1 |
+| construction | 16 | — |
+| manufacturing | 2 | — |
+| non_profit | 1 | — |
+| professional_services | 2 | +1 |
+| tire_shop | 5 | +1 |
+| mid_market | — | +1 |
+| intuit_internal | — | +1 |
+| pedals_sandbox | — | +3 |
+| **TOTAL** | **58** | **+12** |
+
+## References
+
+- **Master Credentials Spreadsheet**: `https://docs.google.com/spreadsheets/d/1OpAbB_dl5cNJJJLgT4pYWPIBxK0vsLV4XVjQJLFOb80/edit?gid=60751905`
+- **Coda Setup Guide**: Search Linear for QBO setup documentation
+- **TOTP Bypass**: Accounts with `+55` phone numbers (Brazilian) use fixed code `000000` instead of TOTP
+- **TOTP Storage**: DynamoDB `tbx-totp-secrets` table (prod)
 
 ---
 
@@ -1231,3 +1242,173 @@
 | **Created** | 2024-02-26 |
 | **Failed** | false |
 | **Attempts** | 0 |
+
+---
+
+## Linear Discovery (2026-03-05)
+
+> Accounts found via Linear issue search (300+ issues scanned across all teams).
+> These were NOT in the original CSV export. Some fields unknown — marked with `?`.
+
+---
+
+### Mid Market
+
+### mid_market
+
+| Field | Value |
+|-------|-------|
+| **Email** | `mid_market@tbxofficial.com` |
+| **Password** | `h6gr9otd*7ekLQ` |
+| **TOTP Token** | `7OXWEFVAMN6WNN24IITYHINFR7OLS7IH` |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear search — mid-market dataset |
+
+---
+
+### Canada Construction (DEMO — different from canada-dev)
+
+### quickbooks-test-canada
+
+| Field | Value |
+|-------|-------|
+| **Email** | `quickbooks-test-canada@tbxofficial.com` |
+| **Password** | `TestBox123!` |
+| **TOTP Token** | ? (may share with canada-dev) |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — Canada DEMO account (distinct from canada-dev) |
+
+---
+
+### Professional Services (Dev)
+
+### quickbooks-test-account-nv1-dev
+
+| Field | Value |
+|-------|-------|
+| **Email** | `quickbooks-test-account-nv1-dev@tbxofficial.com` |
+| **Password** | `TestBox123!` |
+| **TOTP Token** | ? |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — NV1 dev/test account |
+
+---
+
+### Tire Shop (TCO Demo — different TOTP)
+
+### quickbooks-tco-tbxdemo
+
+| Field | Value |
+|-------|-------|
+| **Email** | `quickbooks-tco-tbxdemo@tbxofficial.com` |
+| **Password** | `TestBox!23` |
+| **TOTP Token** | `UGGQO4EAKKZTOK7XVXGOXHLUYZHBDXV7` |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — TCO demo with NEW TOTP (different from quickbooks-testuser-tco-tbxdemo) |
+
+---
+
+### Intuit Internal
+
+### lawton_ursrey
+
+| Field | Value |
+|-------|-------|
+| **Email** | `lawton_ursrey@intuit.com` |
+| **Password** | `Elderpurslane90*` |
+| **TOTP Token** | ? |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — Intuit internal account |
+
+---
+
+### No Dataset (Linear Discovery)
+
+### tabsqbo2
+
+| Field | Value |
+|-------|-------|
+| **Email** | `tabsqbo2@tbxofficial.com` |
+| **Password** | `Testbox123.` |
+| **TOTP Token** | ? |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — tabs/test account |
+
+### product_marketing
+
+| Field | Value |
+|-------|-------|
+| **Email** | `product_marketing@tbxofficial.com` |
+| **Password** | ? |
+| **TOTP Token** | ? |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — product marketing parent account |
+
+### product_marketing.child
+
+| Field | Value |
+|-------|-------|
+| **Email** | `product_marketing.child@tbxofficial.com` |
+| **Password** | ? |
+| **TOTP Token** | ? |
+| **Environment** | production |
+| **State** | ? |
+| **Created** | ? |
+| **Source** | Linear — product marketing child account |
+
+---
+
+### Pedals-Cloud Sandbox Accounts
+
+> 15+ sandbox accounts found at `@pedals-cloud.net`. Used for dev/staging.
+> Common pattern: `testbox_dev{N}@pedals-cloud.net` or `testbox_{team}@pedals-cloud.net`.
+
+### testbox_dev64
+
+| Field | Value |
+|-------|-------|
+| **Email** | `testbox_dev64@pedals-cloud.net` |
+| **Password** | ? |
+| **TOTP Token** | ? |
+| **Environment** | sandbox |
+| **State** | active (used for Gong dev) |
+| **Source** | Linear — dev sandbox, 40 active users |
+
+### testbox_dev39
+
+| Field | Value |
+|-------|-------|
+| **Email** | `testbox_dev39@pedals-cloud.net` |
+| **Password** | ? |
+| **TOTP Token** | ? |
+| **Environment** | sandbox |
+| **State** | ? |
+| **Source** | Linear — dev sandbox |
+
+### testbox_dev42
+
+| Field | Value |
+|-------|-------|
+| **Email** | `testbox_dev42@pedals-cloud.net` |
+| **Password** | ? |
+| **TOTP Token** | ? |
+| **Environment** | sandbox |
+| **State** | ? |
+| **Source** | Linear — dev sandbox |
+
+> **Note**: Additional pedals-cloud accounts exist (dev1-dev99 range).
+> Full list available in Master Credentials Spreadsheet.
