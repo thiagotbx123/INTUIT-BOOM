@@ -1,4 +1,6 @@
-# Product Events Team Test — QBO Sweep Report
+# Product Events Team Test — QBO Sweep Report (v1)
+> **REVALIDATED** — See `product_events_revalidation_2026-03-06.md` for latest (Score: 5/10 CONFIRMED)
+
 **Date:** 2026-03-05
 **Account:** quickbooks-tbx-product-events-team-test@tbxofficial.com
 **Password:** TestBox123!
