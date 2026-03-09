@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}QBO Demo Manager{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%236d2482'/><text x='16' y='22' font-family='Inter,sans-serif' font-size='16' font-weight='700' fill='white' text-anchor='middle'>Q</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/static/style.css">
@@ -12,7 +13,9 @@
 <body>
     <div class="container">
         <header>
-            <h1><span>QBO</span> Demo Manager</h1>
+            <h1>
+                <svg width="22" height="22" viewBox="0 0 32 32" style="vertical-align: -3px; margin-right: 6px"><rect width="32" height="32" rx="6" fill="#6d2482"/><text x="16" y="22" font-family="Inter,sans-serif" font-size="16" font-weight="700" fill="white" text-anchor="middle">Q</text></svg><span>QBO</span> Demo Manager
+            </h1>
             <div class="header-actions">
                 {% block header_actions %}{% endblock %}
             </div>

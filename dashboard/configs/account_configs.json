@@ -10,5 +10,11 @@
     "overrides": {},
     "notes": "",
     "hidden": false
+  },
+  "mid-market": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
   }
 }

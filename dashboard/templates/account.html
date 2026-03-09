@@ -2,6 +2,11 @@
 
 {% block title %}{{ account.label }} — QBO Demo Manager{% endblock %}
 
+{% block header_actions %}
+<a href="/config?account={{ account.shortcode }}" class="btn">Configure Sweep</a>
+<a href="/" class="btn">Dashboard</a>
+{% endblock %}
+
 {% block content %}
 <a href="/" class="back-link">&larr; Back to Dashboard</a>
 
@@ -20,7 +25,11 @@
         </div>
         <div class="card-row">
             <span class="label">Password</span>
-            <span class="value">{{ account.password }}</span>
+            <span class="value masked-field">
+                <span class="masked-value" data-revealed="false" data-real="{{ account.password }}">••••••••••</span>
+                <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
+                <button class="btn btn-sm" onclick="copyToClipboard('{{ account.password }}', this)">Copy</button>
+            </span>
         </div>
         <div class="card-row">
             <span class="label">MFA</span>
@@ -28,23 +37,29 @@
         </div>
         <div class="card-row">
             <span class="label">TOTP Secret</span>
-            <span class="value">
-                <code id="totp-secret" style="font-size: 11px; color: var(--text-dim)">{{ account.totp_secret }}</code>
-                <button class="btn btn-sm" style="margin-left: 6px"
-                        onclick="copyToClipboard('{{ account.totp_secret }}', this)">Copy</button>
+            <span class="value masked-field">
+                <code class="masked-value mono" data-revealed="false" data-real="{{ account.totp_secret }}">••••••••••••••••</code>
+                <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
+                <button class="btn btn-sm" onclick="copyToClipboard('{{ account.totp_secret }}', this)">Copy</button>
             </span>
         </div>
         <div class="card-row">
             <span class="label">Dataset</span>
-            <span class="value">{{ account.dataset }}</span>
+            <span class="value"><span class="badge badge-dataset-{{ account.dataset }}">{{ account.dataset }}</span></span>
         </div>
         <div class="card-row">
             <span class="label">Retool</span>
-            <span class="value">{{ account.retool_env }}</span>
+            <span class="value">
+                {% if account.retool_env == 'NOT_IN_RETOOL' %}
+                <span class="badge badge-warning">NOT IN RETOOL</span>
+                {% else %}
+                {{ account.retool_env }}
+                {% endif %}
+            </span>
         </div>
         <div class="card-row">
             <span class="label">Last Login</span>
-            <span class="value">{{ account.last_login or '\u2014' }}</span>
+            <span class="value">{{ account.last_login or '—' }}</span>
         </div>
     </div>
 
@@ -70,7 +85,7 @@
         {% if account.sweep and account.sweep.score is not none %}
         <div class="card-row">
             <span class="label">Date</span>
-            <span class="value">{{ account.sweep.date or '\u2014' }}</span>
+            <span class="value">{{ account.sweep.date or '—' }}</span>
         </div>
         <div class="card-row">
             <span class="label">Score</span>
@@ -78,7 +93,7 @@
         </div>
         <div class="card-row">
             <span class="label">Report</span>
-            <span class="value">{{ account.sweep.report_file or '\u2014' }}</span>
+            <span class="value mono" style="font-size: 12px">{{ account.sweep.report_file or '—' }}</span>
         </div>
         {% if account.sweep.p1_findings %}
         <ul class="p1-list">
@@ -90,7 +105,7 @@
         {% else %}
         <div class="card-row">
             <span class="label">Status</span>
-            <span class="value pending">Not yet swept</span>
+            <span class="value" style="color: var(--text-muted)">Not yet swept</span>
         </div>
         {% endif %}
     </div>
@@ -98,9 +113,9 @@
 
 <!-- Notes -->
 {% if account.notes %}
-<div class="card" style="margin-bottom: 24px">
+<div class="card" style="margin-bottom: 28px">
     <h3>Notes</h3>
-    <div style="font-size: 12px; color: var(--text-dim)">{{ account.notes }}</div>
+    <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6">{{ account.notes }}</div>
 </div>
 {% endif %}
 
@@ -108,7 +123,9 @@
 <div class="actions">
     <button class="btn btn-primary"
             hx-post="/api/test-login/{{ account.shortcode }}"
-            hx-target="#action-result">
+            hx-target="#action-result"
+            hx-indicator="#login-spinner">
+        <span class="spinner" id="login-spinner"></span>
         Test Login
     </button>
     <a href="/config?account={{ account.shortcode }}" class="btn">
@@ -121,4 +138,21 @@
 </div>
 
 <div id="action-result"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleMask(el) {
+        const btn = el.nextElementSibling;
+        if (el.dataset.revealed === 'false') {
+            el.textContent = el.dataset.real;
+            el.dataset.revealed = 'true';
+            btn.textContent = 'Hide';
+        } else {
+            el.textContent = el.tagName === 'CODE' ? '••••••••••••••••' : '••••••••••';
+            el.dataset.revealed = 'false';
+            btn.textContent = 'Show';
+        }
+    }
+</script>
 {% endblock %}

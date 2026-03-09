@@ -2,8 +2,9 @@
 
 {% block header_actions %}
 <a href="/config" class="btn">Sweep Config</a>
-<button class="btn btn-primary" hx-post="/api/sync-retool" hx-target="#sync-result" hx-indicator="#sync-spinner">
-    Sync Retool <span id="sync-spinner" class="htmx-indicator">...</span>
+<button class="btn btn-primary" hx-post="/api/sync-retool" hx-target="#sync-result" hx-indicator=".sync-indicator">
+    <span class="spinner sync-indicator"></span>
+    Sync Retool
 </button>
 {% endblock %}
 
@@ -31,7 +32,7 @@
         {% set datasets = accounts | map(attribute='dataset') | unique | sort %}
         <button class="filter-btn active" data-dataset="all" onclick="setDatasetFilter('all', this)">All</button>
         {% for ds in datasets %}
-        <button class="filter-btn" data-dataset="{{ ds }}" onclick="setDatasetFilter('{{ ds }}', this)">{{ ds }}</button>
+        <button class="filter-btn" data-dataset="{{ ds }}" onclick="setDatasetFilter('{{ ds }}', this)">{{ ds | replace('_', ' ') }}</button>
         {% endfor %}
     </div>
 </div>
@@ -69,13 +70,19 @@
                        onchange="toggleRow(this)">
             </td>
             <td>{{ acct.label }}</td>
-            <td><span class="badge badge-single">{{ acct.dataset }}</span></td>
-            <td>{{ acct.entity_count }}</td>
+            <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
+            <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
             <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
             <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
-            <td>{{ acct.retool_env }}</td>
             <td>
-                <a href="/account/{{ acct.shortcode }}" class="btn btn-sm btn-ghost" onclick="event.stopPropagation()">Open</a>
+                {% if acct.retool_env == 'NOT_IN_RETOOL' %}
+                <span class="badge badge-warning">NOT IN RETOOL</span>
+                {% else %}
+                <span class="badge-retool-{{ acct.retool_env }}">{{ acct.retool_env }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="/account/{{ acct.shortcode }}" class="btn btn-sm" onclick="event.stopPropagation()">Open</a>
             </td>
         </tr>
         {% endfor %}

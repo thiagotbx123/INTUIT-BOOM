@@ -252,14 +252,12 @@
 <!-- Action Bar -->
 <div class="action-bar">
     <div class="action-bar-left">
-        <span class="config-summary" id="config-summary">
-            Loading...
-        </span>
+        <span class="config-summary" id="config-summary"></span>
     </div>
     <div class="action-bar-right">
         <button class="btn" onclick="saveProfile()">Save Profile</button>
         <button class="btn" onclick="saveAccountConfig()">Save Account Config</button>
-        <button class="btn btn-primary" onclick="generateAndActivate()">Activate Sweep</button>
+        <button class="btn btn-primary" id="activate-btn" onclick="generateAndActivate()">Activate Sweep</button>
     </div>
 </div>
 
@@ -386,7 +384,10 @@
             setTimeout(() => document.getElementById('account-select').style.borderColor = '', 2000);
             return;
         }
-        // Save account config first
+        const btn = document.getElementById('activate-btn');
+        btn.disabled = true;
+        btn.textContent = 'Launching...';
+
         const notes = document.getElementById('account-notes')?.value || '';
         await fetch('/api/config/save-account', {
             method: 'POST',
@@ -400,7 +401,8 @@
         const res = await fetch(`/api/config/activate-sweep?profile=${currentProfile}&account=${currentAccount}`, {method: 'POST'});
         const html = await res.text();
         document.getElementById('prompt-output').innerHTML = html;
-        // Auto-scroll to result
+        btn.disabled = false;
+        btn.textContent = 'Activate Sweep';
         document.getElementById('prompt-output').scrollIntoView({behavior: 'smooth'});
     }
 
@@ -409,7 +411,7 @@
         toast.className = `toast ${type}`;
         toast.textContent = msg;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
+        setTimeout(() => toast.remove(), 3500);
     }
 
     // Init

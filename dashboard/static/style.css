@@ -130,6 +130,7 @@ header h1 span {
 }
 
 .btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .btn-primary {
     background: var(--tbx-purple);
@@ -271,7 +272,6 @@ td {
     font-size: 13px;
 }
 
-tr:hover td { background: var(--bg-hover); }
 tr:last-child td { border-bottom: none; }
 .clickable-row { cursor: pointer; }
 
@@ -481,6 +481,11 @@ tr:last-child td { border-bottom: none; }
     font-size: 13px;
 }
 
+.credential-line .label {
+    color: var(--text-secondary);
+    margin-right: 6px;
+}
+
 .copy-hint {
     font-size: 12px;
     color: var(--text-muted);
@@ -617,6 +622,10 @@ tr:last-child td { border-bottom: none; }
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
     overflow-x: auto;
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hover) transparent;
 }
 
 .tab {
@@ -955,6 +964,84 @@ tr:last-child td { border-bottom: none; }
 }
 
 .generated-prompt pre:hover { border-color: var(--tbx-purple); }
+
+/* ─── Zebra Striping ─── */
+tbody tr:nth-child(even) td { background: var(--bg-card); }
+tbody tr:nth-child(odd) td { background: transparent; }
+tbody tr:hover td { background: var(--bg-hover) !important; }
+
+/* ─── Score/Entity Column Alignment (dashboard table only) ─── */
+table:not(.surface-table) > thead th:nth-child(5),
+table:not(.surface-table) > thead th:nth-child(6),
+#account-table td:nth-child(5),
+#account-table td:nth-child(6) { text-align: center; }
+
+/* ─── Dataset Badges (per-type color) ─── */
+[class^="badge-dataset-"] { background: var(--bg-elevated); color: var(--text-secondary); }
+.badge-dataset-construction { background: var(--tbx-purple-soft); color: var(--tbx-purple-glow); }
+.badge-dataset-canada_construction { background: var(--red-soft); color: var(--red); }
+.badge-dataset-non_profit { background: var(--green-soft); color: var(--green); }
+.badge-dataset-manufacturing { background: var(--yellow-soft); color: var(--yellow); }
+.badge-dataset-professional_services,
+.badge-dataset-prof_services { background: rgba(6, 182, 212, 0.12); color: #06b6d4; }
+.badge-dataset-tire_shop { background: var(--blue-soft); color: var(--blue); }
+
+/* ─── Warning/Retool Badges ─── */
+.badge-warning {
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid var(--red-border);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.badge-retool-production { color: var(--green); }
+.badge-retool-staging { color: var(--yellow); }
+
+/* ─── Masked Fields ─── */
+.masked-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.masked-value {
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    min-width: 100px;
+}
+
+.masked-value[data-revealed="true"] {
+    color: var(--text);
+    letter-spacing: normal;
+}
+
+/* ─── Loading Spinner ─── */
+.spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+.htmx-request .spinner,
+.spinner.htmx-request { display: inline-block; }
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Tooltip for +C notation ─── */
+td[title]:not(:empty) { cursor: help; }
+
+.config-tabs::-webkit-scrollbar { height: 3px; }
+.config-tabs::-webkit-scrollbar-track { background: transparent; }
+.config-tabs::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 999px; }
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {

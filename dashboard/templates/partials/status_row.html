@@ -1,11 +1,27 @@
-<tr class="clickable-row" onclick="window.location='/account/{{ acct.shortcode }}'">
+<tr class="clickable-row account-row"
+    data-shortcode="{{ acct.shortcode }}"
+    data-status="{{ acct.score_class }}"
+    data-dataset="{{ acct.dataset }}"
+    data-swept="{{ 'yes' if acct.sweep and acct.sweep.score is not none else 'no' }}"
+    onclick="window.location='/account/{{ acct.shortcode }}'">
     <td><span class="dot {{ acct.score_class }}"></span></td>
+    <td onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-toggle" checked
+               data-shortcode="{{ acct.shortcode }}"
+               onchange="toggleRow(this)">
+    </td>
     <td>{{ acct.label }}</td>
-    <td>{{ acct.dataset }}</td>
-    <td>{{ acct.entity_count }}</td>
+    <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
+    <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
     <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
-    <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '\u2014' }}</td>
-    <td>{{ acct.retool_env }}</td>
+    <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
+    <td>
+        {% if acct.retool_env == 'NOT_IN_RETOOL' %}
+        <span class="badge badge-warning">NOT IN RETOOL</span>
+        {% else %}
+        <span class="badge-retool-{{ acct.retool_env }}">{{ acct.retool_env }}</span>
+        {% endif %}
+    </td>
     <td>
         <a href="/account/{{ acct.shortcode }}" class="btn btn-sm" onclick="event.stopPropagation()">Open</a>
     </td>
