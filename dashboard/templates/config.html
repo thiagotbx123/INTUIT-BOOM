@@ -39,9 +39,9 @@
 
 <!-- Tabs -->
 <div class="config-tabs">
-    <button class="tab active" onclick="showTab('deep', this)">Deep (12)</button>
-    <button class="tab" onclick="showTab('surface', this)">Surface (20)</button>
-    <button class="tab" onclick="showTab('conditional', this)">Conditional (14)</button>
+    <button class="tab active" onclick="showTab('deep', this)">Deep ({{ deep_stations|length }})</button>
+    <button class="tab" onclick="showTab('surface', this)">Surface ({{ surface_scan|length }})</button>
+    <button class="tab" onclick="showTab('conditional', this)">Conditional ({{ conditional_checks|length }})</button>
     <button class="tab" onclick="showTab('safety', this)">Content Safety</button>
     <button class="tab" onclick="showTab('fix', this)">Fix Rules</button>
     <button class="tab" onclick="showTab('realism', this)">Realism Score</button>
@@ -51,7 +51,7 @@
 <!-- Deep Stations -->
 <div class="tab-content" id="tab-deep">
     <div class="tab-header">
-        <h3>Deep Stations (12)</h3>
+        <h3>Deep Stations ({{ deep_stations|length }})</h3>
         <div>
             <button class="btn btn-sm" onclick="toggleAllChecks('deep', true)">Enable All</button>
             <button class="btn btn-sm" onclick="toggleAllChecks('deep', false)">Disable All</button>
@@ -102,7 +102,7 @@
 <!-- Surface Scan -->
 <div class="tab-content hidden" id="tab-surface">
     <div class="tab-header">
-        <h3>Surface Scan (20)</h3>
+        <h3>Surface Scan ({{ surface_scan|length }})</h3>
         <div>
             <button class="btn btn-sm" onclick="toggleAllChecks('surface', true)">Enable All</button>
             <button class="btn btn-sm" onclick="toggleAllChecks('surface', false)">Disable All</button>
@@ -133,7 +133,7 @@
 <!-- Conditional -->
 <div class="tab-content hidden" id="tab-conditional">
     <div class="tab-header">
-        <h3>Conditional Checks (14)</h3>
+        <h3>Conditional Checks ({{ conditional_checks|length }})</h3>
         <div>
             <button class="btn btn-sm" onclick="toggleAllChecks('conditional', true)">Enable All</button>
             <button class="btn btn-sm" onclick="toggleAllChecks('conditional', false)">Disable All</button>
@@ -311,13 +311,17 @@
         updateSummary();
     }
 
+    const TOTAL_DEEP = {{ deep_stations|length }};
+    const TOTAL_SURFACE = {{ surface_scan|length }};
+    const TOTAL_COND = {{ conditional_checks|length }};
+
     function updateSummary() {
         const deep = Object.entries(checkStates).filter(([k,v]) => k.startsWith('D') && v).length;
         const surface = Object.entries(checkStates).filter(([k,v]) => k.startsWith('S') && v).length;
         const cond = Object.entries(checkStates).filter(([k,v]) => k.startsWith('C') && v).length;
         const total = deep + surface + cond;
         document.getElementById('config-summary').textContent =
-            `${total} checks enabled: ${deep}/12 Deep + ${surface}/20 Surface + ${cond}/14 Conditional`;
+            `${total} checks enabled: ${deep}/${TOTAL_DEEP} Deep + ${surface}/${TOTAL_SURFACE} Surface + ${cond}/${TOTAL_COND} Conditional`;
     }
 
     function loadProfile(key) {

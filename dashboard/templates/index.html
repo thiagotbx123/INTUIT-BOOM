@@ -9,17 +9,17 @@
 
 {% block content %}
 <div class="stats">
-    <span>Accounts: <span class="stat-value" id="stat-total">{{ accounts | length }}</span></span>
-    <span>Visible: <span class="stat-value" id="stat-visible">{{ accounts | length }}</span></span>
-    <span>Swept: <span class="stat-value">{{ accounts | selectattr('sweep') | list | length }}</span></span>
-    <span>Score &ge;7: <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'ge', 7) | list | length }}</span></span>
-    <span>Entities: <span class="stat-value">{{ total_entities }}</span></span>
+    <div class="stat-chip">Accounts <span class="stat-value" id="stat-total">{{ accounts | length }}</span></div>
+    <div class="stat-chip">Visible <span class="stat-value" id="stat-visible">{{ accounts | length }}</span></div>
+    <div class="stat-chip">Swept <span class="stat-value">{{ accounts | selectattr('sweep') | list | length }}</span></div>
+    <div class="stat-chip">Score &ge;7 <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'ge', 7) | list | length }}</span></div>
+    <div class="stat-chip">Entities <span class="stat-value">{{ total_entities }}</span></div>
 </div>
 
 <!-- Filters -->
 <div class="filters">
     <div class="filter-group">
-        <span class="filter-label">Show:</span>
+        <span class="filter-label">Status</span>
         <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
         <button class="filter-btn" data-filter="swept" onclick="setFilter('swept', this)">Swept</button>
         <button class="filter-btn" data-filter="good" onclick="setFilter('good', this)">Score &ge;7</button>
@@ -27,7 +27,7 @@
         <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">Not Swept</button>
     </div>
     <div class="filter-group">
-        <span class="filter-label">Dataset:</span>
+        <span class="filter-label">Dataset</span>
         {% set datasets = accounts | map(attribute='dataset') | unique | sort %}
         <button class="filter-btn active" data-dataset="all" onclick="setDatasetFilter('all', this)">All</button>
         {% for ds in datasets %}
@@ -69,13 +69,13 @@
                        onchange="toggleRow(this)">
             </td>
             <td>{{ acct.label }}</td>
-            <td>{{ acct.dataset }}</td>
+            <td><span class="badge badge-single">{{ acct.dataset }}</span></td>
             <td>{{ acct.entity_count }}</td>
             <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
-            <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '\u2014' }}</td>
+            <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
             <td>{{ acct.retool_env }}</td>
             <td>
-                <a href="/account/{{ acct.shortcode }}" class="btn btn-sm" onclick="event.stopPropagation()">Open</a>
+                <a href="/account/{{ acct.shortcode }}" class="btn btn-sm btn-ghost" onclick="event.stopPropagation()">Open</a>
             </td>
         </tr>
         {% endfor %}
@@ -85,7 +85,6 @@
 
 {% block scripts %}
 <script>
-    // Persist hidden accounts in localStorage
     const STORAGE_KEY = 'qbo_hidden_accounts';
 
     function getHidden() {
@@ -97,7 +96,6 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     }
 
-    // Apply saved hidden state on load
     (function() {
         const hidden = getHidden();
         hidden.forEach(sc => {
@@ -129,11 +127,8 @@
         document.querySelectorAll('.row-toggle').forEach(cb => {
             cb.checked = checked;
             const row = cb.closest('tr');
-            if (checked) {
-                row.classList.remove('hidden-row');
-            } else {
-                row.classList.add('hidden-row');
-            }
+            if (checked) row.classList.remove('hidden-row');
+            else row.classList.add('hidden-row');
         });
         saveHidden(checked ? [] : Array.from(document.querySelectorAll('.row-toggle')).map(cb => cb.dataset.shortcode));
         updateVisibleCount();
@@ -165,22 +160,15 @@
             const sc = row.dataset.shortcode;
 
             let show = true;
-
-            // Status filter
             if (activeFilter === 'swept') show = swept === 'yes';
             else if (activeFilter === 'good') show = status === 'good';
             else if (activeFilter === 'warn') show = status === 'warn';
             else if (activeFilter === 'pending') show = status === 'pending';
 
-            // Dataset filter
             if (activeDataset !== 'all' && dataset !== activeDataset) show = false;
-
-            // Manual hide
             if (hidden.includes(sc)) show = false;
 
             row.style.display = show ? '' : 'none';
-
-            // Sync checkbox
             const cb = row.querySelector('.row-toggle');
             if (cb) cb.checked = !hidden.includes(sc);
         });

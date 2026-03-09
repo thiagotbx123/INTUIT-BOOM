@@ -1,4 +1,4 @@
-"""All 46 sweep checks + content safety + fix rules — single source of truth."""
+"""All 57 sweep checks + content safety + fix rules — single source of truth."""
 
 DEEP_STATIONS = [
     {
@@ -322,6 +322,67 @@ SURFACE_SCAN = [
     {"id": "S18", "name": "My Accountant", "route": "/app/myaccountant", "description": "Accountant invite status"},
     {"id": "S19", "name": "Audit Log", "route": "/app/auditlog", "description": "Accessible, has activity"},
     {"id": "S20", "name": "Lending", "route": "Via menu", "description": "Feature visible in menu"},
+    # v4.0 additions — Settings panels, forms, and missing modules
+    {
+        "id": "S21",
+        "name": "Settings — Sales",
+        "route": "/app/settings?panel=sales",
+        "description": "Custom transaction numbers, service date, discount, deposit, tags, custom fields, automation",
+    },
+    {
+        "id": "S22",
+        "name": "Settings — Expenses",
+        "route": "/app/settings?panel=expenses",
+        "description": "PO, billable expenses, default markup, default bill payment terms",
+    },
+    {
+        "id": "S23",
+        "name": "Settings — Advanced",
+        "route": "/app/settings?panel=advanced",
+        "description": "Accounting (first month fiscal year, close books, tax form), currency, automation, projects, time tracking",
+    },
+    {
+        "id": "S24",
+        "name": "Quick Create (+New) Menu",
+        "route": "+New button (global)",
+        "description": "All form types render: Invoice, Estimate, Expense, Bill, PO, JE, Transfer, etc. No broken links",
+    },
+    {
+        "id": "S25",
+        "name": "Custom Form Styles",
+        "route": "/app/customformstyles",
+        "description": "Custom templates exist, logo uploaded, preview renders without error",
+    },
+    {
+        "id": "S26",
+        "name": "Tags",
+        "route": "/app/tags",
+        "description": "Tags feature enabled, has tags defined, tagged transactions exist",
+    },
+    {
+        "id": "S27",
+        "name": "Custom Fields",
+        "route": "/app/customfields",
+        "description": "Custom fields configured, visible on transaction forms",
+    },
+    {
+        "id": "S28",
+        "name": "Cash Flow Planner",
+        "route": "/app/cashflow",
+        "description": "Cash flow projection loads, chart renders, bank accounts linked",
+    },
+    {
+        "id": "S29",
+        "name": "Attachments",
+        "route": "/app/attachments",
+        "description": "Attachment center accessible, files attached to transactions exist",
+    },
+    {
+        "id": "S30",
+        "name": "Mileage",
+        "route": "/app/mileage",
+        "description": "Mileage tracking feature loads, trips logged or module accessible",
+    },
 ]
 
 CONDITIONAL_CHECKS = [
@@ -427,6 +488,14 @@ CONDITIONAL_CHECKS = [
         "route": "/app/managementreports",
         "description": "Customizable reports available",
     },
+    # v4.0 additions
+    {
+        "id": "C15",
+        "name": "Contractors / 1099",
+        "condition": "construction",
+        "route": "/app/contractors",
+        "description": "Contractor list exists, 1099 tracking active, payments mapped",
+    },
 ]
 
 CONTENT_SAFETY = [
@@ -531,8 +600,8 @@ def get_all_checks():
 def get_default_profile():
     """Return the default full sweep profile."""
     return {
-        "name": "Full Sweep v3.0",
-        "description": "12 Deep + 20 Surface + 14 Conditional = 46 checks",
+        "name": "Full Sweep v4.0",
+        "description": "12 Deep + 30 Surface + 15 Conditional = 57 checks",
         "checks": {c["id"]: True for c in get_all_checks()},
         "fix_tiers": {"fix_immediately": True, "fix_and_report": True, "never_fix": False},
         "content_safety": {c["id"]: True for c in CONTENT_SAFETY},

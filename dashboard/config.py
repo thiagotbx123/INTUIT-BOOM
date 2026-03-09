@@ -46,8 +46,8 @@ def load_profiles() -> dict:
             "description": "Core financial health only (D01-D06 + Surface)",
             "checks": {
                 **{f"D{i:02d}": i <= 6 for i in range(1, 13)},
-                **{f"S{i:02d}": True for i in range(1, 21)},
-                **{f"C{i:02d}": False for i in range(1, 15)},
+                **{f"S{i:02d}": True for i in range(1, 31)},
+                **{f"C{i:02d}": False for i in range(1, 16)},
             },
             "fix_tiers": {"fix_immediately": True, "fix_and_report": False, "never_fix": False},
             "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
@@ -56,11 +56,11 @@ def load_profiles() -> dict:
     if "surface_only" not in profiles:
         profiles["surface_only"] = {
             "name": "Surface Only",
-            "description": "20 surface pages — no corrections, fast scan",
+            "description": "30 surface pages — no corrections, fast scan",
             "checks": {
                 **{f"D{i:02d}": False for i in range(1, 13)},
-                **{f"S{i:02d}": True for i in range(1, 21)},
-                **{f"C{i:02d}": False for i in range(1, 15)},
+                **{f"S{i:02d}": True for i in range(1, 31)},
+                **{f"C{i:02d}": False for i in range(1, 16)},
             },
             "fix_tiers": {"fix_immediately": False, "fix_and_report": False, "never_fix": False},
             "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
@@ -139,18 +139,18 @@ def generate_sweep_command(shortcode: str, account_label: str, account_email: st
         f"Account: {account_email}",
         f"Profile: {profile['name']}",
         "",
-        f"Deep Stations ({len(enabled_deep)}/12):",
+        f"Deep Stations ({len(enabled_deep)}/{len(DEEP_STATIONS)}):",
     ]
     for c in enabled_deep:
         lines.append(f"  [{c['id']}] {c['name']}")
 
     lines.append("")
-    lines.append(f"Surface Scan ({len(enabled_surface)}/20):")
+    lines.append(f"Surface Scan ({len(enabled_surface)}/{len(SURFACE_SCAN)}):")
     for c in enabled_surface:
         lines.append(f"  [{c['id']}] {c['name']} -> {c['route']}")
 
     lines.append("")
-    lines.append(f"Conditional ({len(enabled_conditional)}/14):")
+    lines.append(f"Conditional ({len(enabled_conditional)}/{len(CONDITIONAL_CHECKS)}):")
     for c in enabled_conditional:
         lines.append(f"  [{c['id']}] {c['name']} (if {c['condition']})")
 

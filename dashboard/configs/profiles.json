@@ -1,7 +1,7 @@
 {
   "full_sweep": {
-    "name": "Full Sweep v3.0",
-    "description": "12 Deep + 20 Surface + 14 Conditional = 46 checks",
+    "name": "Full Sweep v4.0",
+    "description": "12 Deep + 30 Surface + 15 Conditional = 57 checks",
     "checks": {
       "D01": true,
       "D02": true,
@@ -35,6 +35,16 @@
       "S18": true,
       "S19": true,
       "S20": true,
+      "S21": true,
+      "S22": true,
+      "S23": true,
+      "S24": true,
+      "S25": true,
+      "S26": true,
+      "S27": true,
+      "S28": true,
+      "S29": true,
+      "S30": true,
       "C01": true,
       "C02": true,
       "C03": true,
@@ -48,7 +58,8 @@
       "C11": true,
       "C12": true,
       "C13": true,
-      "C14": true
+      "C14": true,
+      "C15": true
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -103,6 +114,16 @@
       "S18": true,
       "S19": true,
       "S20": true,
+      "S21": true,
+      "S22": true,
+      "S23": true,
+      "S24": true,
+      "S25": true,
+      "S26": true,
+      "S27": true,
+      "S28": true,
+      "S29": true,
+      "S30": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -116,7 +137,8 @@
       "C11": false,
       "C12": false,
       "C13": false,
-      "C14": false
+      "C14": false,
+      "C15": false
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -137,7 +159,7 @@
   },
   "surface_only": {
     "name": "Surface Only",
-    "description": "20 surface pages — no corrections, fast scan",
+    "description": "30 surface pages — no corrections, fast scan",
     "checks": {
       "D01": false,
       "D02": false,
@@ -171,6 +193,16 @@
       "S18": true,
       "S19": true,
       "S20": true,
+      "S21": true,
+      "S22": true,
+      "S23": true,
+      "S24": true,
+      "S25": true,
+      "S26": true,
+      "S27": true,
+      "S28": true,
+      "S29": true,
+      "S30": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -184,7 +216,8 @@
       "C11": false,
       "C12": false,
       "C13": false,
-      "C14": false
+      "C14": false,
+      "C15": false
     },
     "fix_tiers": {
       "fix_immediately": false,
