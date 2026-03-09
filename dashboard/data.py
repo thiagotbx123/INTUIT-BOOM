@@ -1,0 +1,171 @@
+"""Data loader: reads QBO_CREDENTIALS.json + sweep reports."""
+
+import json
+import re
+import time
+from pathlib import Path
+
+from models import Account, Company, SweepResult
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+CREDENTIALS_PATH = BASE_DIR / "knowledge-base" / "access" / "QBO_CREDENTIALS.json"
+SWEEP_DIR = BASE_DIR / "knowledge-base" / "sweep-learnings"
+
+_cache: dict = {"accounts": [], "ts": 0}
+CACHE_TTL = 60  # seconds
+
+
+def _parse_sweep_score(text: str) -> float | None:
+    """Extract score from sweep report header (first 20 lines only)."""
+    header = "\n".join(text.split("\n")[:20])
+    patterns = [
+        r"\*\*Overall\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
+        r"\*\*Revalidation\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
+    ]
+    for pat in patterns:
+        m = re.search(pat, header, re.IGNORECASE)
+        if m:
+            return float(m.group(1))
+    return None
+
+
+def _parse_sweep_date(text: str) -> str | None:
+    """Extract date from sweep report header."""
+    m = re.search(r"\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})", text)
+    if m:
+        return m.group(1)
+    return None
+
+
+def _parse_p1_findings(text: str) -> list[str]:
+    """Extract P1 findings from sweep report."""
+    findings = []
+    for m in re.finditer(r"(?:^|\n)\s*[-*]\s*\*?\*?P1\*?\*?[:\s]+(.+)", text, re.IGNORECASE):
+        findings.append(m.group(1).strip().rstrip("*"))
+    # Also look for P1 section headers
+    p1_section = re.search(r"##\s*P1[^#]*?\n((?:[-*]\s+.+\n?)+)", text, re.IGNORECASE)
+    if p1_section:
+        for line in p1_section.group(1).strip().split("\n"):
+            line = line.strip().lstrip("-* ").strip()
+            if line and line not in findings:
+                findings.append(line)
+    return findings
+
+
+def _load_sweep_reports() -> dict[str, SweepResult]:
+    """Load and parse all sweep reports, keyed by email."""
+    results: dict[str, SweepResult] = {}
+    if not SWEEP_DIR.exists():
+        return results
+
+    for f in sorted(SWEEP_DIR.glob("*.md")):
+        if f.name == "README.md":
+            continue
+        text = f.read_text(encoding="utf-8", errors="replace")
+        # Extract email
+        email_match = re.search(r"\*\*Account:\*\*\s*(\S+@\S+)", text)
+        if not email_match:
+            continue
+        email = email_match.group(1).strip()
+        score = _parse_sweep_score(text)
+        date = _parse_sweep_date(text) or ""
+        p1s = _parse_p1_findings(text)
+
+        # Keep the latest report per email (sorted by filename)
+        existing = results.get(email)
+        if existing is None or date >= existing.date:
+            results[email] = SweepResult(
+                date=date,
+                score=score,
+                report_file=f.name,
+                p1_findings=p1s,
+            )
+    return results
+
+
+def _parse_score_from_json(val: str | None) -> float | None:
+    """Parse '7.5/10' → 7.5."""
+    if not val:
+        return None
+    m = re.search(r"(\d+(?:\.\d+)?)/10", str(val))
+    return float(m.group(1)) if m else None
+
+
+def load_accounts(force: bool = False) -> list[Account]:
+    """Load all QBO accounts with sweep data. Cached for 60s."""
+    now = time.time()
+    if not force and _cache["accounts"] and (now - _cache["ts"]) < CACHE_TTL:
+        return _cache["accounts"]
+
+    with open(CREDENTIALS_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+
+    sweep_reports = _load_sweep_reports()
+    accounts: list[Account] = []
+
+    for email, info in data.get("accounts", {}).items():
+        companies = [
+            Company(
+                name=c.get("name", ""),
+                cid=c.get("cid", ""),
+                type=c.get("type", "unknown"),
+                priority=c.get("priority", "P1"),
+            )
+            for c in info.get("companies", [])
+        ]
+
+        # Build sweep result: prefer parsed report, fallback to JSON score
+        sweep = sweep_reports.get(email)
+        json_score = _parse_score_from_json(info.get("sweep_score"))
+
+        if sweep is None and json_score is not None:
+            sweep = SweepResult(date="", score=json_score, report_file="", p1_findings=[])
+        elif sweep is not None and json_score is not None:
+            # JSON sweep_score is manually curated — takes priority
+            sweep.score = json_score
+        elif sweep is not None and sweep.score is None:
+            pass  # no score from either source
+
+        # Extract P1 findings from notes if sweep has none
+        if sweep and not sweep.p1_findings and info.get("notes"):
+            notes = info["notes"]
+            p1_match = re.search(r"P1[:\s]+(.+?)(?:\.|$)", notes)
+            if p1_match:
+                sweep.p1_findings = [f.strip() for f in p1_match.group(1).split(",") if f.strip()]
+
+        account = Account(
+            email=email,
+            label=info.get("label", ""),
+            shortcode=info.get("shortcode", ""),
+            password=info.get("password", ""),
+            totp_secret=info.get("totp_secret", ""),
+            mfa_type=info.get("mfa_type", "totp"),
+            dataset=info.get("dataset", ""),
+            retool_env=info.get("retool_env", ""),
+            companies=companies,
+            last_login=info.get("last_successful_login"),
+            sweep=sweep,
+            notes=info.get("notes", ""),
+        )
+        accounts.append(account)
+
+    # Sort: swept accounts first (by score desc), then unswept
+    accounts.sort(
+        key=lambda a: (
+            0 if a.sweep and a.sweep.score else 1,
+            -(a.sweep.score if a.sweep and a.sweep.score else 0),
+            a.label,
+        )
+    )
+
+    _cache["accounts"] = accounts
+    _cache["ts"] = now
+    return accounts
+
+
+def get_account(shortcode: str) -> Account | None:
+    """Get a single account by shortcode."""
+    for a in load_accounts():
+        if a.shortcode == shortcode:
+            return a
+    return None

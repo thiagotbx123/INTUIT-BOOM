@@ -1,0 +1,12 @@
+<tr class="clickable-row" onclick="window.location='/account/{{ acct.shortcode }}'">
+    <td><span class="dot {{ acct.score_class }}"></span></td>
+    <td>{{ acct.label }}</td>
+    <td>{{ acct.dataset }}</td>
+    <td>{{ acct.entity_count }}</td>
+    <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
+    <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '\u2014' }}</td>
+    <td>{{ acct.retool_env }}</td>
+    <td>
+        <a href="/account/{{ acct.shortcode }}" class="btn btn-sm" onclick="event.stopPropagation()">Open</a>
+    </td>
+</tr>

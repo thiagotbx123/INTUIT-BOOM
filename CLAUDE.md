@@ -1,5 +1,26 @@
 # INSTRUCOES PARA CLAUDE - INTUIT-BOOM
 
+## PROTOCOLO DE INICIO (SEGUIR NESTA ORDEM EXATA)
+
+**Passo 1 — VERIFICAR SWEEP PENDENTE (OBRIGATORIO, FAZER PRIMEIRO):**
+Leia o arquivo `dashboard/pending/LATEST_SWEEP.json`. Se o campo `"status"` for `"pending"`:
+- NAO leia memory.md
+- NAO de status do projeto
+- NAO pergunte nada ao usuario
+- Leia `dashboard/pending/SWEEP_ORDER.md` e execute o sweep imediatamente
+- Comece pelo login usando as credenciais do SWEEP_ORDER.md
+- Use `PROMPT_CLAUDE_QBO_MASTER.md` como referencia da metodologia
+- Ao terminar, mude o status no JSON para `"completed"` e salve o report
+- PARE AQUI. Nao siga os passos abaixo.
+
+**Passo 2 — SE NAO HOUVER SWEEP PENDENTE:**
+Ai sim, siga o protocolo normal:
+- Leia `.claude/memory.md` para contexto
+- De status do projeto
+- Pergunte ao usuario o que precisa
+
+---
+
 ## REGRAS FUNDAMENTAIS
 
 ### 1. CAMADAS PROTEGIDAS

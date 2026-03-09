@@ -1,4 +1,6 @@
-# Mid Market — QBO Sweep Report
+# Mid Market — QBO Sweep Report (v1 — SUPERSEDED)
+> **See v2:** `mid_market_v2_2026-03-06.md` (score 6.5/10, 3-tier audit, P&L fixed)
+
 **Date:** 2026-03-06
 **Account:** mid_market@tbxofficial.com
 **Password:** h6gr9otd*7ekLQ

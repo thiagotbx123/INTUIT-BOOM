@@ -1,0 +1,14 @@
+{
+  "qsp": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "Skip payroll - 2FA blocked. Focus on AR cleanup.",
+    "hidden": false
+  },
+  "construction-clone": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
+  }
+}

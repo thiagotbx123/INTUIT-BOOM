@@ -70,6 +70,7 @@ chrome_profile_sheets*/
 
 # Temporary/generated data
 *.html
+!dashboard/templates/**/*.html
 construction_capture_results.json
 temp_*.json
 drive_links_*.json

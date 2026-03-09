@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+
+{% block title %}Sweep Config — QBO Demo Manager{% endblock %}
+
+{% block header_actions %}
+<a href="/" class="btn">Dashboard</a>
+{% endblock %}
+
+{% block content %}
+<div class="config-header">
+    <h2>Sweep Control Panel</h2>
+    <p class="subtitle">Configure, save and deploy sweep profiles for any QBO environment</p>
+</div>
+
+<!-- Profile Selector + Account Target -->
+<div class="config-bar">
+    <div class="config-bar-left">
+        <label class="config-label">Profile:</label>
+        <select id="profile-select" class="config-select" onchange="loadProfile(this.value)">
+            {% for key, p in profiles.items() %}
+            <option value="{{ key }}" {{ 'selected' if key == active_profile else '' }}>
+                {{ p.name }} ({{ p.description }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="config-bar-right">
+        <label class="config-label">Target:</label>
+        <select id="account-select" class="config-select" onchange="loadAccountConfig(this.value)">
+            <option value="">-- All Accounts (default) --</option>
+            {% for acct in accounts %}
+            <option value="{{ acct.shortcode }}" {{ 'selected' if acct.shortcode == target_shortcode else '' }}>
+                {{ acct.label }} ({{ acct.dataset }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="config-tabs">
+    <button class="tab active" onclick="showTab('deep', this)">Deep (12)</button>
+    <button class="tab" onclick="showTab('surface', this)">Surface (20)</button>
+    <button class="tab" onclick="showTab('conditional', this)">Conditional (14)</button>
+    <button class="tab" onclick="showTab('safety', this)">Content Safety</button>
+    <button class="tab" onclick="showTab('fix', this)">Fix Rules</button>
+    <button class="tab" onclick="showTab('realism', this)">Realism Score</button>
+    <button class="tab" onclick="showTab('notes', this)">Notes</button>
+</div>
+
+<!-- Deep Stations -->
+<div class="tab-content" id="tab-deep">
+    <div class="tab-header">
+        <h3>Deep Stations (12)</h3>
+        <div>
+            <button class="btn btn-sm" onclick="toggleAllChecks('deep', true)">Enable All</button>
+            <button class="btn btn-sm" onclick="toggleAllChecks('deep', false)">Disable All</button>
+        </div>
+    </div>
+    {% for check in deep_stations %}
+    <div class="check-card" data-check-id="{{ check.id }}" data-tier="deep">
+        <div class="check-header">
+            <label class="check-toggle">
+                <input type="checkbox" class="check-input" data-id="{{ check.id }}"
+                       {{ 'checked' if profile_checks.get(check.id, True) else '' }}
+                       onchange="updateCheck(this)">
+                <span class="check-id">{{ check.id }}</span>
+                <span class="check-name">{{ check.name }}</span>
+            </label>
+            <div class="check-meta">
+                <span class="badge badge-{{ 'parent' if check.auto_fix else 'p1' }}">
+                    {{ 'Auto-fix' if check.auto_fix else 'Report only' }}
+                </span>
+                <code class="check-route">{{ check.route }}</code>
+            </div>
+        </div>
+        <div class="check-body">
+            <div class="check-description">{{ check.description }}</div>
+            <div class="check-details">
+                <div class="check-col">
+                    <strong>What to check:</strong>
+                    <ul>
+                        {% for item in check.what_to_check %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="check-col">
+                    <strong>Fix actions:</strong>
+                    <ul>
+                        {% for action in check.fix_actions %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Surface Scan -->
+<div class="tab-content hidden" id="tab-surface">
+    <div class="tab-header">
+        <h3>Surface Scan (20)</h3>
+        <div>
+            <button class="btn btn-sm" onclick="toggleAllChecks('surface', true)">Enable All</button>
+            <button class="btn btn-sm" onclick="toggleAllChecks('surface', false)">Disable All</button>
+        </div>
+    </div>
+    <table class="surface-table">
+        <thead>
+            <tr><th></th><th>ID</th><th>Page</th><th>Route</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            {% for check in surface_scan %}
+            <tr data-tier="surface">
+                <td>
+                    <input type="checkbox" class="check-input" data-id="{{ check.id }}"
+                           {{ 'checked' if profile_checks.get(check.id, True) else '' }}
+                           onchange="updateCheck(this)">
+                </td>
+                <td><code>{{ check.id }}</code></td>
+                <td>{{ check.name }}</td>
+                <td><code>{{ check.route }}</code></td>
+                <td>{{ check.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Conditional -->
+<div class="tab-content hidden" id="tab-conditional">
+    <div class="tab-header">
+        <h3>Conditional Checks (14)</h3>
+        <div>
+            <button class="btn btn-sm" onclick="toggleAllChecks('conditional', true)">Enable All</button>
+            <button class="btn btn-sm" onclick="toggleAllChecks('conditional', false)">Disable All</button>
+        </div>
+    </div>
+    {% set conditions = ['multi_entity', 'construction', 'non_profit', 'advanced'] %}
+    {% for cond in conditions %}
+    <div class="condition-group">
+        <h4 class="condition-label">{{ cond | replace('_', ' ') | title }}</h4>
+        {% for check in conditional_checks %}
+        {% if check.condition == cond %}
+        <div class="check-row" data-tier="conditional">
+            <label class="check-toggle">
+                <input type="checkbox" class="check-input" data-id="{{ check.id }}"
+                       {{ 'checked' if profile_checks.get(check.id, True) else '' }}
+                       onchange="updateCheck(this)">
+                <code>{{ check.id }}</code>
+                <span>{{ check.name }}</span>
+            </label>
+            <code class="check-route">{{ check.route }}</code>
+            <span class="check-desc-inline">{{ check.description }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Content Safety -->
+<div class="tab-content hidden" id="tab-safety">
+    <div class="tab-header">
+        <h3>Content Safety Scan</h3>
+        <p class="subtitle">Applied at EVERY station across all tiers</p>
+    </div>
+    {% for check in content_safety %}
+    <div class="check-row">
+        <label class="check-toggle">
+            <input type="checkbox" class="check-input" data-id="{{ check.id }}"
+                   {{ 'checked' if profile_safety.get(check.id, True) else '' }}
+                   onchange="updateSafety(this)">
+            <code>{{ check.id }}</code>
+            <span>{{ check.name }}</span>
+        </label>
+        <span class="badge badge-{{ 'p0' if check.severity == 'CRITICAL' else 'p1' }}">{{ check.severity }}</span>
+        <code class="check-pattern">{{ check.pattern }}</code>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Fix Rules -->
+<div class="tab-content hidden" id="tab-fix">
+    <div class="tab-header">
+        <h3>Fix Protocol Tiers</h3>
+        <p class="subtitle">Controls what the sweep can correct automatically</p>
+    </div>
+    {% for tier_key, tier in fix_tiers.items() %}
+    <div class="fix-tier-card">
+        <div class="fix-tier-header">
+            <label class="check-toggle">
+                <input type="checkbox" class="fix-tier-input" data-tier="{{ tier_key }}"
+                       {{ 'checked' if profile_fix.get(tier_key, tier_key != 'never_fix') else '' }}
+                       onchange="updateFixTier(this)">
+                <span class="fix-tier-name">{{ tier["label"] }}</span>
+            </label>
+        </div>
+        <ul class="fix-tier-items">
+            {% for item in tier["items"] %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Realism Score -->
+<div class="tab-content hidden" id="tab-realism">
+    <div class="tab-header">
+        <h3>Demo Realism Scoring</h3>
+        <label class="check-toggle">
+            <input type="checkbox" id="realism-toggle"
+                   {{ 'checked' if profile.get('realism_scoring', True) else '' }}
+                   onchange="updateRealism(this)">
+            <span>Enable post-sweep realism scoring (10 criteria, 1-10 scale)</span>
+        </label>
+    </div>
+    <table class="surface-table">
+        <thead><tr><th>ID</th><th>Criterion</th><th>What it measures</th></tr></thead>
+        <tbody>
+            {% for cr in realism_criteria %}
+            <tr>
+                <td><code>{{ cr.id }}</code></td>
+                <td>{{ cr.name }}</td>
+                <td>{{ cr.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="realism-scale">
+        <span class="score good">9-10: Demo-ready</span>
+        <span class="score good">7-8: Demo-viable</span>
+        <span class="score warn">5-6: Demo-risky</span>
+        <span class="score" style="color: var(--red)">1-4: Demo-blocked</span>
+    </div>
+</div>
+
+<!-- Notes -->
+<div class="tab-content hidden" id="tab-notes">
+    <div class="tab-header">
+        <h3>Account Notes</h3>
+        <p class="subtitle">Custom notes for the selected target account</p>
+    </div>
+    <textarea id="account-notes" class="notes-textarea" rows="6"
+              placeholder="Add notes for this account/sweep run... (e.g., 'Skip payroll — 2FA blocked', 'Focus on AR cleanup')">{{ account_notes }}</textarea>
+</div>
+
+<!-- Action Bar -->
+<div class="action-bar">
+    <div class="action-bar-left">
+        <span class="config-summary" id="config-summary">
+            Loading...
+        </span>
+    </div>
+    <div class="action-bar-right">
+        <button class="btn" onclick="saveProfile()">Save Profile</button>
+        <button class="btn" onclick="saveAccountConfig()">Save Account Config</button>
+        <button class="btn btn-primary" onclick="generateAndActivate()">Activate Sweep</button>
+    </div>
+</div>
+
+<!-- Generated Prompt Output -->
+<div id="prompt-output"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // State
+    let currentProfile = '{{ active_profile }}';
+    let currentAccount = '{{ target_shortcode }}';
+    let checkStates = {{ profile_checks | tojson }};
+    let safetyStates = {{ profile_safety | tojson }};
+    let fixStates = {{ profile_fix | tojson }};
+    let realismEnabled = {{ 'true' if profile.get('realism_scoring', True) else 'false' }};
+
+    function showTab(name, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.remove('hidden');
+        btn.classList.add('active');
+    }
+
+    function updateCheck(cb) {
+        checkStates[cb.dataset.id] = cb.checked;
+        updateSummary();
+    }
+
+    function updateSafety(cb) {
+        safetyStates[cb.dataset.id] = cb.checked;
+    }
+
+    function updateFixTier(cb) {
+        fixStates[cb.dataset.tier] = cb.checked;
+    }
+
+    function updateRealism(cb) {
+        realismEnabled = cb.checked;
+    }
+
+    function toggleAllChecks(tier, enabled) {
+        const prefix = tier === 'deep' ? 'D' : tier === 'surface' ? 'S' : 'C';
+        document.querySelectorAll(`.check-input[data-id^="${prefix}"]`).forEach(cb => {
+            cb.checked = enabled;
+            checkStates[cb.dataset.id] = enabled;
+        });
+        updateSummary();
+    }
+
+    function updateSummary() {
+        const deep = Object.entries(checkStates).filter(([k,v]) => k.startsWith('D') && v).length;
+        const surface = Object.entries(checkStates).filter(([k,v]) => k.startsWith('S') && v).length;
+        const cond = Object.entries(checkStates).filter(([k,v]) => k.startsWith('C') && v).length;
+        const total = deep + surface + cond;
+        document.getElementById('config-summary').textContent =
+            `${total} checks enabled: ${deep}/12 Deep + ${surface}/20 Surface + ${cond}/14 Conditional`;
+    }
+
+    function loadProfile(key) {
+        currentProfile = key;
+        window.location.href = `/config?profile=${key}&account=${currentAccount}`;
+    }
+
+    function loadAccountConfig(shortcode) {
+        currentAccount = shortcode;
+        window.location.href = `/config?profile=${currentProfile}&account=${shortcode}`;
+    }
+
+    async function saveProfile() {
+        const name = prompt('Profile name:', currentProfile);
+        if (!name) return;
+        const key = name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        const res = await fetch('/api/config/save-profile', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                key: key,
+                profile: {
+                    name: name,
+                    description: `Custom profile — ${Object.values(checkStates).filter(v=>v).length} checks`,
+                    checks: checkStates,
+                    fix_tiers: fixStates,
+                    content_safety: safetyStates,
+                    realism_scoring: realismEnabled,
+                }
+            })
+        });
+        if (res.ok) {
+            showToast('Profile saved!', 'success');
+            setTimeout(() => window.location.href = `/config?profile=${key}&account=${currentAccount}`, 500);
+        }
+    }
+
+    async function saveAccountConfig() {
+        if (!currentAccount) { showToast('Select a target account first', 'error'); return; }
+        const notes = document.getElementById('account-notes').value;
+        const res = await fetch('/api/config/save-account', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                shortcode: currentAccount,
+                config: {
+                    profile: currentProfile,
+                    overrides: {},
+                    notes: notes,
+                    hidden: false,
+                }
+            })
+        });
+        if (res.ok) showToast('Account config saved!', 'success');
+    }
+
+    async function generateAndActivate() {
+        if (!currentAccount) {
+            showToast('Select a target account first!', 'error');
+            document.getElementById('account-select').focus();
+            document.getElementById('account-select').style.borderColor = 'var(--red)';
+            setTimeout(() => document.getElementById('account-select').style.borderColor = '', 2000);
+            return;
+        }
+        // Save account config first
+        const notes = document.getElementById('account-notes')?.value || '';
+        await fetch('/api/config/save-account', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                shortcode: currentAccount,
+                config: { profile: currentProfile, overrides: {}, notes: notes, hidden: false }
+            })
+        });
+        // Generate and activate
+        const res = await fetch(`/api/config/activate-sweep?profile=${currentProfile}&account=${currentAccount}`, {method: 'POST'});
+        const html = await res.text();
+        document.getElementById('prompt-output').innerHTML = html;
+        // Auto-scroll to result
+        document.getElementById('prompt-output').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function showToast(msg, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+
+    // Init
+    updateSummary();
+</script>
+{% endblock %}

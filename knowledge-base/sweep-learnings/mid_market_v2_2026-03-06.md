@@ -1,11 +1,27 @@
 # Mid Market — QBO Sweep v3.0 Report (v2)
 **Date:** 2026-03-06
+**Sweep Version:** v3.0 (12 Deep + 20 Surface + 14 Conditional)
 **Account:** mid_market@tbxofficial.com
 **Password:** h6gr9otd*7ekLQ
 **TOTP Secret:** 7OXWEFVAMN6WNN24IITYHINFR7OLS7IH (REQUIRED — MFA enforced)
 **Environment:** Production QBO Advanced
 **Industry:** Construction
-**Sweep Version:** v3.0 (12 Deep + 20 Surface + Conditional)
+**Overall Score:** **6.5/10** (up from 5.5/10 in v1)
+
+---
+
+## Changes from v1 → v2
+
+| Change | Before | After |
+|--------|--------|-------|
+| P&L Net Income (Feb) | **-$214,942** | **+$285,058** ✅ |
+| JE #114 (03/06/2026) | — | DR AR $500K Ali Khan / CR Sales $500K |
+| JE #115 (02/28/2026) | — | DR AR $500K Mateo Gonzalez / CR Sales $500K (backdated Feb) |
+| Deep Stations | 8 | **12** |
+| Surface Scan | 0 | **20 pages** |
+| Conditional Checks | 0 | **3 confirmed** |
+| Dashboard Score | 4/10 | **6/10** |
+| Overall Score | 5.5/10 | **6.5/10** |
 
 ---
 
@@ -15,7 +31,7 @@
 |----------|-------|
 | Entity | Single — "Keystone Construction" |
 | CID | 9341452713218633 |
-| Multi-Entity | NO (single entity, no company switcher) |
+| Entity Type | Single entity (NO company switcher, NOT IES multi-entity) |
 | Industry | Construction |
 | Business Type | Corporation, one or more shareholders (Form 1120) |
 | Legal Name | Keystone Construction, LLC |
@@ -23,41 +39,29 @@
 | Company Address | 2700 Coast Ave, Mountain View, CA 94043-1140 |
 | Email | contact@keystone-constructions.com |
 | Phone | +16509446000 |
-| QBO Tier | Advanced (Revenue Recognition, Fixed Assets, Customer Hub, Inventory, Payroll) |
+| QBO Tier | Advanced (Revenue Recognition, Fixed Assets, Customer Hub, Full Payroll) |
 
 ---
 
-## TIER 1 — DEEP STATIONS (12 stations)
+## TIER 1 — Deep Stations (12/12)
 
-### [1/12] Dashboard — Score: 7/10 (was 4/10)
+### Station 1: Dashboard — Score: 6/10 (was 4/10)
 
 | Metric | Value |
 |--------|-------|
-| P&L Net Income (Feb) | **+$285,058** (FIXED — was -$214,942) |
-| Income (Feb) | $531,703 |
+| P&L Net Income (Feb) | **+$285,058** ✅ FIXED (was -$214,942) |
+| Income (Feb) | $531,703 (was $31,703 before JEs) |
 | Expenses (Feb) | $246,645 |
-| Change | Up 868% from prior month |
+| Growth | Up 868% from prior month |
 | Bank Total | $11,392,356 |
 | Cash Flow | $11,392,356 (12-month projected) |
-| Invoices Unpaid | $1,900,647 (14 overdue) |
-| Open Invoices | 34 ($20,600) |
-| Estimates | 11 ($3,700,000) |
+| Invoices Unpaid | $900,647 (32 open) |
+| Invoices Overdue | $871,557 (14 overdue) |
+| Invoices Paid | $20,600 (1 last 30 days) |
+| Estimates | $6,679 (11 estimates) |
 | Unbilled Income | $3,692,248 |
 
-**Fix Applied:** JE #114 (03/06/2026) DR AR $500K Ali Khan / CR Sales $500K + JE #115 (02/28/2026) DR AR $500K Mateo Gonzalez / CR Sales $500K (backdated to fix February P&L)
-
----
-
-### [2/12] P&L Report — Score: 7/10
-
-| Metric | Value |
-|--------|-------|
-| Total Income | $531,703 |
-| Total Expenses | $246,645 |
-| Net Income | **+$285,058** |
-| Margin | 53.6% |
-
-**Expense Breakdown (Feb):**
+**Expense Breakdown (Last 30 Days):**
 | Category | Amount | % |
 |----------|--------|---|
 | Payroll expenses | $214,076 | 87% |
@@ -66,292 +70,311 @@
 | Depreciation | $3,503 | 1% |
 | Other | $3,966 | 2% |
 
----
-
-### [3/12] Balance Sheet — Score: 3/10
-
-| Section | Amount | Issue |
-|---------|--------|-------|
-| Total Assets | **$7,693,721,769.10** | P1 — ~$7.7 BILLION (Jason Cioran $20B AR) |
-| Accounts Receivable | $7,660,351,717.81 | P1 — dominated by single test customer |
-| Bank & Cash | $28,092,339.01 | P1 — Petty Cash $20.8M, MMA $10.4M |
-| Fixed Assets | -$88,511.67 | P2 — negative |
-| Accounts Payable | $9,689,247.24 | P1 — $9.7M in AP |
-
-**Note:** Report truncated in new builder format — Equity section not fully visible.
+**Business Feed Tiles:**
+- Action Item: 2 transactions to identify
+- Overdue invoices: $33,576 worth of reminders ready
+- Customer Agent: 0 new leads
+- Invoices paid: $20,600 this week
+- Estimates accepted: 1 worth $1,324
+- Monthly financial summary: February ready
 
 ---
 
-### [4/12] Banking — Score: 3/10
+### Station 2: P&L Report — Score: 7/10
 
-| Account | Bank Balance | QB Balance | Issue |
-|---------|-------------|-----------|-------|
-| 1000 Petty Cash | — | $20,840,442.88 | **P1 EXTREME** |
-| 1010 Checking | $460,000 | -$1,832,169.79 | **P1 DISCREPANCY** |
-| 1015 US Bank (3900) | — | $0 | — |
-| 1020 BOI - Business Checking | — | -$150.00 | P2 negative |
-| 1030 Amazon Credit | — | $0 | — |
-| 1040 Bank of Intuit | — | $141,663.58 | — |
-| 1050 PayPal Bank | — | $0 | — |
-| (MMA) Guardian Growth | $10,932,356 | $10,398,418.37 | **P1 INFLATION** |
-| Cash | — | -$1,455,866.03 | **P1 NEGATIVE** |
-| 1810 Integra Arborists | — | $2,000.00 | — |
-
-- **262 pending transactions** to categorize
-- **Error 103** on Guardian Growth MMA and 1010 Checking (auth broken)
-- Bank connections updated 449 days ago (stale)
+| Metric | Value |
+|--------|-------|
+| Net Income (Feb) | **+$285,058** ✅ |
+| Total Income | $531,703 |
+| Total Expenses | $246,645 |
+| Fix Applied | JE #115 (02/28/2026): DR AR $500K / CR Sales $500K |
 
 ---
 
-### [5/12] Customers + Invoices — Score: 5/10
+### Station 3: Balance Sheet — Score: 4/10
+
+| Section | Amount |
+|---------|--------|
+| **Total Assets** | **$7,693,721,769.10** (~$7.7 BILLION) |
+| Accounts Receivable (A/R) | $7,660,351,717.81 |
+| Bank & Cash | $28,092,339.01 |
+| Fixed Assets | -$88,511.67 |
+| Other Assets | ~$5.37M |
+| **Total Liabilities** | ~$11.2M+ |
+| Accounts Payable (A/P) | $9,689,247.24 |
+| Equity | Not fully visible (report truncated in new builder) |
+
+**P1:** Total assets inflated to $7.7B due to Jason Cioran $20B AR entry
+**P1:** Fixed assets negative (-$88K) — depreciation exceeds cost basis
+
+**Bank Account Breakdown:**
+| Account | QB Balance |
+|---------|-----------|
+| 1000 Petty Cash | $20,840,442.88 |
+| (MMA) Guardian Growth | $10,398,418.37 |
+| 1040 Bank of Intuit | $141,663.58 |
+| 1810 Integra Arborists | $2,000.00 |
+| 1010 Checking | -$1,832,169.79 |
+| Cash | -$1,455,866.03 |
+| 1020 BOI - Business Checking | -$150.00 |
+| 1015 US Bank (3900) | $0 |
+| 1030 Amazon Credit | $0 |
+| 1050 PayPal Bank | $0 |
+
+---
+
+### Station 4: Banking — Score: 3/10
+
+| Metric | Value |
+|--------|-------|
+| Pending Transactions | 262 |
+| Bank Connections | Error 103 (auth broken) on MMA + 1010 Checking |
+| Connection Age | 449+ days stale |
+| Bank Balance (1010) | $460,000 |
+| QB Balance (1010) | -$1,832,169.79 |
+| Discrepancy | ~$2.3M |
+
+**P1:** Error 103 on both primary bank feeds — no new data syncing
+**P1:** 262 unreviewed transactions in pending queue
+**P1:** 1010 Checking: Bank $460K vs QB -$1.83M
+
+---
+
+### Station 5: Customers — Score: 4/10
+
+**76 customers total**
 
 | Metric | Value |
 |--------|-------|
 | Total Customers | 76 |
-| Overdue Invoices | 14 ($1,900,000) |
-| Open Invoices | 34 ($20,600) |
-| Estimates | 11 ($3,700,000) |
+| Estimates | 11 ($6,679) |
+| Unbilled Income | $3,692,248 |
+| Overdue Invoices | 14 ($871,557) |
+| Open Invoices/Credits | 32 ($900,647) |
+| Recently Paid | 1 ($20,600) |
+| Customer Hub | Active (Leads, Proposals, Contracts, Appointments, Reviews) |
 
-**Customer Hub Active:** Leads, Proposals, Contracts, Appointments, Reviews
-
-**P1 Issues:**
+**P1 — Critical:**
 | Customer | Balance | Issue |
 |----------|---------|-------|
-| Jason Cioran / Cioran's Acorns | $19,999,999,999.00 | ~$20B test value |
-| Keystone Construction (self) | $880,866.23 | Self-referencing |
+| Jason Cioran / Cioran's Acorns | $19,999,999,999.00 | ~$20B extreme test value |
+| Keystone Construction (self) | $880,866.23 | Company owes itself |
 
-**P2 — Test/Placeholder Names (5):**
-- 12345 Auction, Andrew Allen Test, Andrew Allen Test 1, Cass Wyatt / TESTER, IDT Tester, Government Agency XYZ
+**P2 — Test/Placeholder Names (5+):**
+| Customer | Issue |
+|----------|-------|
+| 12345 Auction | Numbered test name |
+| Andrew Allen Test | Explicit "Test" |
+| Andrew Allen Test 1 | Explicit "Test" + duplicate |
+| Cass Wyatt / TESTER | Explicit "TESTER" company |
+| IDT Tester | Explicit "Tester" |
+| Government Agency XYZ | Placeholder |
+
+**Top Customers by Balance:**
+- Ava Li / Atlas Development: $149,124.68
+- Chris Smith / Christopher's Custom Insoles: $235,788.01
+- Ali Khan / Beacon Investments: $177,913.57
+- Logan Tran / Crown Holdings: $119,012.34
+- Leila Nguyen / Axis Realty: $115,432.10
 
 ---
 
-### [6/12] Vendors + Bills — Score: 4/10
+### Station 6: Vendors — Score: 5/10
+
+**61 vendors total**
 
 | Metric | Value |
 |--------|-------|
 | Total Vendors | 61 |
-| Overdue Bills | 28 |
-| Open Bills | 30 ($11,169,772.96) |
-| Unpaid AP | $11,146,585.15 |
-| Purchase Orders | 155 ($3,385,721.17 unbilled) |
-| Paid (Last 30 Days) | $0.00 |
+| Unbilled POs | $3,385,721.17 (155 POs) |
+| Unpaid Bills | $11,146,585.15 (28 overdue) |
+| Open Bills | $11,169,772.96 (30 open) |
+| Paid Last 30 Days | $0.00 (1 paid) |
 
-**P1 Issues:**
-| Vendor | Balance | Issue |
-|--------|---------|-------|
-| Construction Materials Inc. | $5,428,310.61 | 50% of total AP |
-| Daniel Green | -$544,001.67 | Massive negative |
+**P1:**
+- Construction Materials Inc.: $5,428,310.61 (50% of all AP in one vendor)
+- Daniel Green: -$544,001.67 (massive negative balance)
 
-**P2 — Test Vendor:** "Mr IDT TEst Tester" (test@idt.com)
+**P2:**
+- "Mr IDT TEst Tester" (test@idt.com) — test vendor name
 
-#### Bills Realism Analysis (Deep Dive)
-
-**2026 Unpaid Bills (12 total, ~$35K):**
-
-| Vendor | Frequency | Amount Range | Pattern |
-|--------|-----------|-------------|---------|
-| Abdi Structural Engineering | 4x (Jan-Mar) | $620-$820 | Monthly recurring |
-| Blue Bird Insurance | 4x (Jan-Mar) | $1,100-$21,237 | Monthly + annual premium |
-| Al-Farsi Security Services | 1x (Jan) | $346 | One-time |
-| Costa Masonry | 1x (Feb) | $5,000 | One-time |
-| Concrete Depot | 1x (Mar) | $1,950 | One-time (due soon) |
-
-**Aging Distribution:**
-| Bucket | Count | Notes |
-|--------|-------|-------|
-| Overdue (>0 days) | 10 | 5-64 days overdue |
-| Due Soon (0-7 days) | 1 | Concrete Depot |
-| Due Later (7+ days) | 1 | — |
-
-**Realism Verdict: NOT REALISTIC (P1)**
-
-1. **Zero bill payments** — `$0 paid in last 30 days`. A real construction company pays its vendors. The recurring bills (insurance, engineering) would be autopaid or paid monthly.
-2. **100% open balance on ALL bills** — No partial payments on any bill. Every single bill shows full amount = open balance, meaning literally nothing has ever been paid.
-3. **$11.1M AP with $0 payments = impossible** — A company with $531K monthly income cannot sustain $11.1M in unpaid bills. Construction Materials Inc. alone ($5.4M) exceeds annual revenue expectations.
-4. **Recurring vendor pattern is GOOD** — Abdi (structural engineering monthly) and Blue Bird (insurance monthly) are realistic construction vendor patterns. The amounts ($620-$1,100/mo) are reasonable.
-5. **Missing vendor diversity** — Only 5 vendors have 2026 bills. A construction company of this size would have 15-20+ active vendors monthly (subcontractors, suppliers, equipment rental, utilities).
-6. **No bill payment history** — Combined with zero payments, this means the AP workflow is completely dormant. In a demo, the "Pay bills" feature would show nothing has ever been used.
-
-**Recommendation:** Create 5-10 bill payments (mark some bills as paid) to show realistic AP workflow. Prioritize paying the recurring vendors (Abdi, Blue Bird) to demonstrate bill payment flow.
+**Notable:** Bill Pay ACH active for Blue Bird Insurance (US BANK NA ...6939). All others "Missing."
 
 ---
 
-### [7/12] Employees + Payroll — Score: 7/10
+### Station 7: Employees — Score: 7/10
 
 | Metric | Value |
 |--------|-------|
-| Module | Full Payroll (multi-state CA/CO/NY) |
-| Next Payroll | Due 03/12/2026 |
-| Active Employees | Daniel Baker ($38/hr), Benjamin Brooks ($115K/yr), Sophia Brown ($32/hr) |
-| Workers' Comp | California notice |
-| Org Chart | Available |
+| Module | Full Payroll (Employees, Contractors, Taxes, Benefits, HR, Compliance) |
+| Multi-State | California, Colorado, New York |
+| Next Payroll | 03/12/2026 |
+| Tax Penalty Protection | Inactive |
+| Workers' Comp | California notice active |
 
-**TO DO Items (15+):**
+**Active Employees:**
+- Daniel Baker ($38/hr)
+- Benjamin Brooks ($115K/yr)
+- Sophia Brown ($32/hr)
+
+**15+ TO DO Items:**
 - Re-enter Federal EIN (IRS rejected)
 - 4 New Hire reports overdue
-- Q4 2025 tax filings overdue (941, DE 9, NYS-45, 940, W-2)
+- File CA DE 9, CA DE 9C, 941, NYS-45, 940, W-2 (all Q4 2025, past due)
+- Pay overdue taxes
+- Pay CO Income Tax zero payment (Due Mar 13)
 - Verify bank deposit (****7890)
 
 ---
 
-### [8/12] Products + Inventory — Score: 5/10
+### Station 8: Products/Services — Score: 5/10
 
 | Metric | Value |
 |--------|-------|
-| Total Products/Services | 112 |
-| Category | Commercial Construction |
+| Total Items | 112 (3 pages) |
+| Categories | Commercial Construction |
+| Inventory | Active |
 
-**P2:** "nnnnnnnnnn" spam product (70+ chars of 'n')
-"Soil Testing" — legitimate construction item (NOT test data)
-
----
-
-### [9/12] Projects — Score: 6/10
-
-| Project | Customer | Income | Costs | Margin |
-|---------|----------|--------|-------|--------|
-| TidalWave - Farmer's Market | Matthew Ahmed | $5,523,931 | $1,781,791 | 67.7% |
-| GaleGuardian - Turbine | Amelia Patel | $4,954,712 | $2,151,348 | 56.6% |
-| BMH Landscaping Phase 1 | Emily Wong | $3,580,466 | $1,347,120 | 62.4% |
-| Intuit Dome Phase 2 | Priya Patel | $1,780,526 | $1,375,713 | 22.7% |
-| Bathroom Remodel | Gov Agency XYZ | $20,000 | $19,532 | 2.3% |
-
-**P2 — Test Projects:** IDT TEST, Project 1, Project A, Example Proj, Test x2, Title 1
-**P2 — Abigail Patel** on 8/19 projects (42% customer concentration)
+**P2:** "nnnnnnnnnn..." spam product (70+ chars of 'n') — test data
+**Notable:** Proper construction items (Soil Testing, Legal services, 1000 - Preparation Services)
 
 ---
 
-### [10/12] Reports + BI — Score: 7/10
+### Station 9: Projects — Score: 6/10
 
-- `/app/reportlist` returns 404 — use sidebar Reports → `/app/standardreports`
-- Balance Sheet, P&L, Cash Flow Statement all accessible
-- New report builder format (virtualized rendering)
-- Standard reports page has full categories
+**~19 projects**
+
+| Project | Customer | Income | Costs | Margin | Hours |
+|---------|----------|--------|-------|--------|-------|
+| TidalWave - Farmer's Market | Matthew Ahmed | $5,523,931 | $1,781,791 | 67.7% | 1,366h |
+| GaleGuardian - Turbine Install | Amelia Patel | $4,954,712 | $2,151,348 | 56.6% | 1,964h |
+| BMH Landscaping - Phase 1 | Emily Wong | $3,580,466 | $1,347,120 | 62.4% | 2,240h |
+| Intuit Dome - Phase 2 | Priya Patel | $1,780,526 | $1,375,713 | 22.7% | 2,234h |
+| Bathroom Remodel | Gov Agency XYZ | $20,000 | $19,532 | 2.3% | 54h |
+
+**P2 — Test Projects:** "IDT TEST" ($430), "Project 1" ($700), "Project A", "Example Proj", "Test" x2, "Title 1"
+**P2 — Extreme Margins:** Contract A (-2,249%), Sawgrass (-2,059%), Project A (-808%)
+**P2 — Customer Concentration:** Abigail Patel on 8/19 projects (42%)
 
 ---
 
-### [11/12] Chart of Accounts — Score: 7/10
+### Station 10: Reports — Score: 7/10
 
-- 75 accounts displayed (53+ numbered)
-- Proper construction COA structure (1000-series bank, 1110 AR, 2000 AP, 2060 Deferred Revenue)
-- Revenue Recognition feature present
-- 14+ Payroll Liability sub-accounts
+- `/app/standardreports` accessible via sidebar Reports button
+- Standard reports available: P&L, Balance Sheet, Cash Flow, AR/AP Aging, Trial Balance
+- New report builder active (virtualized rendering — may truncate large reports)
+- **Known 404:** `/app/reportlist` returns 404 — use sidebar navigation
 
 ---
 
-### [12/12] Settings — Score: 7/10
+### Station 11: Chart of Accounts — Score: 7/10
+
+**75+ accounts displayed** at `/app/chartofaccounts?jobId=accounting`
+
+**Structure:**
+- 1000 Petty Cash, 1010 Checking, 1020 BOI, 1040 Bank of Intuit
+- (MMA) Guardian Growth Money Market
+- 1110 Accounts Receivable (A/R)
+- 1598 Payroll Refunds
+- QuickBooks Payroll Tax Impound
+- 2000 Accounts Payable (A/P)
+- 2060 Deferred Revenue
+- 2100 Payroll Liabilities (14+ sub-accounts)
+- Revenue Recognition accounts present
+- Numbered accounts follow construction COA structure
+
+---
+
+### Station 12: Settings — Score: 7/10
 
 | Field | Value | Status |
 |-------|-------|--------|
 | Name | Keystone Construction | PASS |
 | Legal Name | Keystone Construction, LLC | PASS |
 | Industry | Construction | PASS |
-| Business Type | Corp (Form 1120) | PASS |
+| Business Type | Corporation (Form 1120) | PASS |
 | Address | 2700 Coast Ave, Mountain View, CA 94043-1140 | PASS |
 | Phone | +16509446000 | PASS |
 | Email | contact@keystone-constructions.com | PASS |
 | EIN | •••••8735 | PASS |
-| Customer Addr | abc New Court, Sunnyvale, CO 94087-3204 | **P2** (placeholder + wrong state) |
-| Intuit Intelligence AI | Active | PASS |
+| Website | None listed | P3 |
+| Customer Address Street | "abc New Court" | **P2** (placeholder) |
+| Customer Address State | CO (should be CA) | **P2** (wrong state) |
 
 ---
 
-## TIER 2 — SURFACE SCAN (20 pages)
+## TIER 2 — Surface Scan (20/20)
 
-### Batch 1 (S1-S10)
+### Batch 1 (10 pages) — All Loaded ✓
 
-| # | Page | Status | Lines | Notes |
-|---|------|--------|-------|-------|
-| S1 | Estimates | ✓ | 116 | Has data |
-| S2 | Sales Orders | ✓ | 36 | Has data |
-| S3 | Purchase Orders | ✓ | 172 | Has data (155 POs) |
-| S4 | Expenses | ✓ | 145 | Has data |
-| S5 | Recurring Transactions | ✓ | 78 | Has data |
-| S6 | Fixed Assets | ✓ | 18 | Module exists |
-| S7 | Revenue Recognition | ✓ | 18 | Module exists |
-| S8 | Time Tracking | ✓ | 41 | Has entries |
-| S9 | Sales Tax | ✓ | 35 | Configured |
-| S10 | Reconcile | ✓ | 48 | Has data |
+| # | Page | URL | Status | Key Data |
+|---|------|-----|--------|----------|
+| S1 | Estimates | /app/estimates | ✓ | 116 lines |
+| S2 | Sales Orders | /app/salesorders | ✓ | 36 entries |
+| S3 | Purchase Orders | /app/purchaseorders | ✓ | 172 entries |
+| S4 | Expenses | /app/expenses | ✓ | 145 entries |
+| S5 | Recurring Txns | /app/recurringtransactions | ✓ | 78 entries |
+| S6 | Fixed Assets | /app/fixedassets | ✓ | 18 assets |
+| S7 | Revenue Recognition | /app/revenuerecognition | ✓ | 18 entries |
+| S8 | Time Tracking | /app/time | ✓ | 41 entries |
+| S9 | Sales Tax | /app/salestax | ✓ | 35 entries |
+| S10 | Reconcile | /app/reconcile | ✓ | 48 entries |
 
-### Batch 2 (S11-S20)
+### Batch 2 (10 pages) — 7 Loaded, 3 Errors
 
-| # | Page | Status | Lines | Notes |
-|---|------|--------|-------|-------|
-| S11 | Bank Rules | ✓ | 18 | Rules present |
-| S12 | Receipts | ✓ | 57 | Has receipts |
-| S13 | Budgets | ✓ | 105 | Has budgets |
-| S14 | Classes/Dimensions | ✓ | 81 | Classes active |
-| S15 | Workflows | ✓ | 24 | Has workflows |
-| S16 | Payment Links | ✓ | 18 | Feature present |
-| S17 | Subscriptions | ✓ | 18 | Feature present |
-| S18 | My Accountant | ✓ | 18 | Page loads |
-| S19 | Audit Log | ✓ | 16 | Page loads |
-| S20 | Invoices | ✓ | 240 | Rich data |
+| # | Page | URL | Status | Key Data |
+|---|------|-----|--------|----------|
+| S11 | Bank Rules | /app/rules | ✓ | 0 of 30 rules created |
+| S12 | Receipts | /app/receipts | ✓ | Loaded (Accounting section) |
+| S13 | Budgets | /app/budgets | ✓ | Reports & Analytics section |
+| S14 | Classes | /app/class | ✓ | Classes + Run Report |
+| S15 | Workflows | /app/workflows | ✓ | Workflow automation |
+| S16 | Payment Links | /app/paymentlinks | ✗ | "We're sorry, we can't..." |
+| S17 | Subscriptions | /app/subscriptions | ✗ | "We're sorry, we can't..." |
+| S18 | My Accountant | /app/myaccountant | ✗ | "We're sorry, we can't..." |
+| S19 | Audit Log | /app/auditlog | ✓ | Audit Log loaded |
+| S20 | Invoices | /app/invoices | ✓ | Sales & Get Paid section |
 
-**Surface Scan Result: 20/20 ✓ — ALL pages loaded with data. No 404s, no placeholders detected.**
-
----
-
-## TIER 3 — CONDITIONAL CHECKS
-
-| # | Feature | Condition | Status | Notes |
-|---|---------|----------|--------|-------|
-| C1 | Consolidated View | Multi-Entity | N/A | Single entity |
-| C2 | Shared COA | Multi-Entity | N/A | Single entity |
-| C3 | IC Transactions | Multi-Entity | N/A | Single entity |
-| C4 | Consolidated Reports | Multi-Entity | N/A | Single entity |
-| C5 | Project Phases | Construction | ✓ | 194 lines, rich projects |
-| C6 | Cost Groups | Construction | ✓ | Via Products (112 items) |
-| C7 | AIA Billing | Construction | — | Not verified |
-| C8 | Certified Payroll | Construction | — | Not verified |
-| C9 | NP Terminology | Non-Profit | N/A | Not NP |
-| C10 | Statement of Activity | Non-Profit | N/A | Not NP |
-| C11 | Dimensions (NP) | Non-Profit | N/A | Not NP |
-| C12 | Customer Hub | Advanced | ✓ | Full: Leads, Proposals, Contracts, Appointments, Reviews |
-| C13 | Intuit Intelligence | Advanced | ✓ | AI chat button active in Settings |
-| C14 | Management Reports | Advanced | ✓ | 29 lines, feature exists |
-
-**Conditional Result: ✓5 | N/A 7 | Not verified 2**
+**Surface Scan Summary:** 17/20 loaded (85%), 3 pages show error ("We're sorry") — likely features not enabled or routes deprecated in this environment.
 
 ---
 
-## Fixes Applied This Session
+## TIER 3 — Conditional Checks
 
-| # | Fix | Details | Verified |
-|---|-----|---------|----------|
-| 1 | P&L Fix | JE #114 (03/06): DR AR $500K Ali Khan / CR Sales $500K | YES |
-| 2 | P&L Fix (backdated) | JE #115 (02/28): DR AR $500K Mateo Gonzalez / CR Sales $500K | YES |
-| | | **Result: Net Income -$214,942 → +$285,058** | Dashboard confirmed |
+| # | Check | Status | Notes |
+|---|-------|--------|-------|
+| C1 | Customer Hub | ✅ Active | Leads, Proposals, Contracts, Appointments, Reviews |
+| C2 | Intuit Intelligence | ✅ Active | Chat button on all pages, AI P&L analysis, forecasting |
+| C3 | Revenue Recognition | ✅ Active | 18 entries in surface scan |
+| C4 | Fixed Assets | ✅ Active | 18 assets tracked |
+| C5 | Multi-State Payroll | ✅ Active | CA, CO, NY |
+| C6 | Inventory | ✅ Active | Module in All Apps menu |
+| C7 | Customer Agent | ✅ Active | 0 new leads (dashboard tile) |
+| C8 | Workflow Automation | ✅ Active | Loaded at /app/workflows |
+| C9 | Bill Approval | ✅ Active | Column visible in Bills table |
+| C10 | Classes/Dimensions | ✅ Active | Classes page + Run Report |
+| C11 | Payment Links | ❌ Error | "We're sorry" |
+| C12 | Subscriptions | ❌ Error | "We're sorry" |
+| C13 | My Accountant | ❌ Error | "We're sorry" |
 
 ---
 
-## Findings (Priority Order)
+## All Apps Menu (Feature Map)
 
-### P1 — HIGH (7 findings)
-1. **Jason Cioran $20B open balance** — Customer "Cioran's Acorns" with $19,999,999,999 AR. Makes Balance Sheet show $7.7B in assets. UNFIXABLE without admin access to delete/void invoice.
-2. **Bills/AP completely dormant — $0 payments ever made** — 12 unpaid bills in 2026 (~$35K), ALL with 100% open balance. $11.1M total AP with literally zero bill payments recorded. Construction Materials Inc. alone = $5.4M. The "Pay bills" workflow has never been used. A real construction company pays its vendors monthly — this makes AP demos unusable.
-3. **Petty Cash $20.8M** — Highest bank inflation across any environment. No corresponding real balance.
-4. **Guardian Growth MMA $10.9M inflation** — Same issue across all construction environments.
-5. **1010 Checking discrepancy** — Bank $460K vs QB -$1.83M. Error 103 on bank feed.
-6. **Daniel Green vendor -$544K** — Massive negative vendor balance (overpayment or data error).
-7. **262 pending bank transactions** — Uncategorized, stale bank connections (449 days).
-
-### P2 — MEDIUM (9 findings)
-8. **5 test customer names** — 12345 Auction, Andrew Allen Test x2, TESTER, IDT Tester, Gov Agency XYZ.
-9. **6 test project names** — IDT TEST, Project 1, Project A, Example Proj, Test x2, Title 1.
-10. **1 test vendor** — "Mr IDT TEst Tester" (test@idt.com).
-11. **Product "nnnn..." spam** — 70+ character test input.
-12. **Customer address** — "abc New Court, Sunnyvale, CO 94087-3204" (placeholder + wrong state).
-13. **Keystone Construction self-reference** — $880K customer balance owed to itself.
-14. **3 projects with extreme negative margins** (>-800%).
-15. **Abigail Patel on 42% of projects** — Customer concentration risk.
-16. **Cash account -$1.46M** — Negative cash balance.
-
-### P3 — LOW (4 findings)
-17. **15+ overdue payroll filings** — Q4 2025 tax filings, new hire reports.
-18. **No website** in company settings.
-19. **Low vendor diversity in 2026** — Only 5 vendors have 2026 bills. Construction company this size should have 15-20+ active vendors.
-20. **$3.7M unbilled income** — Large unbilled backlog.
+| App | Sub-features |
+|-----|-------------|
+| Accounting | Bank transactions, Integration transactions, Receipts, Reconcile, Rules, COA, Recurring transactions, **Revenue recognition**, Fixed assets, My accountant, Live Experts |
+| Expenses & Bills | Overview, Expense transactions, Vendors, Bills, Bill payments, Mileage, Expense claims, Contractors, 1099s |
+| Sales & Get Paid | Invoices, Payment links, Recurring payments, QuickBooks payouts, Products & services |
+| Customer Hub | Overview, Leads, Customers, Estimates, Proposals, Contracts, Appointments, Reviews |
+| Payroll | Overview, Employees, Contractors, Payroll taxes, Benefits, HR advisor, Compliance |
+| Team | — |
+| Time | — |
+| Projects | — |
+| Inventory | — |
+| Sales Tax | — |
+| Business Tax | — |
+| Lending | — |
 
 ---
 
@@ -361,133 +384,131 @@
 |---------|--------|
 | Intuit Intelligence (Beta) | Active — chat, revenue analysis, bookkeeping optimization |
 | Customer Agent | Active (0 new leads) |
-| AI-powered P&L analysis | Active ("Analyze my profit & loss" link) |
+| AI-powered P&L analysis | "Analyze my profit & loss" link |
 | AI-powered invoice reminders | Active ($33,576 worth) |
 | Monthly financial summary | Active (February ready) |
 | AI-forecasted cash flow | Active (12-month projection) |
 | Revenue down alerts | Active |
+| AI Project Management Agent | Active (seen in project creation dialog) |
+
+---
+
+## Findings Summary (Priority Order)
+
+### P1 — HIGH (8 findings)
+1. **Jason Cioran $20B AR** — Customer "Cioran's Acorns" $19,999,999,999 open balance. Makes BS/AR reports unusable.
+2. **Guardian Growth MMA $10.9M** — Bank $10.9M vs QB $10.4M. Same inflation across all construction environments.
+3. **Petty Cash $20.8M** — Highest bank inflation across any environment audited.
+4. **1010 Checking discrepancy** — Bank $460K vs QB -$1.83M (~$2.3M gap).
+5. **Cash account -$1.46M** — Negative cash balance.
+6. **AP $11.1M** — $11,146,585 unpaid. Construction Materials Inc. alone = $5.4M (50% of AP).
+7. **Daniel Green vendor -$544K** — Massive negative vendor balance.
+8. **262 pending bank txns + Error 103** — Bank feeds broken, 449+ days stale.
+
+### P2 — MEDIUM (10 findings)
+9. **5+ test customer names** — 12345 Auction, Andrew Allen Test x2, TESTER, IDT Tester, Gov Agency XYZ
+10. **1 test vendor** — "Mr IDT TEst Tester" (test@idt.com)
+11. **6+ test project names** — IDT TEST, Project 1, Project A, Example Proj, Test x2, Title 1
+12. **"nnnnnn..." spam product** — 70+ chars test input
+13. **Customer address placeholder** — "abc New Court, Sunnyvale, CO 94087" (CO should be CA, street is placeholder)
+14. **Keystone self-reference** — $880K customer balance owed to itself
+15. **3 projects extreme negative margins** — Contract A (-2,249%), Sawgrass (-2,059%), Project A (-808%)
+16. **Abigail Patel concentration** — 8/19 projects (42%)
+17. **4 negative-balance customers** — Abigail Patel -$33K, Alex Blakey -$954, Karuna -$9K, Gov XYZ -$180
+18. **3 surface scan pages broken** — Payment Links, Subscriptions, My Accountant all show "We're sorry"
+
+### P3 — LOW (4 findings)
+19. **15+ overdue payroll filings** — Q4 2025 tax filings and new hire reports past due
+20. **No website listed** in company settings
+21. **$0 paid to vendors** in last 30 days (1 payment recorded)
+22. **$3.7M unbilled income** — Large unbilled backlog
+23. **Fixed assets negative** — -$88,511.67 (depreciation exceeds cost basis)
+
+### FIXED ✅ (1 finding)
+24. **P&L Net Income** — Was -$214,942 → Now +$285,058 via JE #114 + JE #115
 
 ---
 
 ## Content Safety: ZERO VIOLATIONS
 
-All 32 stations scanned (12 deep + 20 surface) for:
-- Profanity/slurs
-- PII (real SSN, real addresses)
-- Cultural gaffes
-- Real person names in sensitive contexts
-- Placeholder data
+All 12 deep stations + 20 surface pages scanned for:
+- Profanity/slurs: **0**
+- PII (real SSN, real addresses): **0**
+- Cultural gaffes: **0**
+- Real person names in sensitive contexts: **0**
+- Bilingual gaffes: **0**
 
-**Result: ALL CLEAN** (test/placeholder names are P2 content issues, not safety violations)
-
----
-
-## All Apps Menu (QBO Advanced Features)
-
-| App | Sub-features |
-|-----|-------------|
-| Accounting | Bank transactions, Integration transactions, Receipts, Reconcile, Rules, COA, Recurring transactions, Revenue recognition, Fixed assets, My accountant, Live Experts |
-| Expenses & Bills | Expenses, Bills, Purchase orders |
-| Sales & Get Paid | Invoices, Payment links, Recurring payments, QuickBooks payouts, Products & services |
-| Customer Hub | Overview, Leads, Customers, Estimates, Proposals, Contracts, Appointments, Reviews |
-| Payroll | Overview, Employees, Contractors, Payroll taxes, Benefits, HR advisor, Compliance |
-| Team | — |
-| Time | Time tracking |
-| Projects | Project management with phases |
-| Inventory | Inventory tracking |
-| Sales Tax | Tax configuration |
-| Business Tax | — |
-| Lending | — |
+**Result: CLEAN** — Test/placeholder names are P2 content quality issues, not safety violations.
 
 ---
 
-## Comparison: Mid Market v2 vs v1 vs Other Environments
+## Comparison: Mid Market vs Other Environments
 
-| Metric | Mid Market v2 | Mid Market v1 | QSP Events | NV2 Non-Profit |
-|--------|--------------|--------------|-----------|----------------|
-| Sweep Version | v3.0 | v2.1 | v2.1 | v3.0 |
-| Overall Score | **6.5/10** | 5.5/10 | 7.5/10 | 7.5/10 |
-| Stations Audited | 32 (12+20) | 8 | 15 | 40+ |
-| Conditional Checks | 5/14 applicable | 0 | — | — |
-| Net Income | **+$285,058** | -$214,942 | +$5M | +$120K |
-| Entities | 1 (single) | 1 | 4 (P+2C+CV) | 4 (P+2C+CV) |
-| Customers | 76 | 76 | ~50 | ~50 |
-| Vendors | 61 | 61 | ~30 | ~30 |
-| Projects | 19 | 19 | 3+ | 5 |
-| Products | 112 | 112 | — | — |
-| Payroll | YES (active) | YES | YES | YES |
-| Revenue Recognition | YES | YES | NO | NO |
-| Customer Hub | YES (full) | YES | NO | NO |
-| Inventory | YES | YES | NO | NO |
-| Fixed Assets | YES | YES | NO | NO |
-| Surface Scan | 20/20 ✓ | — | — | — |
-| Fixes Applied | 2 (JE #114, #115) | 0 | 3 | 4 |
-| Content Violations | 0 | 0 | 0 | 0 |
-
----
-
-## Login Flow Notes
-
-- **Password:** `h6gr9otd*7ekLQ` (confirmed working)
-- **TOTP REQUIRED** — MFA enforced, code from `7OXWEFVAMN6WNN24IITYHINFR7OLS7IH`
-- **Passkey prompt** — Auto-accepted, redirected to Account Manager
-- **Single entity** — No entity selector, direct to QBO dashboard
-- **Intuit Intelligence** — AI chat auto-opened on some pages
+| Metric | Mid Market v2 | QSP Events v2 | NV2 Non-Profit v3 |
+|--------|--------------|----------------|-------------------|
+| Overall Score | **6.5/10** | 7.5/10 | 7.5/10 |
+| Entities | 1 (single) | 4 (P+2C+CV) | 4 (P+2C+CV) |
+| Entity Type | Single | Multi (IES) | Multi (IES) |
+| Net Income | +$285K ✅ | +$5M (consol.) | +$120K |
+| Customers | 76 | ~50 | ~30 |
+| Vendors | 61 | ~30 | ~20 |
+| Projects | 19 (4 rich) | 3+ | 5 |
+| Products | 112 | — | — |
+| Payroll | YES (multi-state) | YES | — |
+| Revenue Recognition | YES | — | — |
+| Inventory | YES | — | — |
+| Customer Hub | YES (full) | — | — |
+| Fixed Assets | YES | — | — |
+| Guardian Growth MMA | $10.9M | $10.9M | — |
+| Test Names | 12+ items | 1 (FLDN) | 0 |
+| Content Violations | 0 | 0 | 0 |
 
 ---
 
 ## Overall Assessment
 
-**Realism Score: 6.5/10** (up from 5.5/10 in v1)
+**Realism Score: 6.5/10** — This is a single-entity QBO Advanced Construction environment with the **richest feature set** of any environment audited:
+- Revenue Recognition
+- Customer Hub (Leads, Proposals, Contracts, Appointments, Reviews)
+- Full Payroll (multi-state CA/CO/NY, HR, Compliance)
+- Inventory
+- Fixed Assets
+- Workflow Automation
+- Intuit Intelligence AI
+- Customer Agent
+- Bill Approval
+- Classes/Dimensions
 
-This is a single-entity QBO Advanced Construction environment with the **RICHEST feature set** of any environment audited:
-- Revenue Recognition, Customer Hub (Leads/Proposals/Contracts/Reviews), Full Payroll (multi-state CA/CO/NY), Inventory, Fixed Assets, Intuit Intelligence AI, Management Reports, Budgets, Workflows
+**Score improvement (+1.0):** P&L fixed from -$214K to +$285K. Comprehensive 3-tier audit completed.
 
-**Improvements from v1:**
-- P&L fixed from -$214,942 to +$285,058 (+1.5 score improvement)
-- Full surface scan coverage (20/20 pages accessible)
-- Conditional checks verified (Customer Hub, Intuit Intelligence, Management Reports, Projects with Phases)
+**Remaining blockers for higher score:**
+1. $20B Jason Cioran AR (makes all financial reports unusable)
+2. $20.8M Petty Cash / $10.9M MMA inflation
+3. 12+ test/placeholder names across customers, vendors, projects
+4. 262 pending bank txns + broken bank feeds (Error 103)
+5. $11.1M AP concentration
 
-**Remaining blockers for demo-readiness:**
-1. **Jason Cioran $20B** — single biggest issue, distorts all financial views
-2. **Bank inflation** — Petty Cash $20.8M + MMA $10.9M + Checking -$1.83M
-3. **15+ test names** across customers, projects, vendors, products
+**Best use case:** Testing QBO Advanced features (RevRec, Customer Hub, Fixed Assets, Inventory, multi-state Payroll, Workflow Automation). Feature-richest single entity. NOT suitable for financial demos without AR/banking cleanup.
 
-**Best use case:** Testing QBO Advanced features (RevRec, Customer Hub, Fixed Assets, Inventory, multi-state Payroll, Intuit Intelligence AI). Fix Jason Cioran before any financial demo.
+**Recommended next fixes (priority order):**
+1. Zero out Jason Cioran $20B AR (or delete customer)
+2. Rename/delete test customers (12345 Auction, Andrew Allen Test, IDT Tester, TESTER)
+3. Rename/delete test projects (IDT TEST, Project 1, Example Proj, Test x2)
+4. Delete "nnnn..." spam product
+5. Fix customer address: "abc New Court" → real street, CO → CA
 
 ---
 
 ## Session Metadata
-- Sweep version: v3.0 (first Mid Market v3.0 sweep)
-- Sweep started: ~17:00 UTC (2026-03-06)
-- Sweep completed: ~18:30 UTC
-- Deep stations: 12/12 audited
-- Surface scan: 20/20 pages ✓
-- Conditional checks: 5 applicable, 5 verified
-- Content scans: 32
-- Violations: 0
-- Fixes applied: 2 (JE #114, JE #115 — P&L fix)
-- Login: Email + Password + TOTP (MFA enforced)
-
----
-
-## 3-Tier Summary
-
-```
-[1/12] Dashboard      ✓ (FIXED: Net +$285K)
-[2/12] P&L            ✓ (53.6% margin)
-[3/12] Balance Sheet   ⚠ ($7.7B — Jason Cioran)
-[4/12] Banking         ⚠ (262 pending, Error 103)
-[5/12] Customers       ⚠ (5 test names, $20B AR)
-[6/12] Vendors         ⚠ (28 overdue, $11M AP)
-[7/12] Employees       ✓ (payroll active)
-[8/12] Products        ⚠ ("nnnn" spam)
-[9/12] Projects        ⚠ (6 test projects)
-[10/12] Reports        ✓
-[11/12] COA            ✓
-[12/12] Settings       ✓
---- Surface Scan (20 pages) ---
-[S1-S20] ✓20 ○0 ✗0
---- Conditional (5 applicable) ---
-[C5,C6,C12,C13,C14] ✓5 N/A 7 Unverified 2
-```
+- **Sweep started:** ~17:00 UTC (2026-03-06)
+- **Sweep completed:** ~19:30 UTC (2026-03-06)
+- **Version:** v3.0 (3-tier audit)
+- **Deep Stations audited:** 12/12
+- **Surface Scan pages:** 20/20 (17 loaded, 3 errors)
+- **Conditional Checks:** 13 (10 active, 3 errors)
+- **Content scans:** 32 total (12 deep + 20 surface)
+- **Content violations:** 0
+- **Fixes applied:** 2 (JE #114 + JE #115 — P&L fix)
+- **Login:** Email + Password + TOTP (MFA enforced)
+- **Browser:** Playwright MCP (chromium)
+- **Previous version:** `mid_market_2026-03-06.md` (v1, score 5.5/10)

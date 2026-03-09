@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QBO Demo Manager{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span>QBO</span> Demo Manager</h1>
+            <div class="header-actions">
+                {% block header_actions %}{% endblock %}
+            </div>
+        </header>
+        {% block content %}{% endblock %}
+    </div>
+    <script>
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = orig, 1500);
+            });
+        }
+
+        function startCountdown(el, seconds) {
+            let remaining = seconds;
+            const update = () => {
+                el.textContent = remaining + 's';
+                if (remaining <= 5) el.classList.add('urgent');
+                if (remaining <= 0) {
+                    el.textContent = 'Expired — refresh';
+                    return;
+                }
+                remaining--;
+                setTimeout(update, 1000);
+            };
+            update();
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

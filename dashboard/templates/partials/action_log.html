@@ -1,0 +1,50 @@
+{% if action == "login" %}
+<div class="result-box">
+    <h4>Login Credentials</h4>
+    <div class="credential-line"><span class="label">Email:</span> {{ result.email }}</div>
+    <div class="credential-line"><span class="label">Password:</span> {{ result.password }}</div>
+    <div class="credential-line"><span class="label">MFA:</span> {{ result.mfa_type }}</div>
+    <div class="credential-line"><span class="label">Entities:</span> {{ result.entities }}</div>
+    <div style="margin-top: 12px">
+        <div class="totp-code">{{ result.totp_code }}</div>
+        <div class="countdown" id="totp-countdown">{{ result.totp_remaining_seconds }}s</div>
+    </div>
+    <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button class="btn btn-sm" onclick="copyToClipboard('{{ result.totp_code }}', this)">Copy Code</button>
+        <a href="{{ result.login_url }}" target="_blank" class="btn btn-sm">Open Login Page</a>
+        <button class="btn btn-sm"
+                onclick="copyToClipboard('{{ result.email }}\n{{ result.password }}\n{{ result.totp_code }}', this)">
+            Copy All
+        </button>
+    </div>
+    <script>startCountdown(document.getElementById('totp-countdown'), {{ result.totp_remaining_seconds }});</script>
+</div>
+
+{% elif action == "sweep" %}
+<div class="result-box">
+    <h4>Sweep Prompt</h4>
+    <div class="prompt-text" onclick="copyToClipboard(this.textContent, this)" title="Click to copy">{{ prompt }}</div>
+    <div class="copy-hint">Click to copy, then paste in Claude Code</div>
+</div>
+
+{% elif action == "retool" %}
+<div class="result-box">
+    <h4>Retool Sync Routine</h4>
+    <ol class="sync-steps">
+        <li data-step="1" class="{{ 'done' if result.filter_cleared else '' }}">Open Retool &rarr; click Filter icon (left sidebar) &rarr; Clear All Filters</li>
+        <li data-step="2" class="{{ 'done' if result.success else '' }}">Download Production CSV + Staging CSV</li>
+        <li data-step="3" class="{{ 'done' if result.success else '' }}">Run cross-reference against QBO_CREDENTIALS.json</li>
+    </ol>
+    {% if result.filter_note %}
+    <div style="margin: 8px 0; padding: 8px; background: #d2992233; border-radius: 4px; font-size: 12px; color: var(--yellow)">
+        REMINDER: {{ result.filter_note }}
+    </div>
+    {% endif %}
+    {% if result.output %}
+    <pre style="font-size: 11px; max-height: 300px; overflow-y: auto; color: var(--text-dim)">{{ result.output }}</pre>
+    {% endif %}
+    {% if result.errors %}
+    <pre style="font-size: 11px; color: var(--red)">{{ result.errors }}</pre>
+    {% endif %}
+</div>
+{% endif %}

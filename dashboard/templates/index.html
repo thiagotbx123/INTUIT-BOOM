@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block header_actions %}
+<a href="/config" class="btn">Sweep Config</a>
+<button class="btn btn-primary" hx-post="/api/sync-retool" hx-target="#sync-result" hx-indicator="#sync-spinner">
+    Sync Retool <span id="sync-spinner" class="htmx-indicator">...</span>
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="stats">
+    <span>Accounts: <span class="stat-value" id="stat-total">{{ accounts | length }}</span></span>
+    <span>Visible: <span class="stat-value" id="stat-visible">{{ accounts | length }}</span></span>
+    <span>Swept: <span class="stat-value">{{ accounts | selectattr('sweep') | list | length }}</span></span>
+    <span>Score &ge;7: <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'ge', 7) | list | length }}</span></span>
+    <span>Entities: <span class="stat-value">{{ total_entities }}</span></span>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+    <div class="filter-group">
+        <span class="filter-label">Show:</span>
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" data-filter="swept" onclick="setFilter('swept', this)">Swept</button>
+        <button class="filter-btn" data-filter="good" onclick="setFilter('good', this)">Score &ge;7</button>
+        <button class="filter-btn" data-filter="warn" onclick="setFilter('warn', this)">Score &lt;7</button>
+        <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">Not Swept</button>
+    </div>
+    <div class="filter-group">
+        <span class="filter-label">Dataset:</span>
+        {% set datasets = accounts | map(attribute='dataset') | unique | sort %}
+        <button class="filter-btn active" data-dataset="all" onclick="setDatasetFilter('all', this)">All</button>
+        {% for ds in datasets %}
+        <button class="filter-btn" data-dataset="{{ ds }}" onclick="setDatasetFilter('{{ ds }}', this)">{{ ds }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="sync-result"></div>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 30px"></th>
+            <th style="width: 30px">
+                <input type="checkbox" id="toggle-all" checked onchange="toggleAll(this.checked)" title="Show/Hide All">
+            </th>
+            <th>Environment</th>
+            <th>Dataset</th>
+            <th>Entities</th>
+            <th>Score</th>
+            <th>Last Sweep</th>
+            <th>Retool</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="account-table">
+        {% for acct in accounts %}
+        <tr class="clickable-row account-row"
+            data-shortcode="{{ acct.shortcode }}"
+            data-status="{{ acct.score_class }}"
+            data-dataset="{{ acct.dataset }}"
+            data-swept="{{ 'yes' if acct.sweep and acct.sweep.score is not none else 'no' }}"
+            onclick="window.location='/account/{{ acct.shortcode }}'">
+            <td><span class="dot {{ acct.score_class }}"></span></td>
+            <td onclick="event.stopPropagation()">
+                <input type="checkbox" class="row-toggle" checked
+                       data-shortcode="{{ acct.shortcode }}"
+                       onchange="toggleRow(this)">
+            </td>
+            <td>{{ acct.label }}</td>
+            <td>{{ acct.dataset }}</td>
+            <td>{{ acct.entity_count }}</td>
+            <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
+            <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '\u2014' }}</td>
+            <td>{{ acct.retool_env }}</td>
+            <td>
+                <a href="/account/{{ acct.shortcode }}" class="btn btn-sm" onclick="event.stopPropagation()">Open</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Persist hidden accounts in localStorage
+    const STORAGE_KEY = 'qbo_hidden_accounts';
+
+    function getHidden() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+        catch { return []; }
+    }
+
+    function saveHidden(list) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    // Apply saved hidden state on load
+    (function() {
+        const hidden = getHidden();
+        hidden.forEach(sc => {
+            const row = document.querySelector(`tr[data-shortcode="${sc}"]`);
+            const cb = document.querySelector(`input[data-shortcode="${sc}"]`);
+            if (row) row.classList.add('hidden-row');
+            if (cb) cb.checked = false;
+        });
+        updateVisibleCount();
+    })();
+
+    function toggleRow(checkbox) {
+        const sc = checkbox.dataset.shortcode;
+        const row = checkbox.closest('tr');
+        const hidden = getHidden();
+        if (checkbox.checked) {
+            row.classList.remove('hidden-row');
+            const idx = hidden.indexOf(sc);
+            if (idx > -1) hidden.splice(idx, 1);
+        } else {
+            row.classList.add('hidden-row');
+            if (!hidden.includes(sc)) hidden.push(sc);
+        }
+        saveHidden(hidden);
+        updateVisibleCount();
+    }
+
+    function toggleAll(checked) {
+        document.querySelectorAll('.row-toggle').forEach(cb => {
+            cb.checked = checked;
+            const row = cb.closest('tr');
+            if (checked) {
+                row.classList.remove('hidden-row');
+            } else {
+                row.classList.add('hidden-row');
+            }
+        });
+        saveHidden(checked ? [] : Array.from(document.querySelectorAll('.row-toggle')).map(cb => cb.dataset.shortcode));
+        updateVisibleCount();
+    }
+
+    let activeFilter = 'all';
+    let activeDataset = 'all';
+
+    function setFilter(filter, btn) {
+        activeFilter = filter;
+        document.querySelectorAll('.filter-group:first-child .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilters();
+    }
+
+    function setDatasetFilter(ds, btn) {
+        activeDataset = ds;
+        document.querySelectorAll('.filter-group:nth-child(2) .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const hidden = getHidden();
+        document.querySelectorAll('.account-row').forEach(row => {
+            const status = row.dataset.status;
+            const dataset = row.dataset.dataset;
+            const swept = row.dataset.swept;
+            const sc = row.dataset.shortcode;
+
+            let show = true;
+
+            // Status filter
+            if (activeFilter === 'swept') show = swept === 'yes';
+            else if (activeFilter === 'good') show = status === 'good';
+            else if (activeFilter === 'warn') show = status === 'warn';
+            else if (activeFilter === 'pending') show = status === 'pending';
+
+            // Dataset filter
+            if (activeDataset !== 'all' && dataset !== activeDataset) show = false;
+
+            // Manual hide
+            if (hidden.includes(sc)) show = false;
+
+            row.style.display = show ? '' : 'none';
+
+            // Sync checkbox
+            const cb = row.querySelector('.row-toggle');
+            if (cb) cb.checked = !hidden.includes(sc);
+        });
+        updateVisibleCount();
+    }
+
+    function updateVisibleCount() {
+        const visible = document.querySelectorAll('.account-row:not([style*="display: none"]):not(.hidden-row)').length;
+        document.getElementById('stat-visible').textContent = visible;
+    }
+</script>
+{% endblock %}
