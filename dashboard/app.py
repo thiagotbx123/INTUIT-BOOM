@@ -124,28 +124,42 @@ async def api_save_account(request: Request):
 
 
 def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, surface, cond):
-    """Generate a comprehensive SWEEP_ORDER.md the new Claude session can follow."""
+    """Generate a comprehensive SWEEP_ORDER.md the new Claude session can follow.
+
+    This is the ONLY document the sweep session needs. It embeds all methodology,
+    fix protocols, and Playwright actions inline — no external references needed.
+    """
     from sweep_checks import DEEP_STATIONS, SURFACE_SCAN, CONDITIONAL_CHECKS, CONTENT_SAFETY
     import datetime
 
     checks = profile_data.get("checks", {})
     fix = profile_data.get("fix_tiers", {})
     safety = profile_data.get("content_safety", {})
+    can_fix = fix.get("fix_immediately", True) or fix.get("fix_and_report", True)
 
     # Build companies table
     companies_lines = []
     for c in acct.companies:
         companies_lines.append(f"| {c.name} | {c.cid} | {c.type} | {c.priority} |")
 
-    # Build enabled deep checks
+    is_multi = len(acct.companies) > 1
+
+    # Build enabled deep checks with FULL fix protocols
     deep_lines = []
     for s in DEEP_STATIONS:
-        if checks.get(s["id"], True):
-            items = ", ".join(s["what_to_check"][:3])
-            fixes = ", ".join(s["fix_actions"][:2]) if s["fix_actions"] else "Report only"
-            deep_lines.append(
-                f"### {s['id']} — {s['name']}\n- **Route**: `{s['route']}`\n- **Check**: {items}\n- **Fix**: {fixes}\n"
-            )
+        if not checks.get(s["id"], True):
+            continue
+        check_items = "\n".join(f"  - {item}" for item in s["what_to_check"])
+        fix_items = (
+            "\n".join(f"  - {a}" for a in s["fix_actions"]) if s["fix_actions"] else "  - Report only (no auto-fix)"
+        )
+        deep_lines.append(
+            f"### {s['id']} — {s['name']}\n"
+            f"**Route**: `{s['route']}`\n"
+            f"**VER** (browser_snapshot → ler tudo):\n{check_items}\n"
+            f"**CORRIGIR** ({'OBRIGATORIO' if s['auto_fix'] and can_fix else 'Reportar apenas'}):\n{fix_items}\n"
+            f"**AVANCAR**: Só passe ao proximo quando corrigiu ou documentou por que nao pôde.\n"
+        )
 
     # Build enabled surface checks
     surface_lines = []
@@ -165,21 +179,119 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
         if safety.get(s["id"], True):
             safety_lines.append(f"- **{s['id']}** {s['name']}: `{s['pattern']}` [{s['severity']}]")
 
-    # Fix tiers
+    # Fix tiers description
     fix_desc = []
     if fix.get("fix_immediately", True):
-        fix_desc.append("FIX IMMEDIATELY — corrigir sem perguntar (data ranges, JEs para P&L positivo, placeholders)")
+        fix_desc.append("**FIX IMMEDIATELY** — corrigir sem perguntar")
     if fix.get("fix_and_report", True):
-        fix_desc.append("FIX & REPORT — corrigir e documentar no report (nomes, categorias, projetos)")
+        fix_desc.append("**FIX & REPORT** — corrigir e documentar no report")
     if fix.get("never_fix", False):
-        fix_desc.append("NEVER FIX — apenas reportar, nao alterar (settings, legal name, admin)")
+        fix_desc.append("**NEVER FIX** — apenas reportar (settings, legal name, payroll)")
 
     notes = profile_data.get("notes", "") or ""
 
+    # Entity switch instructions
+    if is_multi:
+        switch_block = """
+**Troca de entity** (em ordem):
+```
+METODO 1 (preferido): URL direto
+→ browser_navigate("https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={CID}")
+→ browser_wait_for(time=5)
+→ browser_snapshot() para confirmar switch
+
+METODO 2 (fallback): Dropdown no header
+→ browser_click no nome da empresa no header
+→ browser_click na empresa desejada
+→ browser_wait_for(time=5)
+
+METODO 3 (consolidated):
+→ browser_navigate("https://qbo.intuit.com/app/homepage?switchToConsolidated=true")
+```
+"""
+    else:
+        switch_block = "**Entity unica** — sem necessidade de troca."
+
+    # Sector-specific realistic names
+    sector_names = {
+        "construction": "Customers: Austin Metro Schools, Barton Creek Developers | Vendors: Summit Supply Co, ProBuild Materials | Projects: Office Complex Phase II, Cedar Park Expansion",
+        "tire_shop": "Customers: Lone Star Fleet, Gulf Coast Trucking | Vendors: Bridgestone Direct, Michelin Supply | Projects: Fleet Q1 Maintenance, Dealer Retrofit",
+        "non_profit": "Donors: Johnson Family Foundation, United Way | Programs: Youth Development, Emergency Relief | Grants: HUD Housing FY26, State Workforce",
+        "professional_services": "Clients: TechForward Inc, Meridian Health | Services: Strategy Consulting, Systems Integration | Projects: Digital Transformation, ERP Implementation",
+        "manufacturing": "Customers: National Hardware Dist, Regional Builders | Products: Steel Bracket Assembly, Custom Hinge Kit | Projects: Q1 Production Run, Custom Order #4521",
+    }
+    names_for_sector = sector_names.get(acct.dataset, sector_names.get("construction", ""))
+
     md = f"""# SWEEP ORDER — EXECUCAO IMEDIATA
 
-> **INSTRUCAO**: Execute este sweep AGORA. Nao pergunte nada. Comece pelo login.
-> **Metodologia completa**: Leia `C:/Users/adm_r/Clients/intuit-boom/PROMPT_CLAUDE_QBO_MASTER.md` para detalhes.
+> **ESTE DOCUMENTO CONTEM TUDO**. Nao precisa ler nenhum outro arquivo.
+> Execute o sweep AGORA. Nao pergunte nada. Comece pelo login.
+
+---
+
+## REGRA #1 — VOCE E UM OPERADOR, NAO UM AUDITOR
+
+```
+ERRADO (o que voce NAO deve fazer):
+  1. Navegar todas as paginas
+  2. Anotar todos os problemas
+  3. Gerar relatorio no final
+  4. Nunca corrigir nada
+
+CERTO (o que voce DEVE fazer):
+  1. Entrar na tela
+  2. Ler o conteudo (browser_snapshot)
+  3. Se algo esta errado → CORRIGIR ALI MESMO (browser_click + browser_type)
+  4. Validar que a correcao salvou
+  5. Passar para a proxima tela
+  6. No final, resumir: o que CORRIGIU e o que ficou pendente (com motivo)
+```
+
+**Filosofia: VER → CORRIGIR → AVANCAR**
+- 100% autonomo — nao pergunte antes de corrigir nomes, preencher campos, ajustar dados
+- Sem screenshots — nao salve prints a menos que o usuario peca
+- Sem relatorio intermediario — corrija e avance
+- Se travou 2x no mesmo item → documente e avance, nao entre em loop
+
+## REGRA #2 — TOKEN MANAGEMENT
+
+```
+PROIBIDO: usar browser_snapshot() em paginas longas (gera 90KB+ de output)
+
+OBRIGATORIO para Surface Scan: usar browser_evaluate() com JS extraction:
+  browser_evaluate(function="() => {{
+    const text = document.body.innerText;
+    const lines = text.split('\\n').filter(l => l.trim().length > 0);
+    return {{
+      title: document.title,
+      lineCount: lines.length,
+      first20: lines.slice(0, 20),
+      hasData: lines.length > 10,
+      hasPlaceholder: /\\b(TBX|Lorem|Sample|Foo|Bar|TODO)\\b/i.test(text),
+      has404: /not found|404|page doesn't exist/i.test(text)
+    }};
+  }}")
+
+PERMITIDO: browser_snapshot() APENAS em Deep Stations onde precisa interagir
+```
+
+## REGRA #3 — ANTI-SKIP
+
+```
+Para CADA Deep Station voce DEVE reportar no chat:
+  [D01] Dashboard ✓ (ou: CORRIGIDO: mudei periodo para All Dates)
+  [D02] P&L ✓ Revenue $X, Net $Y (ou: CORRIGIDO: criei JE de $200K)
+
+NAO ACEITO:
+  - "Verificado" sem dizer o que viu
+  - "Encontrei problema X" sem ter tentado corrigir
+  - Pular estacao sem reportar
+
+SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
+  [D07] Employees — BLOQUEADO: 2FA exigido para editar nomes
+```
+
+---
 
 ## 1. LOGIN
 
@@ -191,33 +303,69 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
 | TOTP Secret | `{acct.totp_secret}` |
 | Dataset | {acct.dataset} |
 
-**Procedimento (usar Playwright MCP — browser_navigate, browser_click, browser_type):**
-1. `browser_navigate` para https://accounts.intuit.com/app/sign-in
+**Procedimento:**
+1. `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
 2. `browser_snapshot` para ver o formulario
-3. `browser_type` no campo de email → next
-4. `browser_type` no campo de password → next
-5. Gerar TOTP: executar `python -c "import pyotp; print(pyotp.TOTP('{acct.totp_secret}').now())"` via Bash
+3. `browser_type` no campo de email → clicar next/continue
+4. `browser_type` no campo de password → clicar sign in
+5. Gerar TOTP via Bash: `python -c "import pyotp,time; t=pyotp.TOTP('{acct.totp_secret}'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"`
 6. `browser_type` no campo de codigo → submit
-**IMPORTANTE: Use APENAS Playwright (browser_*) para interagir com QBO. NAO use QuickBooks MCP API.**
+7. Se "Skip"/"Not now"/"Maybe later" aparecer → clicar para dispensar
+8. `browser_snapshot` para confirmar que esta no QBO homepage
 
-## 2. COMPANIES ({len(acct.companies)} entities)
+**IMPORTANTE: Use APENAS Playwright (browser_*). NAO use QuickBooks MCP API.**
+
+## 2. ENTITIES ({len(acct.companies)})
 
 | Nome | CID | Tipo | Prioridade |
 |------|-----|------|------------|
 {chr(10).join(companies_lines)}
 
-**Regra**: Comecar pelas P0, depois P1. Para cada entity, rodar todos os checks habilitados.
-**Troca de entity**: Menu superior → company switcher → selecionar pelo nome.
+**Ordem**: P0 primeiro (Deep + Surface + Conditional completo), depois P1 (apenas Deep D01-D02 rapido).
+{switch_block}
 
-## 3. DEEP STATIONS ({deep} habilitados)
+## 3. DEEP STATIONS ({deep} habilitados) — VER/CORRIGIR/AVANCAR
 
 {"".join(deep_lines) if deep_lines else "Nenhum deep check habilitado."}
 
-## 4. SURFACE SCAN ({surface} habilitados)
+### PROTOCOLOS DE FIX COMUNS (referencia rapida)
+
+**Criar Journal Entry (para corrigir P&L negativo):**
+```
+1. browser_navigate("/app/journal")
+2. browser_snapshot() → encontrar form
+3. Linha 1: Account = "Accounts Receivable" | Amount (Debit) = $200000 | Name = cliente existente
+4. Linha 2: Account = "Sales" ou "Revenue" ou "Grant Revenue" (NP) | Amount (Credit) auto-preenche
+5. Memo: "Revenue adjustment - [motivo realista]"
+6. browser_click("Save and close")
+7. Voltar para P&L e confirmar que Net Income ficou positivo
+```
+
+**Renomear placeholder (customer/vendor/product):**
+```
+1. browser_click no nome do record na lista
+2. browser_snapshot() → encontrar botao Edit
+3. browser_click("Edit")
+4. browser_type no campo de nome → novo nome realista
+5. browser_click("Save")
+```
+
+**Preencher campo vazio (email, address, notes, terms):**
+```
+1. Dentro do detail do record → browser_click("Edit")
+2. browser_type nos campos vazios
+3. browser_click("Save")
+```
+
+**Nomes realistas para {acct.dataset}:**
+{names_for_sector}
+
+## 4. SURFACE SCAN ({surface} habilitados) — RAPIDO, SEM CORRECAO
 
 {chr(10).join(surface_lines) if surface_lines else "Nenhum surface check habilitado."}
 
-**Regra surface**: Navegar ate a rota, verificar se carrega sem erro, se tem dados, sem placeholders. Screenshot se problema.
+**Protocolo**: `browser_navigate` → `browser_evaluate` (JS extraction, NAO snapshot) → anotar ✓/○/✗/⚠ → proximo
+- ✓ = tem dados | ○ = vazio | ✗ = 404 | ⚠ = placeholder/problema
 
 ## 5. CONDITIONAL ({cond} habilitados)
 
@@ -227,36 +375,54 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
 
 {chr(10).join(safety_lines) if safety_lines else "Content safety desabilitado."}
 
+**Se encontrar CS1 (profanity) ou CS4 (PII)**: PARAR e corrigir IMEDIATAMENTE.
+**Se encontrar CS2 (placeholder como "Foo", "TBX")**: corrigir inline com nome realista.
+
 ## 7. FIX RULES
 
 {chr(10).join(fix_desc)}
 
-**Filosofia**: VER → CORRIGIR → AVANCAR. Nao parar para reportar, corrigir inline.
+Corrigir imediatamente (sem perguntar):
+- Placeholder text (TBX, Test, Lorem, Foo, Bar) → renomear
+- Campos vazios em top records (company name, email, address, phone, notes, terms)
+- P&L negativo → criar JE (DR AR / CR Revenue) ate ficar positivo
+- Report periodo errado → mudar para All Dates
+- Nomes genericos ("Project 1", "Vendor A") → renomear com nome do setor
+- Bank transactions uncategorized (top 5-10) → categorizar
+
+NUNCA corrigir:
+- Company settings (nome legal, EIN, endereco fiscal)
+- Employee edits bloqueados por 2FA
+- Feature flags (dependem da Intuit)
+- Payroll data
+- Deletes de qualquer tipo
 
 ## 8. REALISM SCORING
 
-{"HABILITADO — ao final do sweep, pontuar 10 criterios de 1-10." if profile_data.get("realism_scoring", True) else "DESABILITADO"}
+{"HABILITADO — ao final, pontuar 10 criterios de 1-10 (viabilidade financeira, coerencia de nomes, volume de dados, diversidade de transacoes, banking health, AR/AP balance, payroll, projects, reports, storytelling)." if profile_data.get("realism_scoring", True) else "DESABILITADO"}
 
 ## 9. OUTPUT
 
-Salvar report em: `C:/Users/adm_r/Clients/intuit-boom/knowledge-base/sweep-learnings/{acct.shortcode}_YYYY-MM-DD.md`
-
-Formato do report:
+**No chat** durante execucao (formato minimo):
 ```
-# Sweep Report: {acct.label}
-**Date**: YYYY-MM-DD
-**Overall Score**: X/10
-**Profile**: {profile_data.get("name", profile_key)}
+Logado em {acct.label} → [nome empresa]
 
-## Entities Audited
-(tabela com score por entity)
+--- DEEP STATIONS ({deep}) ---
+[D01] Dashboard ✓ (ou CORRIGIDO: ...)
+[D02] P&L ✓ Revenue $X, Net $Y, Margin Z%
+...
+→ Switching to [proxima entity]...
 
-## Findings
-(P0/P1/P2 com descricao e acao tomada)
+--- SURFACE SCAN ({surface} pages) ---
+[S01-S{surface:02d}] ✓X ○Y ✗Z
 
-## Realism Score
-(10 criterios se habilitado)
+--- CONDITIONAL ({cond}) ---
+[C01-...] ✓X N/A Y
 ```
+
+**Salvar report** em: `C:/Users/adm_r/Clients/intuit-boom/knowledge-base/sweep-learnings/{acct.shortcode}_YYYY-MM-DD.md`
+
+**Atualizar LATEST_SWEEP.json**: ao terminar, atualizar status para "completed" e preencher overall_score, realism_score, findings_count.
 
 {f"## 10. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
