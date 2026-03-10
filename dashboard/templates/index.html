@@ -39,6 +39,25 @@
 
 <div id="sync-result"></div>
 
+{% if active_sweep %}
+<div style="padding: 14px 18px; margin-bottom: 16px; background: rgba(52,211,153,0.08); border: 1px solid var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+    <div>
+        <span style="font-size: 14px; font-weight: 700; color: var(--green); margin-right: 8px;">SWEEP ATIVO</span>
+        <strong>{{ active_sweep.account.label }}</strong>
+        <span style="color: var(--text-muted); font-size: 12px; margin-left: 6px;">{{ active_sweep.profile_name }}</span>
+        <span style="color: var(--text-muted); font-size: 11px; margin-left: 8px;">Ativado: {{ active_sweep.activated_at[:16] | replace('T', ' ') }}</span>
+        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+            Abra um terminal em <code style="font-size: 11px;">C:\Users\adm_r\Clients\intuit-boom</code> e rode <code style="font-size: 11px;">claude go</code>
+        </div>
+    </div>
+    <form method="post" action="/api/config/stop-sweep" style="margin: 0;">
+        <button type="submit" class="btn btn-sm" style="background: var(--red); color: #fff; border: none; white-space: nowrap;">
+            Parar Sweep
+        </button>
+    </form>
+</div>
+{% endif %}
+
 <table>
     <thead>
         <tr>
@@ -69,7 +88,12 @@
                        data-shortcode="{{ acct.shortcode }}"
                        onchange="toggleRow(this)">
             </td>
-            <td>{{ acct.label }}</td>
+            <td>
+                {{ acct.label }}
+                {% if active_sweep and active_sweep.account.shortcode == acct.shortcode %}
+                <span style="display: inline-block; background: var(--green); color: #000; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle; animation: pulse 2s infinite;">SWEEPING</span>
+                {% endif %}
+            </td>
             <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
             <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
             <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
@@ -91,6 +115,9 @@
 {% endblock %}
 
 {% block scripts %}
+<style>
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
 <script>
     const STORAGE_KEY = 'qbo_hidden_accounts';
 

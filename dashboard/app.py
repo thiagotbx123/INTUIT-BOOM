@@ -38,16 +38,34 @@ templates = Jinja2Templates(directory=str(BASE / "templates"))
 # ─── Dashboard ───
 
 
+def _get_active_sweep() -> dict | None:
+    """Read LATEST_SWEEP.json and return data if status is pending."""
+    import json as json_mod
+
+    sweep_file = BASE / "pending" / "LATEST_SWEEP.json"
+    if not sweep_file.exists():
+        return None
+    try:
+        data = json_mod.loads(sweep_file.read_text(encoding="utf-8"))
+        if data.get("status") == "pending":
+            return data
+    except Exception:
+        pass
+    return None
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     accounts = load_accounts()
     total_entities = sum(len(a.companies) for a in accounts)
+    active_sweep = _get_active_sweep()
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "accounts": accounts,
             "total_entities": total_entities,
+            "active_sweep": active_sweep,
         },
     )
 
@@ -463,47 +481,10 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
         try:
             existing = json_mod.loads(latest_file.read_text(encoding="utf-8"))
             if existing.get("status") == "pending":
-                activated = existing.get("activated_at", "?")
-                running_acct = existing.get("account", {}).get("label", "?")
-                elapsed = ""
-                try:
-                    dt = datetime.datetime.fromisoformat(activated)
-                    mins = int((datetime.datetime.now() - dt).total_seconds() / 60)
-                    elapsed = f" ({mins} min ago)" if mins < 60 else f" ({mins // 60}h {mins % 60}m ago)"
-                except Exception:
-                    pass
-                html = f"""
-                <div class="generated-prompt">
-                    <div style="padding: 16px; background: rgba(234,179,8,0.1); border: 1px solid var(--yellow); border-radius: 8px;">
-                        <div style="font-size: 16px; font-weight: 700; color: var(--yellow); margin-bottom: 8px;">
-                            SWEEP JA EM ANDAMENTO
-                        </div>
-                        <div style="font-size: 13px; margin-bottom: 12px; color: var(--text-secondary);">
-                            <strong>{running_acct}</strong> foi ativado{elapsed} e ainda esta com status <code>pending</code>.
-                        </div>
-                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-                            Aguarde o sweep atual terminar ou force um novo clicando abaixo.
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-sm"
-                                    style="background: var(--red); color: #fff; border: none;"
-                                    hx-post="/api/config/stop-sweep"
-                                    hx-target="#action-result"
-                                    hx-swap="innerHTML">
-                                Parar Sweep
-                            </button>
-                            <button class="btn btn-sm"
-                                    style="background: var(--yellow); color: #000; border: none;"
-                                    hx-post="/api/config/activate-sweep?profile={profile}&account={account}&force=1"
-                                    hx-target="#action-result"
-                                    hx-swap="innerHTML">
-                                Forcar Novo Sweep
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                """
-                return HTMLResponse(html)
+                # Already running — redirect to dashboard where banner shows status
+                from fastapi.responses import RedirectResponse
+
+                return RedirectResponse(url="/", status_code=303)
         except (json_mod.JSONDecodeError, KeyError):
             pass  # corrupted file, proceed normally
 
@@ -538,69 +519,14 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     deep = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("D") and v)
     surface = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("S") and v)
     cond = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("C") and v)
-    entities = len(acct.companies)
 
     # Generate SWEEP_ORDER.md — comprehensive instructions for new Claude session
     _generate_sweep_order_md(pending_dir, acct, p, profile, deep, surface, cond)
 
-    # Launch Claude — CLAUDE.md protocol will detect the pending sweep and execute
-    import os
-    import subprocess as sp
+    # Redirect to dashboard — sweep status banner will show there
+    from fastapi.responses import RedirectResponse
 
-    env = os.environ.copy()
-    env.pop("CLAUDECODE", None)
-
-    sp.Popen(
-        ["claude", "go"],
-        cwd=r"C:\Users\adm_r\Clients\intuit-boom",
-        env=env,
-        shell=True,
-        creationflags=sp.CREATE_NEW_CONSOLE,
-    )
-
-    html = f"""
-    <div class="generated-prompt">
-        <div style="padding: 16px; background: #23863633; border: 1px solid var(--green); border-radius: 8px;">
-            <div style="font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 8px;">
-                SWEEP LAUNCHED
-            </div>
-            <div style="font-size: 13px; margin-bottom: 12px;">
-                <strong>{acct.label}</strong> — {acct.email}
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px;">
-                <div style="text-align: center; padding: 8px; background: var(--bg); border-radius: 4px;">
-                    <div style="font-size: 20px; font-weight: 700; color: var(--blue);">{deep}</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">DEEP</div>
-                </div>
-                <div style="text-align: center; padding: 8px; background: var(--bg); border-radius: 4px;">
-                    <div style="font-size: 20px; font-weight: 700; color: var(--blue);">{surface}</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">SURFACE</div>
-                </div>
-                <div style="text-align: center; padding: 8px; background: var(--bg); border-radius: 4px;">
-                    <div style="font-size: 20px; font-weight: 700; color: var(--blue);">{cond}</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">COND.</div>
-                </div>
-                <div style="text-align: center; padding: 8px; background: var(--bg); border-radius: 4px;">
-                    <div style="font-size: 20px; font-weight: 700; color: var(--blue);">{entities}</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">ENTITIES</div>
-                </div>
-            </div>
-            <div style="padding: 10px; background: var(--bg); border-radius: 4px; font-size: 13px; text-align: center; color: var(--green); margin-bottom: 10px;">
-                Claude Code abriu em um novo terminal. Acompanhe o progresso la.
-            </div>
-            <div style="text-align: center;">
-                <button class="btn btn-sm"
-                        style="background: var(--red); color: #fff; border: none;"
-                        hx-post="/api/config/stop-sweep"
-                        hx-target="#action-result"
-                        hx-swap="innerHTML">
-                    Parar Sweep
-                </button>
-            </div>
-        </div>
-    </div>
-    """
-    return HTMLResponse(html)
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.post("/api/config/stop-sweep", response_class=HTMLResponse)
@@ -611,13 +537,10 @@ async def api_stop_sweep():
 
     pending_dir = BASE / "pending"
     latest_file = pending_dir / "LATEST_SWEEP.json"
-    stopped_account = "?"
-
     # 1. Reset JSON status
     if latest_file.exists():
         try:
             data = json_mod.loads(latest_file.read_text(encoding="utf-8"))
-            stopped_account = data.get("account", {}).get("label", "?")
             data["status"] = "cancelled"
             latest_file.write_text(json_mod.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
         except Exception:
@@ -646,20 +569,10 @@ async def api_stop_sweep():
     except Exception:
         pass
 
-    html = f"""
-    <div class="generated-prompt">
-        <div style="padding: 16px; background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: 8px;">
-            <div style="font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 8px;">
-                SWEEP PARADO
-            </div>
-            <div style="font-size: 13px; color: var(--text-secondary);">
-                <strong>{stopped_account}</strong> — status alterado para <code>cancelled</code>.
-                {f"{killed} processo(s) finalizado(s)." if killed else "Nenhum processo Claude encontrado (pode ter terminado sozinho)."}
-            </div>
-        </div>
-    </div>
-    """
-    return HTMLResponse(html)
+    # Redirect to dashboard — banner will be gone since status is now cancelled
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse(url="/", status_code=303)
 
 
 # ─── Action API ───
