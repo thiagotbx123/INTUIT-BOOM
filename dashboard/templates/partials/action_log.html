@@ -29,22 +29,101 @@
 
 {% elif action == "retool" %}
 <div class="result-box">
-    <h4>Retool Sync Routine</h4>
-    <ol class="sync-steps">
-        <li data-step="1" class="{{ 'done' if result.filter_cleared else '' }}">Open Retool &rarr; click Filter icon (left sidebar) &rarr; Clear All Filters</li>
-        <li data-step="2" class="{{ 'done' if result.success else '' }}">Download Production CSV + Staging CSV</li>
-        <li data-step="3" class="{{ 'done' if result.success else '' }}">Run cross-reference against QBO_CREDENTIALS.json</li>
-    </ol>
-    {% if result.filter_note %}
-    <div style="margin: 10px 0; padding: 10px 14px; background: var(--yellow-soft); border: 1px solid var(--yellow-border); border-radius: var(--radius-sm); font-size: 13px; color: var(--yellow)">
-        REMINDER: {{ result.filter_note }}
+    <h4>Retool Sync</h4>
+
+    {# Step 1: Auto-download from Retool #}
+    <div style="margin-bottom: 14px">
+        <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--text-secondary)">Step 1 &mdash; Download from Retool</div>
+        {% if result.auth_failed is defined and result.auth_failed %}
+        <div style="font-size: 12px; color: var(--yellow); padding: 6px 10px; margin-bottom: 6px; background: var(--yellow-soft); border: 1px solid var(--yellow-border); border-radius: var(--radius-sm)">
+            &#9888; Retool session expired. Run <code style="font-size: 11px">python scripts/retool_download_csvs.py --login</code> to re-authenticate, or download CSVs manually.
+        </div>
+        {% endif %}
+        <div style="font-size: 12px; display: flex; flex-direction: column; gap: 3px">
+            <div>
+                {% if result.prod_exists %}
+                    <span style="color: var(--green)">&#10003;</span> retool_production_export.csv
+                    <span style="color: var(--text-muted); font-size: 11px">({{ result.prod_age }})</span>
+                    {% if result.download_info and result.download_info.production %}
+                        {% set pi = result.download_info.production %}
+                        {% if pi.filters_cleared %}
+                            <span style="color: var(--green); font-size: 11px">&mdash; filters cleared, {{ pi.rows_after }} rows</span>
+                        {% elif pi.rows_after %}
+                            <span style="color: var(--text-muted); font-size: 11px">&mdash; {{ pi.rows_after }} rows</span>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <span style="color: var(--red)">&#10007;</span> retool_production_export.csv
+                    <span style="color: var(--red); font-size: 11px">&mdash; not found</span>
+                {% endif %}
+            </div>
+            <div>
+                {% if result.stg_exists %}
+                    <span style="color: var(--green)">&#10003;</span> retool_staging_export.csv
+                    <span style="color: var(--text-muted); font-size: 11px">({{ result.stg_age }})</span>
+                    {% if result.download_info and result.download_info.staging %}
+                        {% set si = result.download_info.staging %}
+                        {% if si.filters_cleared %}
+                            <span style="color: var(--green); font-size: 11px">&mdash; filters cleared, {{ si.rows_after }} rows</span>
+                        {% elif si.rows_after %}
+                            <span style="color: var(--text-muted); font-size: 11px">&mdash; {{ si.rows_after }} rows</span>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <span style="color: var(--yellow)">&#10007;</span> retool_staging_export.csv
+                    <span style="color: var(--text-muted); font-size: 11px">&mdash; not found (optional)</span>
+                {% endif %}
+            </div>
+        </div>
+        <div style="margin-top: 6px; display: flex; gap: 8px">
+            <a href="https://retool.testbox.com/apps/026deb70-a16f-11ef-962b-7bc1e6ce9bc6/Integrations/Quickbooks/Quickbooks?_environment=production"
+               target="_blank" style="font-size: 11px; color: var(--text-muted)">Open Production &#8599;</a>
+            <a href="https://retool.testbox.com/apps/026deb70-a16f-11ef-962b-7bc1e6ce9bc6/Integrations/Quickbooks/Quickbooks?_environment=staging"
+               target="_blank" style="font-size: 11px; color: var(--text-muted)">Open Staging &#8599;</a>
+        </div>
     </div>
-    {% endif %}
+
+    {# Step 3: Results #}
+    <div>
+        <div style="font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--text-secondary)">Step 3 &mdash; Sync Results</div>
+        {% if result.missing_csv is defined and result.missing_csv %}
+            <div style="padding: 10px 14px; background: var(--yellow-soft); border: 1px solid var(--yellow-border); border-radius: var(--radius-sm); font-size: 13px; color: var(--yellow)">
+                Production CSV missing. Download it from Retool first, then click Sync Retool again.
+            </div>
+        {% elif result.success %}
+            <div style="padding: 8px 12px; background: var(--green-soft, rgba(52,211,153,0.1)); border: 1px solid var(--green-border, rgba(52,211,153,0.3)); border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 8px">
+                {% if result.updated > 0 %}
+                    <strong style="color: var(--green)">&#10003; {{ result.updated }} account(s) updated</strong>
+                {% else %}
+                    <span style="color: var(--green)">&#10003; All retool_env values already correct</span>
+                {% endif %}
+            </div>
+            {% if result.changes %}
+            <div style="font-size: 12px; margin-bottom: 8px">
+                {% for c in result.changes %}
+                <div style="padding: 2px 0; color: var(--text-secondary)">
+                    &bull; {{ c.email.split('@')[0] }}
+                    {% if c.field is defined %}
+                        <span style="color: var(--text-muted); font-size: 11px">[{{ c.field }}]</span>
+                    {% endif %}
+                    <span style="color: var(--red)">{{ c.old or 'empty' }}</span> &rarr; <span style="color: var(--green)">{{ c.new }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% elif result.errors %}
+            <div style="padding: 8px 12px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-sm); font-size: 13px; color: var(--red)">
+                Error: {{ result.errors }}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Collapsible raw output #}
     {% if result.output %}
-    <pre style="font-size: 12px; max-height: 300px; overflow-y: auto; color: var(--text-secondary); margin-top: 10px; padding: 12px; background: var(--bg-input); border-radius: var(--radius-sm)">{{ result.output }}</pre>
-    {% endif %}
-    {% if result.errors %}
-    <pre style="font-size: 12px; color: var(--red); margin-top: 8px">{{ result.errors }}</pre>
+    <details style="margin-top: 10px">
+        <summary style="font-size: 12px; color: var(--text-muted); cursor: pointer">Show raw output</summary>
+        <pre style="font-size: 11px; max-height: 250px; overflow-y: auto; color: var(--text-secondary); margin-top: 6px; padding: 10px; background: var(--bg-input); border-radius: var(--radius-sm)">{{ result.output }}</pre>
+    </details>
     {% endif %}
 </div>
 {% endif %}
