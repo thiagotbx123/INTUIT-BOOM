@@ -13,23 +13,28 @@
     --tbx-green-soft: rgba(16, 185, 129, 0.10);
     --tbx-green-border: rgba(16, 185, 129, 0.25);
 
-    /* Surfaces — dark slate, NOT pure black */
-    --bg: #0c1017;
-    --bg-card: #131820;
-    --bg-hover: #1a2030;
-    --bg-elevated: #1e2538;
-    --bg-input: #0e1219;
+    /* QBO Brand */
+    --qbo-green: #2CA01C;
+    --qbo-green-glow: #3ec22e;
+    --qbo-green-soft: rgba(44, 160, 28, 0.12);
+
+    /* Surfaces — TestBox dark forest green */
+    --bg: #050e05;
+    --bg-card: #0a170a;
+    --bg-hover: #0f1f0f;
+    --bg-elevated: #132613;
+    --bg-input: #060d06;
 
     /* Borders */
-    --border: #1e2a3a;
-    --border-hover: #2d3f55;
+    --border: #162816;
+    --border-hover: #1e3a1e;
     --border-focus: var(--tbx-purple);
 
     /* Text */
-    --text: #f0f4f8;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --text-inverse: #0c1017;
+    --text: #e8ede8;
+    --text-secondary: #9aaa9a;
+    --text-muted: #607060;
+    --text-inverse: #050e05;
 
     /* Semantic */
     --green: #10b981;
@@ -51,13 +56,13 @@
     --radius-xl: 16px;
 
     /* Glass tokens */
-    --glass-bg: rgba(19, 24, 32, 0.60);
-    --glass-bg-hover: rgba(26, 32, 48, 0.70);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-border-hover: rgba(255, 255, 255, 0.16);
+    --glass-bg: rgba(10, 23, 10, 0.60);
+    --glass-bg-hover: rgba(15, 31, 15, 0.70);
+    --glass-border: rgba(255, 255, 255, 0.07);
+    --glass-border-hover: rgba(255, 255, 255, 0.14);
     --glass-blur: blur(16px);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
     /* Glow tokens */
     --glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
@@ -73,9 +78,9 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
     background-image:
-        radial-gradient(ellipse 90% 60% at 10% 0%, rgba(16, 185, 129, 0.18) 0%, transparent 50%),
-        radial-gradient(ellipse 80% 50% at 90% 100%, rgba(109, 36, 130, 0.18) 0%, transparent 50%),
-        radial-gradient(ellipse 40% 30% at 50% 40%, rgba(59, 130, 246, 0.06) 0%, transparent 60%);
+        radial-gradient(ellipse 90% 60% at 10% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 50% at 90% 100%, rgba(109, 36, 130, 0.10) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 30% at 50% 40%, rgba(44, 160, 28, 0.04) 0%, transparent 60%);
     background-attachment: fixed;
     color: var(--text);
     font-size: 14px;
@@ -125,8 +130,19 @@ header::after {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--tbx-green), var(--tbx-purple-glow), transparent);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3), 0 0 24px rgba(109, 36, 130, 0.2);
+    background: linear-gradient(90deg, var(--qbo-green), var(--tbx-green), var(--tbx-purple-glow), transparent);
+    box-shadow: 0 0 12px rgba(44, 160, 28, 0.3), 0 0 24px rgba(109, 36, 130, 0.2);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-brand-text {
+    display: flex;
+    flex-direction: column;
 }
 
 header h1 {
@@ -134,19 +150,81 @@ header h1 {
     font-weight: 700;
     color: var(--text);
     letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
 header h1 span {
-    background: linear-gradient(135deg, var(--tbx-green-glow), var(--tbx-purple-glow));
+    background: linear-gradient(135deg, var(--qbo-green-glow), var(--tbx-purple-glow));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
+    filter: drop-shadow(0 0 8px rgba(44, 160, 28, 0.3));
+}
+
+.header-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
 .header-actions {
     display: flex;
     gap: 10px;
+}
+
+.tbx-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    background: rgba(45, 212, 191, 0.08);
+    border: 1px solid rgba(45, 212, 191, 0.20);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5EEAD4;
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.12);
+    white-space: nowrap;
+}
+
+/* ─── Footer ─── */
+.site-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 12px 20px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-brand-tbx {
+    color: #5EEAD4;
+    font-weight: 600;
+}
+
+.footer-sep {
+    color: var(--text-muted);
+    opacity: 0.4;
 }
 
 /* ─── Buttons ─── */
@@ -328,7 +406,7 @@ table {
 }
 
 thead {
-    background: linear-gradient(180deg, rgba(30, 37, 56, 0.8), rgba(19, 24, 32, 0.6));
+    background: linear-gradient(180deg, rgba(15, 31, 15, 0.8), rgba(10, 23, 10, 0.6));
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
 }
@@ -511,7 +589,7 @@ tr:last-child td { border-bottom: none; }
 .badge-consolidated { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.3); }
 .badge-single { background: rgba(245, 158, 11, 0.15); color: var(--yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
 .badge-p0 { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
-.badge-p1 { background: rgba(30, 37, 56, 0.60); color: var(--text-secondary); border: 1px solid var(--border-hover); }
+.badge-p1 { background: rgba(15, 31, 15, 0.60); color: var(--text-secondary); border: 1px solid var(--border-hover); }
 
 /* ─── Sweep Card ─── */
 .sweep-card { grid-column: 1 / -1; }
@@ -800,8 +878,7 @@ tr:last-child td { border-bottom: none; }
 }
 
 /* ─── Check Cards (Deep) ─── */
-
-
+.check-card {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -979,7 +1056,7 @@ tr:last-child td { border-bottom: none; }
     padding: 10px 16px;
     font-size: 12px;
     font-weight: 600;
-    background: rgba(30, 37, 56, 0.50);
+    background: rgba(15, 31, 15, 0.50);
     border-bottom: 1px solid var(--glass-border);
     color: var(--tbx-green-glow);
     letter-spacing: 0.02em;
@@ -1130,7 +1207,7 @@ tr:last-child td { border-bottom: none; }
 .generated-prompt pre:hover { border-color: var(--tbx-green); }
 
 /* ─── Zebra Striping ─── */
-tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.035); }
+tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
 tbody tr:nth-child(odd) td { background: transparent; }
 tbody tr:hover td { background: rgba(16, 185, 129, 0.06) !important; }
 tbody tr { transition: all 0.15s ease; }
@@ -1144,7 +1221,7 @@ table:not(.surface-table) > thead th:nth-child(7),
 #account-table td:nth-child(7) { text-align: center; }
 
 /* ─── Dataset Badges (per-type color) ─── */
-[class^="badge-dataset-"] { background: var(--bg-elevated); color: var(--text-secondary); }
+[class^="badge-dataset-"] { background: rgba(15, 31, 15, 0.60); color: var(--text-secondary); }
 .badge-dataset-construction { background: rgba(109, 36, 130, 0.15); color: var(--tbx-purple-glow); border: 1px solid rgba(109, 36, 130, 0.35); box-shadow: 0 0 6px rgba(109, 36, 130, 0.15); }
 .badge-dataset-canada_construction { background: rgba(239, 68, 68, 0.12); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 6px rgba(239, 68, 68, 0.12); }
 .badge-dataset-non_profit { background: rgba(16, 185, 129, 0.12); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 6px rgba(16, 185, 129, 0.12); }
@@ -1252,4 +1329,9 @@ td[title]:not(:empty) { cursor: help; }
     .check-header { flex-direction: column; gap: 8px; align-items: flex-start; }
     .realism-scale { flex-direction: column; }
     .action-bar { flex-direction: column; gap: 10px; }
+    .header-brand img { width: 24px; height: 24px; }
+    header h1 { font-size: 16px; }
+    .header-subtitle { font-size: 10px; }
+    .tbx-wordmark { font-size: 11px; padding: 3px 10px; }
+    .site-footer { flex-wrap: wrap; gap: 8px; font-size: 11px; }
 }

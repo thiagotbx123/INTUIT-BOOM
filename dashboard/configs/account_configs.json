@@ -16,5 +16,11 @@
     "overrides": {},
     "notes": "",
     "hidden": false
+  },
+  "nv2": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
   }
 }

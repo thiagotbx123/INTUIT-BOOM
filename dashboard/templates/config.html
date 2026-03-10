@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Sweep Config — QBO Demo Manager{% endblock %}
+{% block title %}Sweep Config — QBO Demo Manager | QuickBooks{% endblock %}
 
 {% block header_actions %}
 <a href="/" class="btn">Dashboard</a>
@@ -30,7 +30,7 @@
             <option value="">-- All Accounts (default) --</option>
             {% for acct in accounts %}
             <option value="{{ acct.shortcode }}" {{ 'selected' if acct.shortcode == target_shortcode else '' }}>
-                {{ acct.label }} ({{ acct.dataset }})
+                {{ acct.label }} ({{ acct.dataset | replace('_', ' ') }})
             </option>
             {% endfor %}
         </select>

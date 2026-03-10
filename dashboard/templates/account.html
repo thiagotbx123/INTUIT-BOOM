@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ account.label }} — QBO Demo Manager{% endblock %}
+{% block title %}{{ account.label }} — QBO Demo Manager | QuickBooks{% endblock %}
 
 {% block header_actions %}
 <a href="/config?account={{ account.shortcode }}" class="btn">Configure Sweep</a>
@@ -45,7 +45,7 @@
         </div>
         <div class="card-row">
             <span class="label">Dataset</span>
-            <span class="value"><span class="badge badge-dataset-{{ account.dataset }}">{{ account.dataset }}</span></span>
+            <span class="value"><span class="badge badge-dataset-{{ account.dataset }}">{{ account.dataset | replace('_', ' ') }}</span></span>
         </div>
         <div class="card-row">
             <span class="label">Retool</span>
