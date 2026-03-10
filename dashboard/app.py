@@ -484,13 +484,22 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
                         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
                             Aguarde o sweep atual terminar ou force um novo clicando abaixo.
                         </div>
-                        <button class="btn btn-sm"
-                                style="background: var(--yellow); color: #000; border: none;"
-                                hx-post="/api/config/activate-sweep?profile={profile}&account={account}&force=1"
-                                hx-target="#action-result"
-                                hx-swap="innerHTML">
-                            Forcar Novo Sweep
-                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-sm"
+                                    style="background: var(--red); color: #fff; border: none;"
+                                    hx-post="/api/config/stop-sweep"
+                                    hx-target="#action-result"
+                                    hx-swap="innerHTML">
+                                Parar Sweep
+                            </button>
+                            <button class="btn btn-sm"
+                                    style="background: var(--yellow); color: #000; border: none;"
+                                    hx-post="/api/config/activate-sweep?profile={profile}&account={account}&force=1"
+                                    hx-target="#action-result"
+                                    hx-swap="innerHTML">
+                                Forcar Novo Sweep
+                            </button>
+                        </div>
                     </div>
                 </div>
                 """
@@ -576,8 +585,76 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
                     <div style="font-size: 10px; color: var(--text-dim);">ENTITIES</div>
                 </div>
             </div>
-            <div style="padding: 10px; background: var(--bg); border-radius: 4px; font-size: 13px; text-align: center; color: var(--green);">
-                Claude Code abriu em um novo terminal. Acompanhe o progresso lá.
+            <div style="padding: 10px; background: var(--bg); border-radius: 4px; font-size: 13px; text-align: center; color: var(--green); margin-bottom: 10px;">
+                Claude Code abriu em um novo terminal. Acompanhe o progresso la.
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-sm"
+                        style="background: var(--red); color: #fff; border: none;"
+                        hx-post="/api/config/stop-sweep"
+                        hx-target="#action-result"
+                        hx-swap="innerHTML">
+                    Parar Sweep
+                </button>
+            </div>
+        </div>
+    </div>
+    """
+    return HTMLResponse(html)
+
+
+@app.post("/api/config/stop-sweep", response_class=HTMLResponse)
+async def api_stop_sweep():
+    """Kill running Claude sweep process and reset LATEST_SWEEP.json status."""
+    import json as json_mod
+    import subprocess as sp
+
+    pending_dir = BASE / "pending"
+    latest_file = pending_dir / "LATEST_SWEEP.json"
+    stopped_account = "?"
+
+    # 1. Reset JSON status
+    if latest_file.exists():
+        try:
+            data = json_mod.loads(latest_file.read_text(encoding="utf-8"))
+            stopped_account = data.get("account", {}).get("label", "?")
+            data["status"] = "cancelled"
+            latest_file.write_text(json_mod.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        except Exception:
+            pass
+
+    # 2. Kill Claude processes spawned by sweep (cmd.exe windows running claude)
+    killed = 0
+    try:
+        result = sp.run(
+            ["tasklist", "/V", "/FI", "WINDOWTITLE eq Claude*", "/FO", "CSV"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        for line in result.stdout.strip().split("\n")[1:]:
+            if "Claude" in line:
+                parts = line.strip('"').split('","')
+                if len(parts) >= 2:
+                    pid = parts[1]
+                    sp.run(
+                        ["taskkill", "/F", "/PID", pid, "/T"],
+                        capture_output=True,
+                        timeout=5,
+                    )
+                    killed += 1
+    except Exception:
+        pass
+
+    html = f"""
+    <div class="generated-prompt">
+        <div style="padding: 16px; background: rgba(239,68,68,0.1); border: 1px solid var(--red); border-radius: 8px;">
+            <div style="font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 8px;">
+                SWEEP PARADO
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary);">
+                <strong>{stopped_account}</strong> — status alterado para <code>cancelled</code>.
+                {f"{killed} processo(s) finalizado(s)." if killed else "Nenhum processo Claude encontrado (pode ter terminado sozinho)."}
             </div>
         </div>
     </div>
