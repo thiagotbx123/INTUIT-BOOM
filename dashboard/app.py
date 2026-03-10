@@ -111,14 +111,20 @@ async def config_panel(request: Request, profile: str = "full_sweep", account: s
 
 @app.post("/api/config/save-profile")
 async def api_save_profile(request: Request):
-    body = await request.json()
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Invalid JSON body"}, status_code=422)
     save_profile(body["key"], body["profile"])
     return JSONResponse({"status": "ok"})
 
 
 @app.post("/api/config/save-account")
 async def api_save_account(request: Request):
-    body = await request.json()
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Invalid JSON body"}, status_code=422)
     save_account_config(body["shortcode"], body["config"])
     return JSONResponse({"status": "ok"})
 
@@ -495,9 +501,10 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     env.pop("CLAUDECODE", None)
 
     sp.Popen(
-        ["claude", "go"],
+        ["claude"],
         cwd=r"C:\Users\adm_r\Clients\intuit-boom",
         env=env,
+        shell=True,
         creationflags=sp.CREATE_NEW_CONSOLE,
     )
 
