@@ -501,7 +501,7 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     env.pop("CLAUDECODE", None)
 
     sp.Popen(
-        ["claude"],
+        ["claude", "go"],
         cwd=r"C:\Users\adm_r\Clients\intuit-boom",
         env=env,
         shell=True,
