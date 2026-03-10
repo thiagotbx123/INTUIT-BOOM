@@ -441,7 +441,7 @@ Logado em {acct.label} → [nome empresa]
 
 
 @app.post("/api/config/activate-sweep", response_class=HTMLResponse)
-async def api_activate_sweep(request: Request, profile: str = "full_sweep", account: str = ""):
+async def api_activate_sweep(request: Request, profile: str = "full_sweep", account: str = "", force: str = ""):
     """Save sweep config to pending file. Claude Code reads it on 'roda'."""
     import datetime
     import json as json_mod
@@ -456,6 +456,47 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     # Save structured config (not just text prompt)
     pending_dir = BASE / "pending"
     pending_dir.mkdir(exist_ok=True)
+
+    # --- SWEEP LOCK: prevent double activation ---
+    latest_file = pending_dir / "LATEST_SWEEP.json"
+    if latest_file.exists() and force != "1":
+        try:
+            existing = json_mod.loads(latest_file.read_text(encoding="utf-8"))
+            if existing.get("status") == "pending":
+                activated = existing.get("activated_at", "?")
+                running_acct = existing.get("account", {}).get("label", "?")
+                elapsed = ""
+                try:
+                    dt = datetime.datetime.fromisoformat(activated)
+                    mins = int((datetime.datetime.now() - dt).total_seconds() / 60)
+                    elapsed = f" ({mins} min ago)" if mins < 60 else f" ({mins // 60}h {mins % 60}m ago)"
+                except Exception:
+                    pass
+                html = f"""
+                <div class="generated-prompt">
+                    <div style="padding: 16px; background: rgba(234,179,8,0.1); border: 1px solid var(--yellow); border-radius: 8px;">
+                        <div style="font-size: 16px; font-weight: 700; color: var(--yellow); margin-bottom: 8px;">
+                            SWEEP JA EM ANDAMENTO
+                        </div>
+                        <div style="font-size: 13px; margin-bottom: 12px; color: var(--text-secondary);">
+                            <strong>{running_acct}</strong> foi ativado{elapsed} e ainda esta com status <code>pending</code>.
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                            Aguarde o sweep atual terminar ou force um novo clicando abaixo.
+                        </div>
+                        <button class="btn btn-sm"
+                                style="background: var(--yellow); color: #000; border: none;"
+                                hx-post="/api/config/activate-sweep?profile={profile}&account={account}&force=1"
+                                hx-target="#action-result"
+                                hx-swap="innerHTML">
+                            Forcar Novo Sweep
+                        </button>
+                    </div>
+                </div>
+                """
+                return HTMLResponse(html)
+        except (json_mod.JSONDecodeError, KeyError):
+            pass  # corrupted file, proceed normally
 
     profiles = load_profiles()
     p = profiles.get(profile, profiles["full_sweep"])
