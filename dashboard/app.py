@@ -462,8 +462,13 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 Apos QUALQUER browser_navigate():
 1. NAO leia o resultado do navigate (ele vem com HTML gigante)
 2. Espere 3-5 segundos (browser_wait_for)
-3. Faca browser_evaluate com o EXTRATOR apropriado
-4. Se a pagina ainda esta carregando, espere mais 3s e repita
+3. NAO leia o resultado do wait_for (ele TAMBEM retorna snapshot gigante, 14K+ tokens)
+4. Faca browser_evaluate com o EXTRATOR apropriado
+5. Se a pagina ainda esta carregando, espere mais 3s e repita
+
+ATENCAO: browser_wait_for() retorna um snapshot completo da pagina.
+Este output vai DIRETO pro contexto e consome tokens massivamente.
+NUNCA dependa do output do wait_for — use APENAS para esperar.
 ```
 
 ## REGRA #3 — ANTI-SKIP
@@ -648,6 +653,20 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 ...
 ```
 
+**SE USAR browser_run_code para batching:**
+```
+OBRIGATORIO: truncar TODOS os textos para 50 chars max.
+Retornar APENAS status (OK/X/EMPTY) + snippet curto.
+NAO retornar bodyText.substring(0, 300) — isso estoura o limite.
+
+Exemplo correto:
+  results[id] = {{ status: is404 ? 'X' : hasData ? 'OK' : 'EMPTY', snippet: bodyText.substring(0, 50) }};
+
+NUNCA retornar campos longos como 'title', 'fullText', 'content'.
+Se o resultado do run_code estourar o limite, NAO leia o arquivo salvo.
+Refaca com snippets ainda menores (30 chars).
+```
+
 ## 5. CONDITIONAL ({cond} habilitados)
 
 {chr(10).join(cond_lines) if cond_lines else "Nenhum conditional check habilitado."}
@@ -734,7 +753,7 @@ p['completed_stations']=done
 p['current_entity']='ENTITY_NAME (CID)'
 p['last_update']=__import__('datetime').datetime.now().isoformat()
 d['progress']=p
-open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=False))
+open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=True))
 "
 ```
 
@@ -747,10 +766,26 @@ open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=False))
 - Na retomada, voce recebera progresso POR ENTITY — pule apenas as entities/stations ja feitas
 - **NUNCA** registrar station sem CID (formato antigo `D01` nao funciona no resume)
 
-{f"## 11. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
+## 11. CHECKLIST PRE-REPORT (OBRIGATORIO)
+
+```
+ANTES de salvar o report, confirme TODOS os items abaixo.
+Se algum esta faltando → VOLTE e complete antes de salvar.
+
+- [ ] Parent: D01-D12 todos reportados individualmente com dados?
+- [ ] Consolidated (se existir): D01+D02+D10+D11 verificados?
+- [ ] CADA child: D01+D02+D05+D06 verificados INDIVIDUALMENTE?
+      (NAO vale "same platform as Parent")
+- [ ] D04: categorizou 5+ bank transactions? (OBRIGATORIO)
+- [ ] D09: tem 3+ projects? Se nao, criou? (OBRIGATORIO)
+- [ ] Content Safety: CS1-CS8 verificados em TODAS entities?
+- [ ] Progress tracking: todas stations gravadas com CID:STATION?
+```
+
+{f"## 12. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
 ---
-*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v4.1*
+*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v4.2*
 """
 
     order_file = pending_dir / "SWEEP_ORDER.md"
