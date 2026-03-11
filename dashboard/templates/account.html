@@ -43,10 +43,53 @@
                 <button class="btn btn-sm" onclick="copyToClipboard('{{ account.totp_secret }}', this)">Copy</button>
             </span>
         </div>
+        {% if account.alt_credentials %}
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); margin: 10px 0; padding-top: 10px;">
+            <span class="label" style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: block;">Alt Credentials ({{ account.alt_credentials | length + 1 }} logins)</span>
+            {% for alt in account.alt_credentials %}
+            <div class="card-row" style="margin-top: 6px;">
+                <span class="label">{{ alt.label or 'Alt Email' }}</span>
+                <span class="value" style="font-size: 12px;">{{ alt.email }}</span>
+            </div>
+            <div class="card-row">
+                <span class="label">Password</span>
+                <span class="value masked-field">
+                    <span class="masked-value" data-revealed="false" data-real="{{ alt.password }}">••••••••••</span>
+                    <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
+                    <button class="btn btn-sm" onclick="copyToClipboard('{{ alt.password }}', this)">Copy</button>
+                </span>
+            </div>
+            <div class="card-row">
+                <span class="label">TOTP Secret</span>
+                <span class="value masked-field">
+                    <code class="masked-value mono" data-revealed="false" data-real="{{ alt.totp_secret }}">••••••••••••••••</code>
+                    <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
+                    <button class="btn btn-sm" onclick="copyToClipboard('{{ alt.totp_secret }}', this)">Copy</button>
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="card-row">
             <span class="label">Dataset</span>
             <span class="value"><span class="badge badge-dataset-{{ account.dataset }}">{{ account.dataset | replace('_', ' ') }}</span></span>
         </div>
+        {% if account.dataset_id %}
+        <div class="card-row">
+            <span class="label">Dataset ID</span>
+            <span class="value mono" style="font-size: 11px;">{{ account.dataset_id }}</span>
+        </div>
+        {% endif %}
+        {% if account.workspace_name %}
+        <div class="card-row">
+            <span class="label">Workspace</span>
+            <span class="value">{{ account.workspace_name }}</span>
+        </div>
+        <div class="card-row">
+            <span class="label">Workspace ID</span>
+            <span class="value mono" style="font-size: 11px;">{{ account.workspace_id }}</span>
+        </div>
+        {% endif %}
         <div class="card-row">
             <span class="label">Retool</span>
             <span class="value">
@@ -69,11 +112,12 @@
         <ul class="entity-list">
             {% for c in account.companies %}
             <li>
-                <span>
+                <div>
                     <span class="badge badge-{{ c.type }}">{{ c.type }}</span>
                     {{ c.name }}
-                </span>
-                <span class="badge badge-{{ c.priority | lower }}">{{ c.priority }}</span>
+                    <span class="badge badge-{{ c.priority | lower }}" style="margin-left: 4px;">{{ c.priority }}</span>
+                    <div style="font-size: 10px; color: var(--text-muted); font-family: monospace; margin-top: 2px; margin-left: 4px;">CID: {{ c.cid }}</div>
+                </div>
             </li>
             {% endfor %}
         </ul>

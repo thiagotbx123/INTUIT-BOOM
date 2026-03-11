@@ -5,7 +5,7 @@ import re
 import time
 from pathlib import Path
 
-from models import Account, Company, SweepResult
+from models import Account, AltCredential, Company, SweepResult
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_PATH = BASE_DIR / "knowledge-base" / "access" / "QBO_CREDENTIALS.json"
@@ -133,6 +133,16 @@ def load_accounts(force: bool = False) -> list[Account]:
             if p1_match:
                 sweep.p1_findings = [f.strip() for f in p1_match.group(1).split(",") if f.strip()]
 
+        alt_creds = [
+            AltCredential(
+                email=ac.get("email", ""),
+                password=ac.get("password", ""),
+                totp_secret=ac.get("totp_secret", ""),
+                label=ac.get("label", ""),
+            )
+            for ac in info.get("alt_credentials", [])
+        ]
+
         account = Account(
             email=email,
             label=info.get("label", ""),
@@ -143,6 +153,10 @@ def load_accounts(force: bool = False) -> list[Account]:
             dataset=info.get("dataset", ""),
             retool_env=info.get("retool_env", ""),
             companies=companies,
+            alt_credentials=alt_creds,
+            workspace_id=info.get("workspace_id", ""),
+            workspace_name=info.get("workspace_name", ""),
+            dataset_id=info.get("dataset_id", ""),
             last_login=info.get("last_successful_login"),
             sweep=sweep,
             notes=info.get("notes", ""),

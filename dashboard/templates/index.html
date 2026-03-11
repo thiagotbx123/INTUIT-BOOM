@@ -47,7 +47,7 @@
         <span style="color: var(--text-muted); font-size: 12px; margin-left: 6px;">{{ active_sweep.profile_name }}</span>
         <span style="color: var(--text-muted); font-size: 11px; margin-left: 8px;">Ativado: {{ active_sweep.activated_at[:16] | replace('T', ' ') }}</span>
         <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-            Abra um terminal em <code style="font-size: 11px;">C:\Users\adm_r\Clients\intuit-boom</code> e rode <code style="font-size: 11px;">claude go</code>
+            Sweep em execucao automatica. Acompanhe na janela <code style="font-size: 11px;">QBO Sweep - {{ active_sweep.account.label }}</code>
         </div>
     </div>
     <form method="post" action="/api/config/stop-sweep" style="margin: 0;">
@@ -66,6 +66,7 @@
                 <input type="checkbox" id="toggle-all" checked onchange="toggleAll(this.checked)" title="Show/Hide All">
             </th>
             <th>Environment</th>
+            <th>Workspace</th>
             <th>Dataset</th>
             <th>Entities</th>
             <th>Score</th>
@@ -88,16 +89,22 @@
                        data-shortcode="{{ acct.shortcode }}"
                        onchange="toggleRow(this)">
             </td>
-            <td>
+            <td title="Credentials:&#10;{{ acct.email }}{% for alt in acct.alt_credentials %}&#10;{{ alt.email }} (alt){% endfor %}{% if acct.dataset_id %}&#10;&#10;Dataset ID: {{ acct.dataset_id }}{% endif %}&#10;&#10;CIDs:{% for c in acct.companies %}&#10;{{ c.cid }} - {{ c.name }}{% endfor %}">
                 {{ acct.label }}
+                {% if acct.alt_credentials %}
+                <span style="display: inline-block; background: rgba(99,102,241,0.15); color: var(--text-secondary); font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 8px; margin-left: 4px; vertical-align: middle;">{{ acct.alt_credentials | length + 1 }} logins</span>
+                {% endif %}
                 {% if active_sweep and active_sweep.account.shortcode == acct.shortcode %}
                 <span style="display: inline-block; background: var(--green); color: #000; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle; animation: pulse 2s infinite;">SWEEPING</span>
                 {% endif %}
             </td>
+            <td style="font-size: 11px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ acct.workspace_name }}{% if acct.workspace_id %}&#10;ID: {{ acct.workspace_id }}{% endif %}">
+                {{ acct.workspace_name or '—' }}
+            </td>
             <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
             <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
             <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
-            <td>{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
+            <td style="white-space: nowrap;">{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
             <td>
                 {% if acct.retool_env == 'NOT_IN_RETOOL' %}
                 <span class="badge badge-warning">NOT IN RETOOL</span>

@@ -22,5 +22,11 @@
     "overrides": {},
     "notes": "",
     "hidden": false
+  },
+  "tco": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
   }
 }

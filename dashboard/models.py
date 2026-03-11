@@ -17,6 +17,13 @@ class SweepResult(BaseModel):
     p1_findings: list[str] = []
 
 
+class AltCredential(BaseModel):
+    email: str
+    password: str
+    totp_secret: str
+    label: str = ""
+
+
 class Account(BaseModel):
     email: str
     label: str
@@ -27,9 +34,17 @@ class Account(BaseModel):
     dataset: str
     retool_env: str
     companies: list[Company] = []
+    alt_credentials: list[AltCredential] = []
+    workspace_id: str = ""
+    workspace_name: str = ""
+    dataset_id: str = ""
     last_login: str | None = None
     sweep: SweepResult | None = None
     notes: str = ""
+
+    @property
+    def all_emails(self) -> list[str]:
+        return [self.email] + [a.email for a in self.alt_credentials]
 
     @property
     def entity_count(self) -> str:

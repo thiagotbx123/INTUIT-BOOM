@@ -480,11 +480,22 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     if latest_file.exists() and force != "1":
         try:
             existing = json_mod.loads(latest_file.read_text(encoding="utf-8"))
-            if existing.get("status") == "pending":
-                # Already running — redirect to dashboard where banner shows status
-                from fastapi.responses import RedirectResponse
+            if existing.get("status") == "pending" and existing.get("pid"):
+                # Verify sweep process is actually running before blocking
+                import subprocess as _sp
 
-                return RedirectResponse(url="/", status_code=303)
+                check = _sp.run(
+                    ["tasklist", "/FI", f"PID eq {existing['pid']}", "/NH"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                )
+                if str(existing["pid"]) in check.stdout:
+                    # Process alive — redirect to dashboard where banner shows status
+                    from fastapi.responses import RedirectResponse
+
+                    return RedirectResponse(url="/", status_code=303)
+                # Process dead — stale lock, proceed with new sweep
         except (json_mod.JSONDecodeError, KeyError):
             pass  # corrupted file, proceed normally
 
@@ -523,6 +534,43 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     # Generate SWEEP_ORDER.md — comprehensive instructions for new Claude session
     _generate_sweep_order_md(pending_dir, acct, p, profile, deep, surface, cond)
 
+    # Launch Claude autonomously via batch file + start (reliable visible window)
+    import os
+    import subprocess as sp
+
+    env = os.environ.copy()
+    env.pop("CLAUDECODE", None)  # Allow spawning Claude from within Claude sessions
+
+    # Sanitize label for cmd.exe (strip parens and special chars)
+    safe_label = acct.label.replace("(", "").replace(")", "").replace("&", "").replace("|", "")
+    sweep_title = f"QBO Sweep - {safe_label}"
+
+    # Write batch file — avoids all quoting issues
+    bat_file = pending_dir / "run_sweep.bat"
+    bat_file.write_text(
+        f"@echo off\n"
+        f"title {sweep_title}\n"
+        f"cd /d {BASE.parent}\n"
+        f'claude -p "Executar sweep pendente conforme protocolo CLAUDE.md"'
+        f" --permission-mode bypassPermissions\n"
+        f"echo.\n"
+        f"echo === SWEEP FINALIZADO ===\n"
+        f"pause\n",
+        encoding="utf-8",
+    )
+
+    # CREATE_NEW_CONSOLE opens a visible window AND gives us the real PID
+    proc = sp.Popen(
+        ["cmd", "/c", str(bat_file)],
+        creationflags=sp.CREATE_NEW_CONSOLE,
+        env=env,
+    )
+
+    # Store PID + window title for stop-sweep
+    sweep_order["pid"] = proc.pid
+    sweep_order["window_title"] = sweep_title
+    latest_file.write_text(json_mod.dumps(sweep_order, indent=2, ensure_ascii=False), encoding="utf-8")
+
     # Redirect to dashboard — sweep status banner will show there
     from fastapi.responses import RedirectResponse
 
@@ -537,6 +585,7 @@ async def api_stop_sweep():
 
     pending_dir = BASE / "pending"
     latest_file = pending_dir / "LATEST_SWEEP.json"
+    data = None
     # 1. Reset JSON status
     if latest_file.exists():
         try:
@@ -546,26 +595,26 @@ async def api_stop_sweep():
         except Exception:
             pass
 
-    # 2. Kill Claude processes spawned by sweep (cmd.exe windows running claude)
-    killed = 0
+    # 2. Kill sweep process tree by PID (reliable) + fallback by window title
+    pid = data.get("pid") if data else None
+    if pid:
+        try:
+            sp.run(
+                f"taskkill /F /PID {pid} /T",
+                shell=True,
+                capture_output=True,
+                timeout=10,
+            )
+        except Exception:
+            pass
+    # Fallback: also kill any remaining QBO Sweep windows
     try:
-        result = sp.run(
-            ["tasklist", "/V", "/FI", "WINDOWTITLE eq Claude*", "/FO", "CSV"],
+        sp.run(
+            'taskkill /F /FI "WINDOWTITLE eq QBO Sweep*" /T',
+            shell=True,
             capture_output=True,
-            text=True,
             timeout=10,
         )
-        for line in result.stdout.strip().split("\n")[1:]:
-            if "Claude" in line:
-                parts = line.strip('"').split('","')
-                if len(parts) >= 2:
-                    pid = parts[1]
-                    sp.run(
-                        ["taskkill", "/F", "/PID", pid, "/T"],
-                        capture_output=True,
-                        timeout=5,
-                    )
-                    killed += 1
     except Exception:
         pass
 
