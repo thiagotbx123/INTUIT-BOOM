@@ -39,7 +39,11 @@ templates = Jinja2Templates(directory=str(BASE / "templates"))
 
 
 def _get_active_sweep() -> dict | None:
-    """Read LATEST_SWEEP.json and return data if status is pending."""
+    """Read LATEST_SWEEP.json and return data if status is pending.
+
+    Also detects crashed sweeps (status=pending but process dead) and marks
+    them as 'interrupted' so the dashboard can show a Resume button.
+    """
     import json as json_mod
 
     sweep_file = BASE / "pending" / "LATEST_SWEEP.json"
@@ -48,6 +52,26 @@ def _get_active_sweep() -> dict | None:
     try:
         data = json_mod.loads(sweep_file.read_text(encoding="utf-8"))
         if data.get("status") == "pending":
+            # Check if process is actually alive
+            pid = data.get("pid")
+            if pid:
+                import subprocess as _sp
+
+                check = _sp.run(
+                    ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                )
+                if str(pid) not in check.stdout:
+                    # Process dead — mark as interrupted
+                    data["status"] = "interrupted"
+                    sweep_file.write_text(
+                        json_mod.dumps(data, indent=2, ensure_ascii=False),
+                        encoding="utf-8",
+                    )
+            return data
+        if data.get("status") == "interrupted":
             return data
     except Exception:
         pass
@@ -147,8 +171,11 @@ async def api_save_account(request: Request):
     return JSONResponse({"status": "ok"})
 
 
-def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, surface, cond):
+def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, surface, cond, resume_from=None):
     """Generate a comprehensive SWEEP_ORDER.md the new Claude session can follow.
+
+    Args:
+        resume_from: dict with 'completed_stations', 'current_entity' if resuming.
 
     This is the ONLY document the sweep session needs. It embeds all methodology,
     fix protocols, and Playwright actions inline — no external references needed.
@@ -246,10 +273,24 @@ METODO 3 (consolidated):
     }
     names_for_sector = sector_names.get(acct.dataset, sector_names.get("construction", ""))
 
+    # Build resume header if resuming
+    resume_block = ""
+    if resume_from and resume_from.get("completed_stations"):
+        done = resume_from["completed_stations"]
+        entity = resume_from.get("current_entity", "")
+        resume_block = f"""
+> **RETOMADA DE SWEEP INTERROMPIDO**
+> Estacoes ja completadas (PULAR): {", ".join(done)}
+> Ultima entity ativa: {entity}
+> **Comece pelo LOGIN e depois va direto para a proxima estacao NAO listada acima.**
+> Nao repita trabalho ja feito.
+"""
+
     md = f"""# SWEEP ORDER — EXECUCAO IMEDIATA
 
 > **ESTE DOCUMENTO CONTEM TUDO**. Nao precisa ler nenhum outro arquivo.
 > Execute o sweep AGORA. Nao pergunte nada. Comece pelo login.
+{resume_block}
 
 ---
 
@@ -448,7 +489,33 @@ Logado em {acct.label} → [nome empresa]
 
 **Atualizar LATEST_SWEEP.json**: ao terminar, atualizar status para "completed" e preencher overall_score, realism_score, findings_count.
 
-{f"## 10. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
+## 10. PROGRESS TRACKING (OBRIGATORIO)
+
+**Apos CADA Deep Station completada**, atualize o arquivo de progresso:
+```bash
+python -c "
+import json; f='C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json'
+d=json.loads(open(f,encoding='utf-8').read())
+p=d.get('progress',{{}})
+done=p.get('completed_stations',[])
+done.append('STATION_ID')  # ex: D01, D02, S01-S30, C01-C15
+p['completed_stations']=done
+p['current_entity']='ENTITY_NAME'
+p['last_update']=__import__('datetime').datetime.now().isoformat()
+d['progress']=p
+open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=False))
+"
+```
+
+**Regras de progresso:**
+- Atualize `completed_stations` com o ID da estacao (D01, D02, ..., S_BATCH, C_BATCH)
+- Atualize `current_entity` ao trocar de entity
+- Surface Scan: registre como "S_BATCH" (um unico registro para todas as surface)
+- Conditional: registre como "C_BATCH"
+- Se o sweep for interrompido, o dashboard detecta e oferece "Retomar Sweep"
+- Na retomada, voce recebera lista de estacoes ja completadas — PULE elas
+
+{f"## 11. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
 ---
 *Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard*
@@ -551,7 +618,7 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
         f"@echo off\n"
         f"title {sweep_title}\n"
         f"cd /d {BASE.parent}\n"
-        f'claude -p "Executar sweep pendente conforme protocolo CLAUDE.md"'
+        f'claude "Executar sweep pendente conforme protocolo CLAUDE.md"'
         f" --permission-mode bypassPermissions\n"
         f"echo.\n"
         f"echo === SWEEP FINALIZADO ===\n"
@@ -624,6 +691,87 @@ async def api_stop_sweep():
     return RedirectResponse(url="/", status_code=303)
 
 
+@app.post("/api/config/resume-sweep", response_class=HTMLResponse)
+async def api_resume_sweep():
+    """Resume an interrupted sweep from where it left off."""
+    import datetime
+    import json as json_mod
+    import os
+    import subprocess as sp
+
+    pending_dir = BASE / "pending"
+    latest_file = pending_dir / "LATEST_SWEEP.json"
+
+    if not latest_file.exists():
+        return HTMLResponse("<div class='error'>No sweep to resume</div>", status_code=400)
+
+    data = json_mod.loads(latest_file.read_text(encoding="utf-8"))
+    if data.get("status") not in ("interrupted", "cancelled"):
+        from fastapi.responses import RedirectResponse
+
+        return RedirectResponse(url="/", status_code=303)
+
+    # Get account and profile
+    acct_info = data.get("account", {})
+    acct = get_account(acct_info.get("shortcode", ""))
+    if not acct:
+        return HTMLResponse("<div class='error'>Account not found</div>", status_code=404)
+
+    profiles = load_profiles()
+    profile_key = data.get("profile", "full_sweep")
+    p = profiles.get(profile_key, profiles["full_sweep"])
+
+    # Extract progress
+    progress = data.get("progress", {})
+
+    # Count enabled checks
+    deep = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("D") and v)
+    surface = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("S") and v)
+    cond = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("C") and v)
+
+    # Regenerate SWEEP_ORDER.md with resume info
+    _generate_sweep_order_md(pending_dir, acct, p, profile_key, deep, surface, cond, resume_from=progress)
+
+    # Update status back to pending
+    data["status"] = "pending"
+    data["resumed_at"] = datetime.datetime.now().isoformat()
+
+    # Sanitize label for cmd.exe
+    safe_label = acct.label.replace("(", "").replace(")", "").replace("&", "").replace("|", "")
+    sweep_title = f"QBO Sweep - {safe_label}"
+
+    # Write batch file
+    bat_file = pending_dir / "run_sweep.bat"
+    bat_file.write_text(
+        f"@echo off\n"
+        f"title {sweep_title}\n"
+        f"cd /d {BASE.parent}\n"
+        f'claude "Retomar sweep interrompido conforme protocolo CLAUDE.md - continuar de onde parou"'
+        f" --permission-mode bypassPermissions\n"
+        f"echo.\n"
+        f"echo === SWEEP FINALIZADO ===\n"
+        f"pause\n",
+        encoding="utf-8",
+    )
+
+    env = os.environ.copy()
+    env.pop("CLAUDECODE", None)
+
+    proc = sp.Popen(
+        ["cmd", "/c", str(bat_file)],
+        creationflags=sp.CREATE_NEW_CONSOLE,
+        env=env,
+    )
+
+    data["pid"] = proc.pid
+    data["window_title"] = sweep_title
+    latest_file.write_text(json_mod.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse(url="/", status_code=303)
+
+
 # ─── Action API ───
 
 
@@ -675,4 +823,4 @@ async def api_sync_retool(request: Request):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app:app", host="127.0.0.1", port=8080, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=8081, reload=True)

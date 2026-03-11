@@ -28,5 +28,11 @@
     "overrides": {},
     "notes": "",
     "hidden": false
+  },
+  "summit": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
   }
 }

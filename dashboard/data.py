@@ -10,6 +10,7 @@ from models import Account, AltCredential, Company, SweepResult
 BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_PATH = BASE_DIR / "knowledge-base" / "access" / "QBO_CREDENTIALS.json"
 SWEEP_DIR = BASE_DIR / "knowledge-base" / "sweep-learnings"
+WORKSPACE_XLSX = Path.home() / "Downloads" / "Intuit_usersworkspace_march32026.xlsx"
 
 _cache: dict = {"accounts": [], "ts": 0}
 CACHE_TTL = 60  # seconds
@@ -83,6 +84,38 @@ def _load_sweep_reports() -> dict[str, SweepResult]:
     return results
 
 
+_access_cache: dict = {"data": {}, "ts": 0}
+
+
+def _load_workspace_accesses() -> dict[str, int]:
+    """Load total accesses per workspace_id from Intuit spreadsheet. Cached."""
+    now = time.time()
+    if _access_cache["data"] and (now - _access_cache["ts"]) < 3600:
+        return _access_cache["data"]
+
+    totals: dict[str, int] = {}
+    if not WORKSPACE_XLSX.exists():
+        return totals
+
+    try:
+        import openpyxl
+
+        wb = openpyxl.load_workbook(str(WORKSPACE_XLSX), data_only=True, read_only=True)
+        ws = wb["export"]
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            ws_id = row[7]  # col H = Workspace Id
+            count = row[6]  # col G = Count
+            if ws_id and count:
+                totals[ws_id] = totals.get(ws_id, 0) + int(count)
+        wb.close()
+    except Exception:
+        pass
+
+    _access_cache["data"] = totals
+    _access_cache["ts"] = now
+    return totals
+
+
 def _parse_score_from_json(val: str | None) -> float | None:
     """Parse '7.5/10' → 7.5."""
     if not val:
@@ -101,6 +134,7 @@ def load_accounts(force: bool = False) -> list[Account]:
         data = json.load(f)
 
     sweep_reports = _load_sweep_reports()
+    workspace_accesses = _load_workspace_accesses()
     accounts: list[Account] = []
 
     for email, info in data.get("accounts", {}).items():
@@ -157,15 +191,17 @@ def load_accounts(force: bool = False) -> list[Account]:
             workspace_id=info.get("workspace_id", ""),
             workspace_name=info.get("workspace_name", ""),
             dataset_id=info.get("dataset_id", ""),
+            total_accesses=workspace_accesses.get(info.get("workspace_id", ""), 0),
             last_login=info.get("last_successful_login"),
             sweep=sweep,
             notes=info.get("notes", ""),
         )
         accounts.append(account)
 
-    # Sort: swept accounts first (by score desc), then unswept
+    # Sort: most accessed workspace first, then by score desc
     accounts.sort(
         key=lambda a: (
+            -a.total_accesses,
             0 if a.sweep and a.sweep.score else 1,
             -(a.sweep.score if a.sweep and a.sweep.score else 0),
             a.label,

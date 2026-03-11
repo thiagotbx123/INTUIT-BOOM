@@ -38,6 +38,7 @@ class Account(BaseModel):
     workspace_id: str = ""
     workspace_name: str = ""
     dataset_id: str = ""
+    total_accesses: int = 0
     last_login: str | None = None
     sweep: SweepResult | None = None
     notes: str = ""
