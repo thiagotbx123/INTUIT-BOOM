@@ -34,5 +34,17 @@
     "overrides": {},
     "notes": "",
     "hidden": false
+  },
+  "construction": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
+  },
+  "nv3": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
   }
 }

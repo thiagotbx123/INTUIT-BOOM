@@ -17,6 +17,11 @@ DEEP_STATIONS = [
             "Business Feed tiles (action items, overdue, monthly summary)",
             "No placeholder text (TBX, Lorem, Sample)",
         ],
+        "drill_in": [
+            "Click P&L widget to verify it drills into actual P&L report",
+            "Click Invoices widget to verify invoice list has data",
+            "Check Business Feed: are action items realistic? (overdue invoices, pending approvals)",
+        ],
         "auto_fix": True,
         "fix_actions": ["Change date period if widgets empty", "Note placeholder origin"],
     },
@@ -33,6 +38,11 @@ DEEP_STATIONS = [
             "No placeholder category names",
             "Revenue not $0",
             "Report period correct (not blank)",
+        ],
+        "drill_in": [
+            "Click into top revenue category to verify it has multiple income sources (not 1 mega-invoice)",
+            "Click into top expense category to verify diverse vendors/payees",
+            "Check if COGS exists and is proportional (not $0 if inventory products exist)",
         ],
         "auto_fix": True,
         "fix_actions": [
@@ -74,6 +84,16 @@ DEEP_STATIONS = [
             "QBAA (QuickBooks Accounting Agent) presence",
             "Guardian Growth MMA balance (known $10.9M inflation)",
         ],
+        "drill_in": [
+            "Click into each bank account tab to see transaction list",
+            "Review recent 10 transactions: are descriptions varied or all identical?",
+            "Check if bank rules already exist (Rules tab) and if they make sense",
+        ],
+        "enrichment": [
+            "Categorize 5-10 uncategorized txns with VARIED categories (not all same expense account)",
+            "Create 2-3 bank rules for TOP recurring vendors (use vendor names from D06)",
+            "Ensure categorized txns include mix: payroll, rent, supplies, utilities, vendor payments",
+        ],
         "auto_fix": True,
         "fix_actions": [
             "Categorize first 5-10 uncategorized transactions",
@@ -95,6 +115,18 @@ DEEP_STATIONS = [
             "Customer Hub status (Leads, Proposals, Contracts)",
             "Extreme balance customers (>$1B AR)",
             "Overdue invoice count/value",
+        ],
+        "drill_in": [
+            "Click into top 3-5 customers to open detail page",
+            "On each detail: check company, email, address, phone, notes, terms, transaction history",
+            "Assess: does this customer feel real? Would a prospect believe this is a real client?",
+            "Check invoices tab: are there varied amounts, dates, and products? Or all $1000 same date?",
+        ],
+        "enrichment": [
+            "Fill notes with BUSINESS CONTEXT (not generic). Examples by sector in ENRIQUECER section below",
+            "Vary terms across customers: top clients=Net 45/60, medium=Net 30, small=Net 15/Due on Receipt",
+            "Add phone with LOCAL area code matching the company's state/region",
+            "Ensure at least 3 customers have complete profile (all 6 fields filled)",
         ],
         "auto_fix": True,
         "fix_actions": [
@@ -119,6 +151,18 @@ DEEP_STATIONS = [
             "AP total not absurdly high vs Revenue",
             "No bills overdue 2+ years (stale data)",
             "No single vendor >50% of AP",
+        ],
+        "drill_in": [
+            "Click into top 3-5 vendors to open detail page",
+            "On each detail: check name, email, address, terms, notes, bill history",
+            "Assess supply chain realism: do these vendors make sense for this type of business?",
+            "Check AP Aging report: is aging distribution realistic or all piled in 91+ days?",
+        ],
+        "enrichment": [
+            "Fill notes with RELATIONSHIP CONTEXT. Examples by sector in ENRIQUECER section below",
+            "Vary terms: strategic suppliers=Net 60, regular=Net 30/45, utilities=Due on Receipt",
+            "Ensure vendor names form a coherent supply chain for the sector (not random companies)",
+            "NEVER create bills to enrich (increases COGS, risks negativizing P&L)",
         ],
         "auto_fix": True,
         "fix_actions": [
@@ -164,6 +208,16 @@ DEEP_STATIONS = [
             "No spam products (70+ char names, nonsense)",
             "No TBX/Test/Sample placeholder names",
         ],
+        "drill_in": [
+            "Click into top 5 products to see detail (price, cost, description, income account)",
+            "Check: does the product have a DESCRIPTION? Empty description = poor demo",
+            "Check: is there a SKU or category that connects this product to the business narrative?",
+        ],
+        "enrichment": [
+            "Add short description to top products (2-3 sentences about the product/service)",
+            "Ensure price is realistic for sector (not $1 for a consulting engagement or $100K for a bolt)",
+            "Products should tell the business story: what does this company SELL? Each product reinforces that",
+        ],
         "auto_fix": True,
         "fix_actions": [
             "Rename placeholder names with sector-appropriate names",
@@ -185,6 +239,17 @@ DEEP_STATIONS = [
             "Status variety (In Progress, Completed, Not Started)",
             "Profitability data (not 100% margin / extreme negative)",
             "Project-customer mapping",
+        ],
+        "drill_in": [
+            "Click into each project to check: transactions list, profitability, customer assignment",
+            "Assess: can you tell the STORY of this project? Budget vs actual, timeline, client?",
+            "Check if project has invoices AND expenses (both sides of profitability)",
+        ],
+        "enrichment": [
+            "Each project should have a customer assigned (not orphan)",
+            "Project names should reference real-world work for the sector (see names below)",
+            "Create projects if <3, with varied status: 1 In Progress, 1 Completed, 1 Not Started",
+            "If project has $0 profitability data, associate existing invoices/expenses to it",
         ],
         "auto_fix": True,
         "fix_actions": [

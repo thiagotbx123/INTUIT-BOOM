@@ -54,6 +54,16 @@ Este arquivo armazena informacoes importantes que devem persistir entre sessoes.
 - [ ] CAMADA 5 (Orquestracao) finalizada
 
 ### Ultimas Acoes
+- 2026-03-11: STRATEGIC CORTEX ATUALIZADO via Linear API + Slack API + Drive API (OUTPUT_A_2026-03-11.md)
+- 2026-03-11: P0 Demo Playbooks Outage (KLA-2478) — 45 sellers Mailchimp sobrecarregaram Saturn. PR #2643 em merge
+- 2026-03-11: PLA-3332 P&L negativo PS — Augusto propoe reuniao pra alinhar dataset vs activities mismatch
+- 2026-03-11: Novo request Multi-Entity Dimensions (5 Keystone companies, shared dims) — aguardando Intuit
+- 2026-03-11: Winter Release 6/8 ambientes validados. Manufacturing in progress (Alexandra). ETA Mar 12-13
+- 2026-03-11: ~35+ Linear issues fechados/cancelados Mar 10 (sprint grooming)
+- 2026-03-11: QBO cron schedules documentados (Soranzo): invoices daily 16h, bills Mon/Fri 18h
+- 2026-03-11: Slack data 318 msgs coletadas (11 canais) → data/slack_raw_2026-03-11.json
+- 2026-03-11: Drive data 17 Intuit files recentes → data/drive_recent_2026-03-11.json
+- 2026-03-10: Summit sweep COMPLETO — 74/100 realism, 2 JEs aplicados (child1 $1.1M, child2 $4.5M)
 - 2026-02-13: QBO SUPER ACCESS SYSTEM criado (credentials store + router + playbook)
 - 2026-02-13: python-quickbooks v0.9.12 instalado (34 entidades CRUD via API)
 - 2026-02-13: MCP Server paths CORRIGIDOS no Claude Desktop config (8 servers)

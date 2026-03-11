@@ -171,6 +171,48 @@ async def api_save_account(request: Request):
     return JSONResponse({"status": "ok"})
 
 
+def _get_sector_expectations(dataset):
+    """Return sector-specific expectations for FASE ZERO context mapping."""
+    expectations = {
+        "construction": (
+            "- Margin 3-15% (thin margins, high volume)\n"
+            "- Projects with phases, budgets, job costing\n"
+            "- Subcontractors as vendors, lien waivers, certified payroll\n"
+            "- Customers are developers, municipalities, school districts\n"
+            "- Products are services (Framing, Electrical, HVAC) + some inventory (materials)"
+        ),
+        "tire_shop": (
+            "- Margin 25-35% (retail + service markup)\n"
+            "- Fleet customers with maintenance contracts\n"
+            "- Vendors are tire manufacturers/distributors (Bridgestone, Michelin, Goodyear)\n"
+            "- Mix of service (tire rotation, alignment) + inventory (tires, wheels)\n"
+            "- Projects relate to fleet maintenance cycles and dealer programs"
+        ),
+        "non_profit": (
+            "- Margin 2-10% (surplus, not profit — NP terminology)\n"
+            "- Donors (not customers), Pledges (not invoices), Programs (not products), Grants (not projects)\n"
+            "- Revenue from grants, donations, program fees\n"
+            "- Dimensions/classes for program tracking (Youth, Health, Emergency)\n"
+            "- Statement of Activity (not P&L), Statement of Financial Position (not BS)"
+        ),
+        "professional_services": (
+            "- Margin 20-40% (high-value consulting)\n"
+            "- Clients are enterprises (IT, Health, Government)\n"
+            "- Products are service lines (Strategy, Integration, Analytics)\n"
+            "- Projects tied to SOWs with milestones\n"
+            "- Time tracking is critical (billable hours)"
+        ),
+        "manufacturing": (
+            "- Margin 15-25% (product-based with COGS)\n"
+            "- Customers are distributors, retailers, OEM buyers\n"
+            "- Vendors are raw material suppliers (steel, components)\n"
+            "- Inventory management is central (materials, WIP, finished goods)\n"
+            "- Projects relate to production runs, custom orders"
+        ),
+    }
+    return expectations.get(dataset, expectations.get("construction", ""))
+
+
 def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, surface, cond, resume_from=None):
     """Generate a comprehensive SWEEP_ORDER.md the new Claude session can follow.
 
@@ -195,7 +237,7 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
 
     is_multi = len(acct.companies) > 1
 
-    # Build enabled deep checks with FULL fix protocols
+    # Build enabled deep checks with FULL fix protocols + drill-in + enrichment
     deep_lines = []
     for s in DEEP_STATIONS:
         if not checks.get(s["id"], True):
@@ -204,12 +246,24 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
         fix_items = (
             "\n".join(f"  - {a}" for a in s["fix_actions"]) if s["fix_actions"] else "  - Report only (no auto-fix)"
         )
+        # Build optional drill-in section
+        drill_block = ""
+        if s.get("drill_in"):
+            drill_items = "\n".join(f"  - {item}" for item in s["drill_in"])
+            drill_block = f"**DRILL-IN** (entrar nos records — OBRIGATORIO):\n{drill_items}\n"
+        # Build optional enrichment section
+        enrich_block = ""
+        if s.get("enrichment"):
+            enrich_items = "\n".join(f"  - {item}" for item in s["enrichment"])
+            enrich_block = f"**ENRIQUECER** (proativo — nao espere erro, MELHORE o conteudo):\n{enrich_items}\n"
         deep_lines.append(
             f"### {s['id']} — {s['name']}\n"
             f"**Route**: `{s['route']}`\n"
-            f"**VER** (browser_snapshot → ler tudo):\n{check_items}\n"
+            f"**VER** (ler via EXTRATOR JS):\n{check_items}\n"
+            f"{drill_block}"
             f"**CORRIGIR** ({'OBRIGATORIO' if s['auto_fix'] and can_fix else 'Reportar apenas'}):\n{fix_items}\n"
-            f"**AVANCAR**: Só passe ao proximo quando corrigiu ou documentou por que nao pôde.\n"
+            f"{enrich_block}"
+            f"**AVANCAR**: Só passe ao proximo quando top records estao completos e contextualizados.\n"
         )
 
     # Build enabled surface checks
@@ -273,6 +327,41 @@ METODO 3 (consolidated):
     }
     names_for_sector = sector_names.get(acct.dataset, sector_names.get("construction", ""))
 
+    # Sector-specific enrichment context (notes templates for D05/D06)
+    sector_notes = {
+        "construction": (
+            "Customer notes: 'General contractor — 12 active job sites in Austin metro. Prefers lump-sum billing.'\n"
+            "Customer notes: 'Municipal client — Net 45 required by procurement policy. Primary contact: David Chen, PM.'\n"
+            "Vendor notes: 'Primary lumber supplier since 2024. Rep: Maria Santos. Volume discount 8% on orders >$50K.'\n"
+            "Vendor notes: 'Concrete supplier — delivers within 48h. Minimum order $5K. Terms: Net 30.'"
+        ),
+        "tire_shop": (
+            "Customer notes: 'Fleet account — 45 vehicles. Quarterly rotation schedule. Contact: Jim Peters, Fleet Mgr.'\n"
+            "Customer notes: 'Dealership group — 3 locations. Volume pricing. Annual contract renewal in Q4.'\n"
+            "Vendor notes: 'Bridgestone distributor — Southeast region. Rep: Sarah Chen. 5% rebate on quarterly targets.'\n"
+            "Vendor notes: 'Equipment supplier — hydraulic lifts and balancers. Service contract included.'"
+        ),
+        "non_profit": (
+            "Donor notes: 'Foundation grant — $250K/year, restricted to Youth Development programs. Report due Q4.'\n"
+            "Donor notes: 'Corporate partner since 2023. Sponsors annual gala. Contact: VP of CSR.'\n"
+            "Vendor notes: 'Program materials supplier. Bulk pricing for educational kits. Net 30.'\n"
+            "Vendor notes: 'Facility management company. Monthly contract $4,500. Includes janitorial + HVAC.'"
+        ),
+        "professional_services": (
+            "Client notes: 'Retainer client — $35K/month. SOW covers digital transformation advisory. Champion: CTO.'\n"
+            "Client notes: 'Project-based engagement. Current phase: ERP implementation. Go-live target Q3 2026.'\n"
+            "Vendor notes: 'Subcontractor — cloud infrastructure specialists. Rate: $185/hr. NDA on file.'\n"
+            "Vendor notes: 'Software licensing reseller. Annual renewals. Handles Microsoft + Salesforce stack.'"
+        ),
+        "manufacturing": (
+            "Customer notes: 'Distribution partner — 6 warehouses. Min order 500 units. Pricing tier A.'\n"
+            "Customer notes: 'OEM client — custom brackets per spec #4521. Lead time 3 weeks. QC cert required.'\n"
+            "Vendor notes: 'Steel supplier — coil and sheet. Pricing tied to LME index. Net 45.'\n"
+            "Vendor notes: 'Tooling vendor — CNC maintenance and replacement parts. Service contract active.'"
+        ),
+    }
+    notes_for_sector = sector_notes.get(acct.dataset, sector_notes.get("construction", ""))
+
     # Build resume header if resuming
     resume_block = ""
     if resume_from and resume_from.get("completed_stations"):
@@ -334,29 +423,36 @@ METODO 3 (consolidated):
 
 ---
 
-## REGRA #1 — VOCE E UM OPERADOR, NAO UM AUDITOR
+## REGRA #1 — VOCE E UM ANALISTA TSA, NAO UM CHECKLIST BOT
 
 ```
-ERRADO (o que voce NAO deve fazer):
+ERRADO (checklist mecanico):
   1. Navegar todas as paginas
-  2. Anotar todos os problemas
-  3. Gerar relatorio no final
-  4. Nunca corrigir nada
+  2. Verificar se existe dado → sim/nao
+  3. Gerar relatorio superficial
+  4. Nunca entrar nos records
+  5. Nunca enriquecer conteudo
 
-CERTO (o que voce DEVE fazer):
+CERTO (analista contextual):
   1. Entrar na tela
   2. Ler o conteudo via EXTRATOR JS (ver Regra #2)
-  3. Se algo esta errado → CORRIGIR ALI MESMO (browser_click + browser_type)
-  4. Validar que a correcao salvou
-  5. Passar para a proxima tela
-  6. No final, resumir: o que CORRIGIU e o que ficou pendente (com motivo)
+  3. DRILL-IN: clicar nos top records, avaliar profundidade
+  4. Se algo esta errado → CORRIGIR ALI MESMO
+  5. Se algo esta POBRE (vazio, generico, sem contexto) → ENRIQUECER com dados do setor
+  6. Validar que a correcao/enriquecimento salvou
+  7. Passar para a proxima tela
+  8. No final, resumir: o que CORRIGIU, o que ENRIQUECEU, e o que ficou pendente
 ```
 
-**Filosofia: VER → CORRIGIR → AVANCAR**
+**Filosofia: VER → DRILL-IN → CORRIGIR → ENRIQUECER → AVANCAR**
 - 100% autonomo — nao pergunte antes de corrigir nomes, preencher campos, ajustar dados
+- **DRILL-IN obrigatorio**: nao basta ver a lista — clique nos top 3-5 records e avalie o detalhe
+- **Enriquecimento proativo**: campo vazio nao e "ok" — e oportunidade de adicionar contexto do setor
 - Sem screenshots — nao salve prints a menos que o usuario peca
-- Sem relatorio intermediario — corrija e avance
+- Sem relatorio intermediario — corrija, enriqueca e avance
 - Se travou 2x no mesmo item → documente e avance, nao entre em loop
+
+**Pergunta-chave em CADA tela**: "Se um prospect visse esta tela agora, acreditaria que e uma empresa real?"
 
 ## REGRA #2 — TOKEN MANAGEMENT (CRITICO — SEGUIR A RISCA)
 
@@ -569,7 +665,34 @@ Se JE form travar (IDs dinamicos):
 {switch_block}
 **Apos trocar entity**: usar **EXTRATOR 5** para confirmar switch. NAO use browser_snapshot.
 
-## 3. DEEP STATIONS ({deep} habilitados) — VER/CORRIGIR/AVANCAR
+## FASE ZERO — CONTEXTO DO NEGOCIO (ANTES das stations)
+
+```
+Apos login bem-sucedido e ANTES de iniciar D01, entenda o negocio:
+
+1. Usar EXTRATOR 1 no homepage → anotar mentalmente:
+   - Revenue total (widget P&L)
+   - Cash position (widget bank)
+   - Invoices pendentes (widget invoices)
+   - Nome da empresa no header
+
+2. Formular o CONTEXTO em 1 frase:
+   "Esta e uma [tipo de empresa] com ~$[X]M de revenue, [N] entities,
+    setor [dataset]. Espero ver [expectativas do setor]."
+
+3. Este contexto guia TODAS as decisoes de enriquecimento:
+   - Notas de customers/vendors devem refletir este setor
+   - Nomes de projetos devem fazer sentido para este negocio
+   - Valores de transacoes devem ser proporcionais ao revenue
+
+SETOR: {acct.dataset}
+EXPECTATIVAS:
+```
+{_get_sector_expectations(acct.dataset)}
+
+---
+
+## 3. DEEP STATIONS ({deep} habilitados) — VER/DRILL-IN/CORRIGIR/ENRIQUECER/AVANCAR
 
 {"".join(deep_lines) if deep_lines else "Nenhum deep check habilitado."}
 
@@ -643,6 +766,11 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 **Nomes realistas para {acct.dataset}:**
 {names_for_sector}
 
+**Notas de contexto para enriquecimento (D05 customers, D06 vendors):**
+```
+{notes_for_sector}
+```
+
 ## 4. SURFACE SCAN ({surface} habilitados) — RAPIDO, SEM CORRECAO
 
 {chr(10).join(surface_lines) if surface_lines else "Nenhum surface check habilitado."}
@@ -710,11 +838,16 @@ NUNCA corrigir:
 **No chat** durante execucao (formato minimo):
 ```
 Logado em {acct.label} → [nome empresa]
+CONTEXTO: [tipo empresa] ~$[X]M revenue, [N] entities, setor {acct.dataset}
 
 --- ENTITY 1: [nome] (parent) ---
-[D01] Dashboard ✓ Income $X
-[D02] P&L ✓ Revenue $X, Net $Y, Margin Z%
-[D03] Balance Sheet ✓ Assets $X (via sidebar workaround)
+[D01] Dashboard ✓ Income $X | Drill: P&L widget links to report ✓
+[D02] P&L ✓ Revenue $X, Net $Y, Margin Z% | Drill: 3 income sources ✓
+[D04] Banking ✓ | ENRICHED: categorized 8 txns, created 2 bank rules
+[D05] Customers ✓ | DRILL: 5/5 checked | ENRICHED: 4 notes added, terms varied
+[D06] Vendors ✓ | DRILL: 5/5 checked | ENRICHED: 3 notes added
+[D08] Products ✓ | DRILL: 5 checked | ENRICHED: 2 descriptions added
+[D09] Projects ✓ | DRILL: 3 projects | ENRICHED: created 1 project
 ...
 [D12] Settings ✓
 
@@ -733,8 +866,8 @@ Logado em {acct.label} → [nome empresa]
 --- ENTITY 2: [nome] (child) ---
 [D01] Dashboard ✓ ...
 [D02] P&L ✓ ...
-[D05] Customers ✓ ...
-[D06] Vendors ✓ ...
+[D05] Customers ✓ | DRILL: 3/3 checked | ENRICHED: 2 notes
+[D06] Vendors ✓ | DRILL: 3/3 checked
 ```
 
 **Salvar report** em: `C:/Users/adm_r/Clients/intuit-boom/knowledge-base/sweep-learnings/{acct.shortcode}_YYYY-MM-DD.md`
@@ -776,20 +909,29 @@ open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=True))
 ANTES de salvar o report, confirme TODOS os items abaixo.
 Se algum esta faltando → VOLTE e complete antes de salvar.
 
+COBERTURA:
 - [ ] Parent: D01-D12 todos reportados individualmente com dados?
 - [ ] Consolidated (se existir): D01+D02+D10+D11 verificados?
 - [ ] CADA child: D01+D02+D05+D06 verificados INDIVIDUALMENTE?
       (NAO vale "same platform as Parent")
+
+ENRICHMENT (v5.0):
 - [ ] D04: categorizou 5+ bank transactions? (OBRIGATORIO)
-- [ ] D09: tem 3+ projects? Se nao, criou? (OBRIGATORIO)
+- [ ] D05: fez drill-in em 3+ customers? Notes preenchidas com contexto do setor?
+- [ ] D06: fez drill-in em 3+ vendors? Notes preenchidas com contexto?
+- [ ] D08: top 5 products tem descriptions contextuais?
+- [ ] D09: tem 3+ projects? Se nao, criou? Cada um com customer atribuido?
+
+QUALITY:
 - [ ] Content Safety: CS1-CS8 verificados em TODAS entities?
 - [ ] Progress tracking: todas stations gravadas com CID:STATION?
+- [ ] Pergunta final: "Um prospect acreditaria que esta e uma empresa real?"
 ```
 
 {f"## 12. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
 ---
-*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v4.2*
+*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v5.0*
 """
 
     order_file = pending_dir / "SWEEP_ORDER.md"
