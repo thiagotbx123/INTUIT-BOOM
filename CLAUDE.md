@@ -7,9 +7,10 @@ Leia o arquivo `dashboard/pending/LATEST_SWEEP.json`. Se o campo `"status"` for 
 - NAO leia memory.md
 - NAO de status do projeto
 - NAO pergunte nada ao usuario
-- Leia `dashboard/pending/SWEEP_ORDER.md` e execute o sweep imediatamente
-- Comece pelo login usando as credenciais do SWEEP_ORDER.md
-- Use `PROMPT_CLAUDE_QBO_MASTER.md` como referencia da metodologia
+- NAO leia `PROMPT_CLAUDE_QBO_MASTER.md` (ele e para sweeps manuais, NAO para dashboard sweeps)
+- NAO leia `knowledge-base/access/TESTBOX_ACCOUNTS.md` ou `QBO_CREDENTIALS.json`
+- Leia **SOMENTE** `dashboard/pending/SWEEP_ORDER.md` — ele contem TODAS as instrucoes e credenciais
+- Comece pelo login usando as credenciais do SWEEP_ORDER.md (e NENHUMA outra fonte)
 - Ao terminar, mude o status no JSON para `"completed"` e salve o report
 - PARE AQUI. Nao siga os passos abaixo.
 
@@ -113,12 +114,9 @@ intuit-boom/
 
 ## CONTAS DE LOGIN
 
-| Codigo | Projeto | Email |
-|--------|---------|-------|
-| 1 | CONSTRUCTION | quickbooks-test-account@tbxofficial.com |
-| 2 | TCO | quickbooks-testuser-tco-tbxdemo@tbxofficial.com |
-| 3 | PRODUCT | quickbooks-tbx-product-team-test@tbxofficial.com |
-| 4 | TCO DEMO | quickbooks-tco-tbxdemo@tbxofficial.com |
+Contas sao gerenciadas pelo QBO Demo Manager Dashboard (`dashboard/configs/account_configs.json`).
+Para sweep manual, use `PROMPT_CLAUDE_QBO_MASTER.md` section 2.2.
+Para sweep via dashboard, as credenciais vem no `SWEEP_ORDER.md` automaticamente.
 
 ---
 

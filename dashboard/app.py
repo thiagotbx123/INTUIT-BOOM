@@ -326,6 +326,10 @@ METODO 3 (consolidated):
 
 > **ESTE DOCUMENTO CONTEM TUDO**. Nao precisa ler nenhum outro arquivo.
 > Execute o sweep AGORA. Nao pergunte nada. Comece pelo login.
+>
+> **ISOLAMENTO DE CREDENCIAIS**: As credenciais neste documento sao as UNICAS validas.
+> NAO leia `PROMPT_CLAUDE_QBO_MASTER.md`, `TESTBOX_ACCOUNTS.md`, `QBO_CREDENTIALS.json`,
+> ou qualquer outro arquivo de credenciais. Este documento e AUTO-CONTIDO.
 {resume_block}
 
 ---
@@ -885,7 +889,7 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
         f"@echo off\n"
         f"title {sweep_title}\n"
         f"cd /d {BASE.parent}\n"
-        f'claude "Executar sweep pendente conforme protocolo CLAUDE.md"'
+        f'claude "Pending sweep detected. Read dashboard/pending/SWEEP_ORDER.md and execute it. Use ONLY the credentials in SWEEP_ORDER.md. Do NOT read PROMPT_CLAUDE_QBO_MASTER.md or TESTBOX_ACCOUNTS.md."'
         f" --permission-mode bypassPermissions\n"
         f"echo.\n"
         f"echo === SWEEP FINALIZADO ===\n"
