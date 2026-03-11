@@ -13,7 +13,7 @@
     <div class="stat-chip">Accounts <span class="stat-value" id="stat-total">{{ accounts | length }}</span></div>
     <div class="stat-chip">Visible <span class="stat-value" id="stat-visible">{{ accounts | length }}</span></div>
     <div class="stat-chip">Swept <span class="stat-value">{{ accounts | selectattr('sweep') | list | length }}</span></div>
-    <div class="stat-chip">Score &ge;7 <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'ge', 7) | list | length }}</span></div>
+    <div class="stat-chip">Score &ge;7 <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'defined') | selectattr('sweep.score', 'ne', none) | selectattr('sweep.score', 'ge', 7) | list | length }}</span></div>
     <div class="stat-chip">Entities <span class="stat-value">{{ total_entities }}</span></div>
 </div>
 

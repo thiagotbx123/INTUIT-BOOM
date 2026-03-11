@@ -25,7 +25,7 @@ DEEP_STATIONS = [
         "name": "Profit & Loss (P&L)",
         "category": "Financial Health",
         "tier": "deep",
-        "route": "/app/reportlist > Profit and Loss",
+        "route": "/app/standardreports > Profit and Loss (IES: navigate sidebar, click P&L link)",
         "description": "Revenue, COGS, Expenses, Net Income must be POSITIVE. Margins within industry range",
         "what_to_check": [
             "Net Income POSITIVE (mandatory all entities)",
@@ -46,7 +46,7 @@ DEEP_STATIONS = [
         "name": "Balance Sheet",
         "category": "Financial Health",
         "tier": "deep",
-        "route": "/app/reportlist > Balance Sheet",
+        "route": "/app/standardreports > Balance Sheet (IES: navigate sidebar, click BS link, use EXTRATOR 6)",
         "description": "Assets = Liabilities + Equity. Values proportional to business, no absurd amounts",
         "what_to_check": [
             "Accounting equation balances (A = L + E)",

@@ -249,7 +249,7 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
 METODO 1 (preferido): URL direto
 → browser_navigate("https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={CID}")
 → browser_wait_for(time=5)
-→ browser_snapshot() para confirmar switch
+→ browser_evaluate com EXTRATOR 5 para confirmar switch
 
 METODO 2 (fallback): Dropdown no header
 → browser_click no nome da empresa no header
@@ -278,11 +278,47 @@ METODO 3 (consolidated):
     if resume_from and resume_from.get("completed_stations"):
         done = resume_from["completed_stations"]
         entity = resume_from.get("current_entity", "")
+
+        # Group completed stations by entity CID
+        entity_progress = {}
+        flat_stations = []
+        for item in done:
+            if ":" in item:
+                cid, station = item.split(":", 1)
+                entity_progress.setdefault(cid, []).append(station)
+            else:
+                flat_stations.append(item)
+
+        # Build entity-aware resume lines
+        resume_lines = []
+        for c in acct.companies:
+            cid = c.cid
+            name = c.name
+            stations_done = entity_progress.get(cid, [])
+            if not stations_done:
+                resume_lines.append(f">   - **{name}** (CID {cid}): NAO INICIADA — fazer sweep completo")
+            elif "S_BATCH" in stations_done and "C_BATCH" in stations_done:
+                resume_lines.append(f">   - **{name}** (CID {cid}): ✅ COMPLETA — PULAR")
+            else:
+                done_str = ", ".join(stations_done)
+                resume_lines.append(f">   - **{name}** (CID {cid}): PARCIAL ({done_str}) — continuar do proximo")
+
+        # Fallback for old-format flat stations (backwards compat)
+        flat_note = ""
+        if flat_stations:
+            flat_note = f"\n> ⚠ Formato antigo detectado. Stations sem entity: {', '.join(flat_stations)}"
+
         resume_block = f"""
 > **RETOMADA DE SWEEP INTERROMPIDO**
-> Estacoes ja completadas (PULAR): {", ".join(done)}
 > Ultima entity ativa: {entity}
-> **Comece pelo LOGIN e depois va direto para a proxima estacao NAO listada acima.**
+>
+> **STATUS POR ENTITY:**
+{chr(10).join(resume_lines)}
+{flat_note}
+>
+> **Comece pelo LOGIN e depois va direto para a primeira entity NAO COMPLETA.**
+> Para entities PARCIAIS, pule as stations ja listadas e continue da proxima.
+> Para entities NAO INICIADAS, faca sweep completo conforme Regra #4.
 > Nao repita trabalho ja feito.
 """
 
@@ -305,7 +341,7 @@ ERRADO (o que voce NAO deve fazer):
 
 CERTO (o que voce DEVE fazer):
   1. Entrar na tela
-  2. Ler o conteudo (browser_snapshot)
+  2. Ler o conteudo via EXTRATOR JS (ver Regra #2)
   3. Se algo esta errado → CORRIGIR ALI MESMO (browser_click + browser_type)
   4. Validar que a correcao salvou
   5. Passar para a proxima tela
@@ -318,26 +354,116 @@ CERTO (o que voce DEVE fazer):
 - Sem relatorio intermediario — corrija e avance
 - Se travou 2x no mesmo item → documente e avance, nao entre em loop
 
-## REGRA #2 — TOKEN MANAGEMENT
+## REGRA #2 — TOKEN MANAGEMENT (CRITICO — SEGUIR A RISCA)
 
 ```
-PROIBIDO: usar browser_snapshot() em paginas longas (gera 90KB+ de output)
+=== LIMITES ABSOLUTOS ===
+1. NUNCA retornar innerText bruto com substring > 500 chars
+2. NUNCA ler o output de browser_navigate — ele retorna HTML gigante (13K+ tokens)
+3. Apos QUALQUER browser_navigate, fazer IMEDIATAMENTE um browser_evaluate com extrator
+4. Se precisa mais dados, fazer 2 evaluates PEQUENOS — nunca 1 grande
+5. Se browser_evaluate estourar limite, NAO leia o arquivo salvo — refaca com extrator menor
 
-OBRIGATORIO para Surface Scan: usar browser_evaluate() com JS extraction:
-  browser_evaluate(function="() => {{
-    const text = document.body.innerText;
-    const lines = text.split('\\n').filter(l => l.trim().length > 0);
-    return {{
-      title: document.title,
-      lineCount: lines.length,
-      first20: lines.slice(0, 20),
-      hasData: lines.length > 10,
-      hasPlaceholder: /\\b(TBX|Lorem|Sample|Foo|Bar|TODO)\\b/i.test(text),
-      has404: /not found|404|page doesn't exist/i.test(text)
-    }};
-  }}")
+=== PROIBIDO ===
+- browser_snapshot() em paginas longas (gera 90KB+ de output)
+- document.body.innerText.substring(0, N) onde N > 500
+- Retornar JSON com campo "text" ou "snippet" longo
 
-PERMITIDO: browser_snapshot() APENAS em Deep Stations onde precisa interagir
+=== OBRIGATORIO: USAR EXTRATORES PRE-PRONTOS ===
+Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
+```
+
+### EXTRATORES JS PRE-PRONTOS (copiar e colar)
+
+**EXTRATOR 1 — Dashboard (D01):**
+```javascript
+() => {{
+  const t = document.body.innerText || '';
+  const co = document.querySelector('[class*="company"]')?.innerText || t.match(/^.*LLC|^.*Inc|^.*Corp/m)?.[0] || '';
+  const nums = t.match(/\\$[\\d,.]+[KMB]?/g)?.slice(0, 8) || [];
+  return JSON.stringify({{co: co.substring(0,80), nums, has404: /not found|404/i.test(t), hasTBX: /\\bTBX\\b/.test(t)}});
+}}
+```
+
+**EXTRATOR 2 — P&L / Financial Report (D02):**
+```javascript
+() => {{
+  const t = document.body.innerText || '';
+  const income = t.match(/(?:Total |Net )?Income[\\s:]*\\$?([\\d,.]+)/i)?.[1] || 'N/A';
+  const expenses = t.match(/(?:Total )?Expenses[\\s:]*\\$?([\\d,.]+)/i)?.[1] || 'N/A';
+  const net = t.match(/Net (?:Income|Profit)[\\s:]*\\-?\\$?([\\d,.\\-]+)/i)?.[1] || 'N/A';
+  const neg = t.includes('-$') || t.match(/Net.*-/);
+  return JSON.stringify({{income, expenses, net, negative: !!neg, title: document.title.substring(0,60)}});
+}}
+```
+
+**EXTRATOR 3 — Lista de Entidades (Customers/Vendors/Employees/Products):**
+```javascript
+() => {{
+  const t = document.body.innerText || '';
+  const count = t.match(/(\\d[\\d,]*)\\s*(?:results|customers|vendors|employees|items)/i)?.[1] || '0';
+  const rows = t.match(/^.{{3,60}}$/gm)?.filter(l => !l.match(/Home|Feed|Create|Bookmarks|Skip/))?.slice(0, 8) || [];
+  const hasPH = /\\b(TBX|Test|TESTER|Lorem|Sample|Foo)\\b/i.test(t);
+  return JSON.stringify({{count, first8: rows, hasPlaceholder: hasPH, has404: /not found|404/i.test(t)}});
+}}
+```
+
+**EXTRATOR 4 — Surface Scan Generico (S01-S30):**
+```javascript
+() => {{
+  const t = document.body.innerText || '';
+  const lines = t.split('\\n').filter(l => l.trim().length > 2);
+  return JSON.stringify({{
+    title: document.title.substring(0,50),
+    lines: lines.length,
+    hasData: lines.length > 10,
+    has404: /not found|404|page doesn't exist/i.test(t),
+    hasPH: /\\b(TBX|Lorem|Sample|Foo|Bar|TODO)\\b/i.test(t),
+    first5: lines.slice(2, 7).map(l => l.substring(0, 60))
+  }});
+}}
+```
+
+**EXTRATOR 5 — Verificar Entity Apos Switch:**
+```javascript
+() => {{
+  const t = (document.body.innerText || '').substring(0, 300);
+  return JSON.stringify({{
+    url: window.location.href.substring(0, 80),
+    company: t.match(/^.*(?:LLC|Inc|Corp|Ltd|Group|Solutions|Outfitters|Tire|Retail)/m)?.[0]?.substring(0, 60) || 'unknown',
+    loaded: !(/loading|please wait/i.test(t))
+  }});
+}}
+```
+
+**EXTRATOR 6 — Balance Sheet via Sidebar (D03 — IES WORKAROUND):**
+```javascript
+() => {{
+  const links = [...document.querySelectorAll('a, button')];
+  const bsLink = links.find(l => /balance.?sheet/i.test(l.innerText));
+  const reports = links.filter(l => /profit|loss|aging|cash.?flow|balance/i.test(l.innerText)).map(l => l.innerText.substring(0,40));
+  return JSON.stringify({{bsLink: bsLink?.innerText?.substring(0,50) || null, bsHref: bsLink?.href?.substring(0,120) || null, reports}});
+}}
+```
+
+**EXTRATOR 7 — JE Form (antes de salvar — verificar campos):**
+```javascript
+() => {{
+  const inputs = [...document.querySelectorAll('input[type="text"], input[type="number"], textarea')];
+  const vals = inputs.slice(0, 10).map(i => ({{id: i.id?.substring(0,30), val: i.value?.substring(0,30), ph: i.placeholder?.substring(0,20)}}));
+  const saveBtn = !!document.querySelector('[data-automation-id*="save"], button[class*="save"]');
+  return JSON.stringify({{fields: vals, saveVisible: saveBtn}});
+}}
+```
+
+## REGRA #2B — POS-NAVEGACAO (OBRIGATORIO)
+
+```
+Apos QUALQUER browser_navigate():
+1. NAO leia o resultado do navigate (ele vem com HTML gigante)
+2. Espere 3-5 segundos (browser_wait_for)
+3. Faca browser_evaluate com o EXTRATOR apropriado
+4. Se a pagina ainda esta carregando, espere mais 3s e repita
 ```
 
 ## REGRA #3 — ANTI-SKIP
@@ -351,9 +477,53 @@ NAO ACEITO:
   - "Verificado" sem dizer o que viu
   - "Encontrei problema X" sem ter tentado corrigir
   - Pular estacao sem reportar
+  - "Same platform as Entity 1" sem ter verificado pelo menos D01+D02+D05+D06
 
 SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
   [D07] Employees — BLOQUEADO: 2FA exigido para editar nomes
+```
+
+## REGRA #4 — COBERTURA MINIMA POR ENTITY (OBRIGATORIO)
+
+```
+Entity tipo PARENT:
+  → D01 a D12 COMPLETO (todos os Deep Stations habilitados)
+  → S01-S30 Surface Scan completo
+  → C01-C15 Conditional completo
+
+Entity tipo CONSOLIDATED:
+  → D01 (Dashboard), D02 (P&L), D10 (Reports), D11 (CoA)
+  → C01-C04 (Consolidated-specific)
+  → Demais: marcar N/A com justificativa
+
+Entity tipo CHILD:
+  → MINIMO OBRIGATORIO: D01 + D02 + D05 + D06 INDIVIDUAL
+  → D03-D04, D07-D12: podem ser inferidos SE mesma plataforma
+  → Para inferir, deve ter verificado pelo menos 4 stations individualmente
+  → NUNCA escrever "Same platform" sem ter feito os 4 checks minimos
+
+PROIBIDO:
+  - Marcar child entity como PASS sem ter feito D01+D02+D05+D06
+  - Copiar scores do Parent para Children sem verificacao
+```
+
+## REGRA #5 — ANTI-LOOP E RECUPERACAO
+
+```
+Se browser_evaluate retornar erro "exceeds maximum allowed tokens":
+  → NAO leia o arquivo salvo (desperdia tokens)
+  → Faca NOVO evaluate com extrator MENOR (use Extrator 5 generico)
+  → Se falhar 2x: documente e avance
+
+Se browser_navigate retornar pagina de erro/404:
+  → Tente rota alternativa (ver workarounds abaixo)
+  → Se falhar 2x: marque BLOCKED e avance
+
+Se JE form travar (IDs dinamicos):
+  → browser_snapshot() APENAS para ver o form
+  → Preencha UM campo por vez, re-query apos cada field
+  → Se travar 2x: documente valores necessarios e avance
+  → NAO recarregue a pagina — perdera dados preenchidos
 ```
 
 ---
@@ -370,13 +540,13 @@ SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
 
 **Procedimento:**
 1. `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
-2. `browser_snapshot` para ver o formulario
+2. `browser_snapshot` para ver o formulario (UNICO uso permitido de snapshot para login)
 3. `browser_type` no campo de email → clicar next/continue
 4. `browser_type` no campo de password → clicar sign in
 5. Gerar TOTP via Bash: `python -c "import pyotp,time; t=pyotp.TOTP('{acct.totp_secret}'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"`
 6. `browser_type` no campo de codigo → submit
 7. Se "Skip"/"Not now"/"Maybe later" aparecer → clicar para dispensar
-8. `browser_snapshot` para confirmar que esta no QBO homepage
+8. `browser_evaluate` com **EXTRATOR 1** para confirmar que esta no QBO homepage
 
 **IMPORTANTE: Use APENAS Playwright (browser_*). NAO use QuickBooks MCP API.**
 
@@ -388,31 +558,70 @@ SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
 
 **Ordem**: P0 primeiro (Deep + Surface + Conditional completo), depois P1 (apenas Deep D01-D02 rapido).
 {switch_block}
+**Apos trocar entity**: usar **EXTRATOR 5** para confirmar switch. NAO use browser_snapshot.
 
 ## 3. DEEP STATIONS ({deep} habilitados) — VER/CORRIGIR/AVANCAR
 
 {"".join(deep_lines) if deep_lines else "Nenhum deep check habilitado."}
+
+### IES WORKAROUNDS (rotas que dao 404 no IES)
+
+```
+PROBLEMA: /app/reportlist retorna 404 no IES (Intuit Enterprise Suite)
+
+WORKAROUND para P&L e Balance Sheet:
+1. browser_navigate("https://qbo.intuit.com/app/standardreports")
+2. browser_wait_for(time=3)
+3. browser_evaluate com EXTRATOR 6 para encontrar links de reports
+4. browser_click no link de "Profit and Loss" ou "Balance Sheet"
+5. browser_wait_for(time=5)
+6. browser_evaluate com EXTRATOR 2 para ler numeros
+
+ROTAS FUNCIONAIS NO IES:
+- /app/homepage — Dashboard
+- /app/banking?jobId=accounting — Banking
+- /app/customers-overview?jobId=customers — Customer Hub
+- /app/customers — Customer list
+- /app/vendors — Vendor list
+- /app/expense-overview?jobId=expenses — Expenses
+- /app/employees?jobId=team — Employees
+- /app/inventory/overview?jobId=inventory — Inventory
+- /app/projects-overview?jobId=projects — Projects
+- /app/standardreports — Reports (sidebar, click links)
+- /app/chartofaccounts?jobId=accounting — Chart of Accounts
+- /app/settings?panel=company — Settings
+
+ROTAS QUE DAO 404 NO IES (NUNCA usar):
+- /app/reportlist
+- /app/reports/profitandloss
+- /app/balance-sheet
+- /app/chart-of-accounts (sem jobId)
+```
 
 ### PROTOCOLOS DE FIX COMUNS (referencia rapida)
 
 **Criar Journal Entry (para corrigir P&L negativo):**
 ```
 1. browser_navigate("/app/journal")
-2. browser_snapshot() → encontrar form
-3. Linha 1: Account = "Accounts Receivable" | Amount (Debit) = $200000 | Name = cliente existente
-4. Linha 2: Account = "Sales" ou "Revenue" ou "Grant Revenue" (NP) | Amount (Credit) auto-preenche
-5. Memo: "Revenue adjustment - [motivo realista]"
-6. browser_click("Save and close")
-7. Voltar para P&L e confirmar que Net Income ficou positivo
+2. browser_wait_for(time=3)
+3. browser_snapshot() → encontrar form (UNICO uso permitido)
+4. Linha 1: Account = "Accounts Receivable" | Amount (Debit) = $200000 | Name = cliente existente
+5. Linha 2: Account = "Sales" ou "Revenue" ou "Grant Revenue" (NP) | Amount (Credit) auto-preenche
+6. Memo: "Revenue adjustment - [motivo realista]"
+7. IMPORTANTE: Preencher UM campo, verificar com EXTRATOR 7, depois proximo campo
+8. browser_click("Save and close")
+9. browser_wait_for(time=3)
+10. Verificar P&L com EXTRATOR 2 para confirmar Net Income positivo
 ```
 
 **Renomear placeholder (customer/vendor/product):**
 ```
 1. browser_click no nome do record na lista
-2. browser_snapshot() → encontrar botao Edit
-3. browser_click("Edit")
-4. browser_type no campo de nome → novo nome realista
-5. browser_click("Save")
+2. browser_wait_for(time=2)
+3. browser_evaluate com EXTRATOR 3 para ver estado atual
+4. browser_click("Edit")
+5. browser_type no campo de nome → novo nome realista
+6. browser_click("Save")
 ```
 
 **Preencher campo vazio (email, address, notes, terms):**
@@ -429,8 +638,15 @@ SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
 
 {chr(10).join(surface_lines) if surface_lines else "Nenhum surface check habilitado."}
 
-**Protocolo**: `browser_navigate` → `browser_evaluate` (JS extraction, NAO snapshot) → anotar ✓/○/✗/⚠ → proximo
+**Protocolo**: `browser_navigate` → `browser_wait_for(time=3)` → `browser_evaluate` com **EXTRATOR 4** → anotar ✓/○/✗/⚠ → proximo
 - ✓ = tem dados | ○ = vazio | ✗ = 404 | ⚠ = placeholder/problema
+
+**OTIMIZACAO**: Agrupar 5-6 surface scans consecutivos, reportar em lote:
+```
+[S01-S06] ✓✓✓○✗✓ (S04 vazio, S05 404)
+[S07-S12] ✓✓✓✓✓✗ (S12 404)
+...
+```
 
 ## 5. CONDITIONAL ({cond} habilitados)
 
@@ -472,17 +688,30 @@ NUNCA corrigir:
 ```
 Logado em {acct.label} → [nome empresa]
 
---- DEEP STATIONS ({deep}) ---
-[D01] Dashboard ✓ (ou CORRIGIDO: ...)
+--- ENTITY 1: [nome] (parent) ---
+[D01] Dashboard ✓ Income $X
 [D02] P&L ✓ Revenue $X, Net $Y, Margin Z%
+[D03] Balance Sheet ✓ Assets $X (via sidebar workaround)
 ...
-→ Switching to [proxima entity]...
+[D12] Settings ✓
 
 --- SURFACE SCAN ({surface} pages) ---
-[S01-S{surface:02d}] ✓X ○Y ✗Z
+[S01-S06] ✓✓✓○✗✓
+[S07-S12] ✓✓✓✓✓✗
+[S13-S18] ✓✓✓✓○✓
+[S19-S24] ✓✓✓✓✓✓
+[S25-S{surface:02d}] ✓✓✓✓✓✓
 
 --- CONDITIONAL ({cond}) ---
-[C01-...] ✓X N/A Y
+[C01-C04] ✓✓✓✓
+[C05-...] N/A N/A ...
+
+→ Switching to Entity 2: [nome]...
+--- ENTITY 2: [nome] (child) ---
+[D01] Dashboard ✓ ...
+[D02] P&L ✓ ...
+[D05] Customers ✓ ...
+[D06] Vendors ✓ ...
 ```
 
 **Salvar report** em: `C:/Users/adm_r/Clients/intuit-boom/knowledge-base/sweep-learnings/{acct.shortcode}_YYYY-MM-DD.md`
@@ -491,16 +720,18 @@ Logado em {acct.label} → [nome empresa]
 
 ## 10. PROGRESS TRACKING (OBRIGATORIO)
 
-**Apos CADA Deep Station completada**, atualize o arquivo de progresso:
+**Apos CADA Deep Station completada**, atualize o arquivo de progresso.
+**FORMATO: CID:STATION** (ex: `9341455130122367:D01`) — NUNCA station sem CID.
+
 ```bash
 python -c "
 import json; f='C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json'
 d=json.loads(open(f,encoding='utf-8').read())
 p=d.get('progress',{{}})
 done=p.get('completed_stations',[])
-done.append('STATION_ID')  # ex: D01, D02, S01-S30, C01-C15
+done.append('CID:STATION_ID')  # ex: 9341455130122367:D01, 9341455130122367:S_BATCH
 p['completed_stations']=done
-p['current_entity']='ENTITY_NAME'
+p['current_entity']='ENTITY_NAME (CID)'
 p['last_update']=__import__('datetime').datetime.now().isoformat()
 d['progress']=p
 open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=False))
@@ -508,17 +739,18 @@ open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=False))
 ```
 
 **Regras de progresso:**
-- Atualize `completed_stations` com o ID da estacao (D01, D02, ..., S_BATCH, C_BATCH)
-- Atualize `current_entity` ao trocar de entity
-- Surface Scan: registre como "S_BATCH" (um unico registro para todas as surface)
-- Conditional: registre como "C_BATCH"
+- **SEMPRE** prefixar com CID da entity atual: `CID:D01`, `CID:D02`, `CID:S_BATCH`, `CID:C_BATCH`
+- Atualize `current_entity` ao trocar de entity (incluir CID)
+- Surface Scan: registre como `CID:S_BATCH` (um registro por entity)
+- Conditional: registre como `CID:C_BATCH` (um registro por entity)
 - Se o sweep for interrompido, o dashboard detecta e oferece "Retomar Sweep"
-- Na retomada, voce recebera lista de estacoes ja completadas — PULE elas
+- Na retomada, voce recebera progresso POR ENTITY — pule apenas as entities/stations ja feitas
+- **NUNCA** registrar station sem CID (formato antigo `D01` nao funciona no resume)
 
 {f"## 11. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
 ---
-*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard*
+*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v4.1*
 """
 
     order_file = pending_dir / "SWEEP_ORDER.md"
@@ -823,4 +1055,4 @@ async def api_sync_retool(request: Request):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app:app", host="127.0.0.1", port=8081, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=8080, reload=True)
