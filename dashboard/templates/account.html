@@ -126,25 +126,109 @@
     <!-- Sweep -->
     <div class="card sweep-card">
         <h3>Last Sweep</h3>
-        {% if account.sweep and account.sweep.score is not none %}
+        {% if account.sweep and (account.sweep.score is not none or account.sweep.realism_score is not none or account.sweep.overall_status) %}
         <div class="card-row">
             <span class="label">Date</span>
             <span class="value">{{ account.sweep.date or '—' }}</span>
         </div>
+        {% if account.sweep.overall_status %}
+        <div class="card-row">
+            <span class="label">Result</span>
+            <span class="value">
+                <span style="display: inline-block; padding: 2px 10px; border-radius: 6px; font-weight: 700; font-size: 12px;
+                    {% if account.sweep.overall_status == 'PASS' %}background: rgba(52,211,153,0.15); color: var(--green);
+                    {% else %}background: rgba(239,68,68,0.15); color: var(--red);{% endif %}">
+                    {{ account.sweep.overall_status }}
+                </span>
+                {% if account.sweep.fixes_applied is not none %}
+                <span style="margin-left: 8px; font-size: 12px; color: var(--text-secondary);">{{ account.sweep.fixes_applied }} fixes applied</span>
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+        {% if account.sweep.score is not none %}
         <div class="card-row">
             <span class="label">Score</span>
             <span class="score {{ account.score_class }}">{{ account.sweep.score }}/10</span>
         </div>
+        {% endif %}
+        {% if account.sweep.realism_score is not none %}
         <div class="card-row">
+            <span class="label">Realism</span>
+            <span class="value" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-weight: 700; font-size: 16px;
+                    {% if account.sweep.realism_score >= 80 %}color: var(--green);
+                    {% elif account.sweep.realism_score >= 60 %}color: var(--yellow, #fbbf24);
+                    {% else %}color: var(--red);{% endif %}">
+                    {{ account.sweep.realism_score }}/100
+                </span>
+                <span style="flex: 1; max-width: 120px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
+                    <span style="display: block; width: {{ account.sweep.realism_score }}%; height: 100%; border-radius: 3px;
+                        {% if account.sweep.realism_score >= 80 %}background: var(--green);
+                        {% elif account.sweep.realism_score >= 60 %}background: var(--yellow, #fbbf24);
+                        {% else %}background: var(--red);{% endif %}">
+                    </span>
+                </span>
+            </span>
+        </div>
+        {% endif %}
+        {% if account.sweep.entities_swept %}
+        <div class="card-row">
+            <span class="label">Entities</span>
+            <span class="value">{{ account.sweep.entities_swept }} swept</span>
+        </div>
+        {% endif %}
+
+        <!-- Station breakdown -->
+        {% if account.sweep.deep_pass > 0 or account.sweep.deep_blocked > 0 %}
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); margin: 10px 0; padding-top: 10px;">
+            <span class="label" style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: block;">Station Coverage</span>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div style="font-size: 12px;">
+                    <span style="color: var(--green); font-weight: 700;">{{ account.sweep.deep_pass }}</span>
+                    <span style="color: var(--text-muted);"> deep pass</span>
+                </div>
+                {% if account.sweep.deep_blocked > 0 %}
+                <div style="font-size: 12px;">
+                    <span style="color: var(--yellow, #fbbf24); font-weight: 700;">{{ account.sweep.deep_blocked }}</span>
+                    <span style="color: var(--text-muted);"> blocked</span>
+                </div>
+                {% endif %}
+                {% if account.sweep.surface_ok > 0 or account.sweep.surface_404 > 0 %}
+                <div style="font-size: 12px;">
+                    <span style="color: var(--green); font-weight: 700;">{{ account.sweep.surface_ok }}</span>
+                    <span style="color: var(--text-muted);"> surface ok</span>
+                </div>
+                {% if account.sweep.surface_empty > 0 %}
+                <div style="font-size: 12px;">
+                    <span style="color: var(--text-secondary); font-weight: 700;">{{ account.sweep.surface_empty }}</span>
+                    <span style="color: var(--text-muted);"> empty</span>
+                </div>
+                {% endif %}
+                {% if account.sweep.surface_404 > 0 %}
+                <div style="font-size: 12px;">
+                    <span style="color: var(--red); font-weight: 700;">{{ account.sweep.surface_404 }}</span>
+                    <span style="color: var(--text-muted);"> 404</span>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card-row" style="margin-top: 6px;">
             <span class="label">Report</span>
             <span class="value mono" style="font-size: 12px">{{ account.sweep.report_file or '—' }}</span>
         </div>
         {% if account.sweep.p1_findings %}
-        <ul class="p1-list">
-            {% for p in account.sweep.p1_findings %}
-            <li>{{ p }}</li>
-            {% endfor %}
-        </ul>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); margin: 10px 0; padding-top: 10px;">
+            <span class="label" style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: block;">Key Findings</span>
+            <ul class="p1-list">
+                {% for p in account.sweep.p1_findings %}
+                <li>{{ p }}</li>
+                {% endfor %}
+            </ul>
+        </div>
         {% endif %}
         {% else %}
         <div class="card-row">

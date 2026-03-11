@@ -17,8 +17,8 @@ CACHE_TTL = 60  # seconds
 
 
 def _parse_sweep_score(text: str) -> float | None:
-    """Extract score from sweep report header (first 20 lines only)."""
-    header = "\n".join(text.split("\n")[:20])
+    """Extract score from sweep report header (first 30 lines only)."""
+    header = "\n".join(text.split("\n")[:30])
     patterns = [
         r"\*\*Overall\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
         r"\*\*Revalidation\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
@@ -38,6 +38,119 @@ def _parse_sweep_date(text: str) -> str | None:
     return None
 
 
+def _parse_realism_score(text: str) -> int | None:
+    """Extract realism score (0-100) from report."""
+    patterns = [
+        r"\*\*(?:Overall\s+)?Realism(?:\s+Score)?[:\s]*\*?\*?\s*(\d+)/100",
+        r"Overall\s+Realism[:\s]*(\d+)/100",
+        r"\|\s*Realism\s+Score\s*\|\s*(\d+)/100",
+    ]
+    for pat in patterns:
+        m = re.search(pat, text, re.IGNORECASE)
+        if m:
+            return int(m.group(1))
+    return None
+
+
+def _parse_overall_status(text: str) -> str:
+    """Extract PASS/FAIL from report."""
+    # Check header first (most common format)
+    header = "\n".join(text.split("\n")[:20])
+    for pat in [r"\*\*Status:\*\*\s*(PASS|FAIL)", r"OVERALL\s+RESULT:\s*(PASS|FAIL)"]:
+        m = re.search(pat, header, re.IGNORECASE)
+        if m:
+            return m.group(1).upper()
+    # Fallback: search full text for table format or summary section
+    for pat in [r"\*\*Overall\s+Score\*\*\s*\|\s*\*\*(PASS|FAIL)\*\*", r"OVERALL\s+RESULT:\s*(PASS|FAIL)"]:
+        m = re.search(pat, text, re.IGNORECASE)
+        if m:
+            return m.group(1).upper()
+    return ""
+
+
+def _parse_fixes_applied(text: str) -> int | None:
+    """Extract number of fixes from report."""
+    m = re.search(r"\*\*Fixes\s+Applied:\*\*\s*(\d+)", text[:2000], re.IGNORECASE)
+    if m:
+        return int(m.group(1))
+    return None
+
+
+def _parse_entities_swept(text: str) -> int | None:
+    """Extract entity count from report."""
+    m = re.search(r"\*\*Entities:\*\*\s*(\d+)", text[:500], re.IGNORECASE)
+    if m:
+        return int(m.group(1))
+    # Fallback: count rows in "Entities Swept" table
+    ent_section = re.search(r"##\s*Entities\s+Swept\s*\n+(\|.+\n)+", text[:2000], re.IGNORECASE)
+    if ent_section:
+        rows = [
+            row
+            for row in ent_section.group(0).split("\n")
+            if row.strip().startswith("|") and "---" not in row and "Entity" not in row
+        ]
+        if rows:
+            return len(rows)
+    return None
+
+
+def _parse_station_summary(text: str) -> dict:
+    """Parse deep station and surface scan pass/fail/blocked counts."""
+    result = {
+        "deep_pass": 0,
+        "deep_blocked": 0,
+        "deep_total": 12,
+        "surface_ok": 0,
+        "surface_empty": 0,
+        "surface_404": 0,
+    }
+
+    # Count deep station results from table rows with D01-D12 patterns
+    # Scans ALL lines starting with | that contain station IDs (first entity = parent)
+    first_entity_done = False
+    for line in text.split("\n"):
+        if not line.strip().startswith("|"):
+            continue
+        # Match station rows: "| D01 ..." or "| D01 Dashboard |"
+        if re.search(r"\|\s*D(?:0[1-9]|1[0-2])\b", line):
+            if "PASS" in line or "\u2713" in line:
+                result["deep_pass"] += 1
+            elif "BLOCKED" in line or "\u2717" in line:
+                result["deep_blocked"] += 1
+            elif "\u26a0" in line:  # ⚠ warning but still checked
+                result["deep_pass"] += 1
+            elif "\u25cb" in line:  # ○ empty but checked
+                result["deep_pass"] += 1
+        # Stop after first section header for next entity
+        if re.search(r"#{2,3}\s+(?:Entity|Child|Summit|Ether|Apex|Global|Road)", line) and result["deep_pass"] > 0:
+            first_entity_done = True
+        if first_entity_done and re.search(r"\|\s*D01\b", line):
+            break  # stop counting at second entity
+
+    # Surface scan summary: ✓16 ○6 ✗8
+    surf = re.search(r"\u2713(\d+).*?\u25CB(\d+).*?\u2717(\d+)", text)
+    if surf:
+        result["surface_ok"] = int(surf.group(1))
+        result["surface_empty"] = int(surf.group(2))
+        result["surface_404"] = int(surf.group(3))
+    else:
+        # Alt format: **Summary:** ✓16 ○6 ✗8
+        surf_section = (
+            text[text.find("Surface") :]
+            if "Surface" in text
+            else text[text.find("SURFACE") :]
+            if "SURFACE" in text
+            else ""
+        )
+        surf2 = re.search(r"(\d+).*?(\d+).*?(\d+)", surf_section[:500]) if surf_section else None
+        if surf2:
+            result["surface_ok"] = int(surf2.group(1))
+            result["surface_empty"] = int(surf2.group(2))
+            result["surface_404"] = int(surf2.group(3))
+
+    return result
+
+
 def _parse_p1_findings(text: str) -> list[str]:
     """Extract P1 findings from sweep report."""
     findings = []
@@ -50,11 +163,20 @@ def _parse_p1_findings(text: str) -> list[str]:
             line = line.strip().lstrip("-* ").strip()
             if line and line not in findings:
                 findings.append(line)
+    # Also extract from KEY FINDINGS / KEY OBSERVATIONS section (common in v4.0+ reports)
+    findings_section = re.search(
+        r"##\s*KEY\s+(?:FINDINGS|OBSERVATIONS)\s*\n+((?:(?:\d+\.\s+.+|[ \t]*)\n?)+)", text, re.IGNORECASE
+    )
+    if findings_section:
+        for line in findings_section.group(1).strip().split("\n"):
+            line = re.sub(r"^\d+\.\s+", "", line).strip().rstrip("*")
+            if line and line not in findings:
+                findings.append(line)
     return findings
 
 
 def _load_sweep_reports() -> dict[str, SweepResult]:
-    """Load and parse all sweep reports, keyed by email."""
+    """Load and parse all sweep reports, keyed by shortcode AND email."""
     results: dict[str, SweepResult] = {}
     if not SWEEP_DIR.exists():
         return results
@@ -63,24 +185,53 @@ def _load_sweep_reports() -> dict[str, SweepResult]:
         if f.name == "README.md":
             continue
         text = f.read_text(encoding="utf-8", errors="replace")
-        # Extract email
-        email_match = re.search(r"\*\*Account:\*\*\s*(\S+@\S+)", text)
-        if not email_match:
-            continue
-        email = email_match.group(1).strip()
+
+        # Extract shortcode from filename (e.g. tco_2026-03-11.md → tco)
+        shortcode_from_file = f.stem.split("_")[0].lower() if "_" in f.stem else ""
+
+        # Extract email from Account line (strips backticks, parens)
+        email_match = re.search(r"\*\*Account:\*\*\s*(?:\w+\s*)?[(\`]?(\S+@\S+?)[)\`]?(?:\s|$)", text[:500])
+        email = email_match.group(1).strip().strip("`).") if email_match else ""
+
+        # Extract shortcode from Account line (e.g. "**Account:** summit" or "**Account:** TCO (...)")
+        sc_match = re.search(r"\*\*Account:\*\*\s*(\w+)", text[:500])
+        shortcode_from_text = sc_match.group(1).lower() if sc_match else ""
+
         score = _parse_sweep_score(text)
         date = _parse_sweep_date(text) or ""
         p1s = _parse_p1_findings(text)
+        realism = _parse_realism_score(text)
+        status = _parse_overall_status(text)
+        fixes = _parse_fixes_applied(text)
+        entities = _parse_entities_swept(text)
+        stations = _parse_station_summary(text)
 
-        # Keep the latest report per email (sorted by filename)
-        existing = results.get(email)
-        if existing is None or date >= existing.date:
-            results[email] = SweepResult(
-                date=date,
-                score=score,
-                report_file=f.name,
-                p1_findings=p1s,
-            )
+        sweep = SweepResult(
+            date=date,
+            score=score,
+            report_file=f.name,
+            p1_findings=p1s,
+            realism_score=realism,
+            overall_status=status,
+            fixes_applied=fixes,
+            entities_swept=entities,
+            **stations,
+        )
+
+        # Store by all possible keys (email, shortcode from file, shortcode from text)
+        keys = set()
+        if email:
+            keys.add(email)
+        if shortcode_from_file:
+            keys.add(f"sc:{shortcode_from_file}")
+        if shortcode_from_text:
+            keys.add(f"sc:{shortcode_from_text}")
+
+        for key in keys:
+            existing = results.get(key)
+            if existing is None or date >= existing.date:
+                results[key] = sweep
+
     return results
 
 
@@ -149,7 +300,8 @@ def load_accounts(force: bool = False) -> list[Account]:
         ]
 
         # Build sweep result: prefer parsed report, fallback to JSON score
-        sweep = sweep_reports.get(email)
+        shortcode = info.get("shortcode", "")
+        sweep = sweep_reports.get(email) or sweep_reports.get(f"sc:{shortcode.lower()}")
         json_score = _parse_score_from_json(info.get("sweep_score"))
 
         if sweep is None and json_score is not None:

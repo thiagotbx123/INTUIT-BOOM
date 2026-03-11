@@ -15,6 +15,16 @@ class SweepResult(BaseModel):
     score: float | None = None
     report_file: str
     p1_findings: list[str] = []
+    realism_score: int | None = None  # 0-100
+    overall_status: str = ""  # PASS / FAIL / ""
+    fixes_applied: int | None = None
+    entities_swept: int | None = None
+    deep_pass: int = 0
+    deep_blocked: int = 0
+    deep_total: int = 12
+    surface_ok: int = 0
+    surface_empty: int = 0
+    surface_404: int = 0
 
 
 class AltCredential(BaseModel):

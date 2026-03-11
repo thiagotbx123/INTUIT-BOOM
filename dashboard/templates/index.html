@@ -108,6 +108,7 @@
             <th>Dataset</th>
             <th>Entities</th>
             <th>Score</th>
+            <th>Realism</th>
             <th>Last Sweep</th>
             <th>Retool</th>
             <th></th>
@@ -149,6 +150,18 @@
             <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
             <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
             <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
+            <td style="white-space: nowrap;">
+                {% if acct.sweep and acct.sweep.realism_score is not none %}
+                <span style="font-weight: 600; font-size: 12px;
+                    {% if acct.sweep.realism_score >= 80 %}color: var(--green);
+                    {% elif acct.sweep.realism_score >= 60 %}color: var(--yellow, #fbbf24);
+                    {% else %}color: var(--red);{% endif %}">
+                    {{ acct.sweep.realism_score }}
+                </span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
+                {% else %}
+                <span style="color: var(--text-muted);">—</span>
+                {% endif %}
+            </td>
             <td style="white-space: nowrap;">{{ acct.sweep.date if acct.sweep and acct.sweep.date else '—' }}</td>
             <td>
                 {% if acct.retool_env == 'NOT_IN_RETOOL' %}
