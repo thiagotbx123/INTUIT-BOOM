@@ -48,7 +48,11 @@ def load_profiles() -> dict:
     profiles = _load_json(PROFILES_FILE, {})
     # Always ensure default exists and is up-to-date
     current_default = get_default_profile()
-    if "full_sweep" not in profiles or profiles["full_sweep"].get("name") != current_default["name"]:
+    if (
+        "full_sweep" not in profiles
+        or profiles["full_sweep"].get("name") != current_default["name"]
+        or profiles["full_sweep"].get("description") != current_default["description"]
+    ):
         profiles["full_sweep"] = current_default
         _save_json(PROFILES_FILE, profiles)
     # Regenerate built-in profiles if check counts changed (detect stale profiles)

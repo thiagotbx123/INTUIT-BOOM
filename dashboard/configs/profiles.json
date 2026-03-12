@@ -1,7 +1,7 @@
 {
   "full_sweep": {
     "name": "Full Sweep v5.4 Gap Coverage",
-    "description": "12 Deep (84 sub_checks) + 39 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 91 items",
+    "description": "12 Deep (91 sub_checks) + 44 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 96 items",
     "checks": {
       "D01": true,
       "D02": true,
@@ -54,6 +54,11 @@
       "S37": true,
       "S38": true,
       "S39": true,
+      "S40": true,
+      "S41": true,
+      "S42": true,
+      "S43": true,
+      "S44": true,
       "C01": true,
       "C02": true,
       "C03": true,
@@ -78,12 +83,7 @@
       "X04": true,
       "X05": true,
       "X06": true,
-      "X07": true,
-      "S42": true,
-      "S44": true,
-      "S43": true,
-      "S40": true,
-      "S41": true
+      "X07": true
     },
     "fix_tiers": {
       "fix_immediately": true,
