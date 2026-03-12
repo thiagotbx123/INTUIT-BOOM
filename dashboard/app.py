@@ -439,42 +439,54 @@ METODO 3 (consolidated):
 > Nao repita trabalho ja feito.
 """
 
-    md = f"""# SWEEP ORDER — EXECUCAO IMEDIATA
+    md = f"""# ⚠ ANTES DE QUALQUER ACAO — LEIA ISTO ⚠
+
+```
+CHECKPOINT OBRIGATORIO — Execute este comando AGORA, ANTES de login/navegacao/qualquer coisa:
+
+python -c "import json; d=json.loads(open('C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json',encoding='utf-8').read()); p=d.get('progress',{{}}); print('COMPLETED:', p.get('completed_stations',[])); print('FIXES:', p.get('fixes_applied',[])); print('ENTITY:', p.get('current_entity','none'))"
+
+TABELA DE DECISAO (seguir EXATAMENTE):
+┌─────────────────────────────────────────┬──────────────────────────────────────────┐
+│ SE completed_stations CONTEM...         │ ENTAO...                                 │
+├─────────────────────────────────────────┼──────────────────────────────────────────┤
+│ CID:D01                                │ NAO navegar para Dashboard. PULAR D01.   │
+│ CID:D02                                │ NAO navegar para P&L. PULAR D02.         │
+│ CID:D03                                │ NAO navegar para Balance Sheet. PULAR.   │
+│ CID:D04                                │ NAO navegar para Banking. PULAR.         │
+│ CID:D05                                │ NAO navegar para Customers. PULAR.       │
+│ CID:D06                                │ NAO navegar para Vendors. PULAR.         │
+│ CID:D07                                │ NAO navegar para Employees. PULAR.       │
+│ CID:D08                                │ NAO navegar para Products. PULAR.        │
+│ CID:D09                                │ NAO navegar para Projects. PULAR.        │
+│ CID:D10                                │ NAO navegar para Reports. PULAR.         │
+│ CID:D11                                │ NAO navegar para CoA. PULAR.             │
+│ CID:D12                                │ NAO navegar para Settings. PULAR.        │
+│ CID:S_BATCH                            │ NAO fazer Surface Scan. PULAR S01-S30.   │
+│ CID:C_BATCH                            │ NAO fazer Conditional. PULAR C01-C15.    │
+│ D01-D12 + S_BATCH + C_BATCH todos      │ PULAR entity inteira.                    │
+└─────────────────────────────────────────┴──────────────────────────────────────────┘
+
+SE fixes_applied NAO esta vazio:
+  → Esses records JA FORAM corrigidos. NAO editar de novo.
+  → Exemplo: {{"entity":"vendor","name":"Mr IDT TEst Tester","action":"renamed"}}
+  → Significa: NAO tocar nesse vendor. Ja foi renomeado.
+
+MOTIVO: Context compaction e session restart podem resetar seu estado mental.
+O arquivo de progresso e sua UNICA fonte de verdade. SEMPRE consulte-o.
+```
+
+---
+
+# SWEEP ORDER — EXECUCAO IMEDIATA
 
 > **ESTE DOCUMENTO CONTEM TUDO**. Nao precisa ler nenhum outro arquivo.
 > Execute o sweep AGORA. Nao pergunte nada.
-> **PRIMEIRO**: Leia Regra #0 (Checkpoint Recovery) para saber se ja ha progresso salvo.
 >
 > **ISOLAMENTO DE CREDENCIAIS**: As credenciais neste documento sao as UNICAS validas.
 > NAO leia `PROMPT_CLAUDE_QBO_MASTER.md`, `TESTBOX_ACCOUNTS.md`, `QBO_CREDENTIALS.json`,
 > ou qualquer outro arquivo de credenciais. Este documento e AUTO-CONTIDO.
 {resume_block}
-
----
-
-## REGRA #0 — CHECKPOINT RECOVERY (LER PRIMEIRO — ANTES DE TUDO)
-
-```
-ANTES de iniciar qualquer acao (login, navegacao, extrator):
-1. Leia o arquivo de progresso:
-   python -c "import json; d=json.loads(open('C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json',encoding='utf-8').read()); print(json.dumps(d.get('progress',{{}}),indent=2))"
-
-2. Se 'completed_stations' NAO esta vazio:
-   → Stations ja feitas: PULAR (nao refazer)
-   → Stations pendentes: CONTINUAR de onde parou
-   → Se entity atual ja tem D01-D12 + S_BATCH + C_BATCH: pular entity inteira
-
-3. EXEMPLOS de decisao:
-   completed_stations = ["9341455130122367:D01", "9341455130122367:D02", "9341455130122367:D03"]
-   → D01-D03 ja feitos. Comecar em D04 desta entity.
-
-   completed_stations = ["9341455130122367:D01", ..., "9341455130122367:D12", "9341455130122367:S_BATCH"]
-   → Deep + Surface feitos. Fazer C_BATCH e passar para proxima entity.
-
-4. MOTIVO: Context compaction pode resetar seu estado mental.
-   O arquivo de progresso e sua UNICA fonte de verdade sobre o que ja foi feito.
-   SEMPRE consulte-o antes de iniciar ou retomar trabalho.
-```
 
 ## REGRA #1 — VOCE E UM ANALISTA TSA, NAO UM CHECKLIST BOT
 
@@ -542,8 +554,8 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 ```javascript
 () => {{
   const t = document.body.innerText || '';
-  const income = t.match(/Total\\s+Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || t.match(/Gross\\s+Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
-  const expenses = t.match(/Total\\s+Expenses[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
+  const income = t.match(/Total\\s+(?:for\\s+)?Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || t.match(/Gross\\s+(?:for\\s+)?Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
+  const expenses = t.match(/Total\\s+(?:for\\s+)?Expenses[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
   const net = t.match(/Net\\s+(?:Income|Operating\\s+Income|Profit)[\\s\\S]{{0,20}}\\$?([\\-]?[\\d,.]+)/i)?.[1] || 'N/A';
   const neg = t.includes('-$') || /Net\\s+(?:Income|Profit).*-/.test(t);
   const cogs = t.match(/Cost\\s+of\\s+Goods\\s+Sold[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || null;
@@ -551,7 +563,7 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 }}
 ```
 
-> **ATENCAO**: Este extrator busca "Total Income" (nao apenas "Income") para evitar capturar numeros de conta (ex: "4000 Income" retornaria "4000"). Sempre valide que o valor faz sentido (>$10K para mid-market).
+> **ATENCAO**: Este extrator busca "Total Income" ou "Total for Income" (QBO pode usar ambos os formatos dependendo do locale). Valide que o valor faz sentido (>$10K para mid-market). Se retornar N/A, use fallback: `document.querySelectorAll('tr')` e procure a row com "Total" + "Income".
 
 **EXTRATOR 3 — Lista de Entidades (Customers/Vendors/Employees/Products):**
 ```javascript
@@ -574,7 +586,7 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
     lines: lines.length,
     hasData: lines.length > 10,
     has404: /not found|404|page doesn't exist/i.test(t),
-    hasPH: /\\b(TBX|Lorem|Sample|Foo|Bar|TODO)\\b/i.test(t),
+    hasPH: /\\b(TBX|Lorem|Foo|TODO)\\b/i.test(t),
     first5: lines.slice(2, 7).map(l => l.substring(0, 60))
   }});
 }}
@@ -701,10 +713,11 @@ Se JE form travar (IDs dinamicos):
 
 **Procedimento:**
 0. **LIMPAR SESSAO ANTERIOR** (OBRIGATORIO — evita cached login de outra conta):
-   `browser_evaluate` com: `() => {{ document.cookie.split(';').forEach(c => {{ document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.intuit.com'; }}); return 'cookies_cleared'; }}`
-   Em seguida: `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
+   PRIMEIRO: `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
+   DEPOIS: `browser_evaluate` com: `() => {{ try {{ document.cookie.split(';').forEach(c => {{ document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.intuit.com'; }}); return 'cookies_cleared'; }} catch(e) {{ return 'cookie_clear_skipped: ' + e.message; }} }}`
+   Se cookie clear falhar (SecurityError): ignorar e continuar — o login novo sobrescreve a sessao anterior.
    Se aparecer tela de "Welcome back [outro email]" ou auto-login: clicar "Sign in with a different account" ou "Switch account"
-1. `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
+1. (Ja navegado acima) Verificar que esta em `accounts.intuit.com/app/sign-in`
 2. `browser_snapshot` para ver o formulario (UNICO uso permitido de snapshot para login)
 3. `browser_type` no campo de email → clicar next/continue
 4. `browser_type` no campo de password → clicar sign in
@@ -784,10 +797,11 @@ ROTAS FUNCIONAIS NO IES:
 - /app/settings?panel=company — Settings
 
 ROTAS QUE DAO 404 NO IES (NUNCA usar):
-- /app/reportlist
-- /app/reports/profitandloss
-- /app/balance-sheet
-- /app/chart-of-accounts (sem jobId)
+- /app/reportlist → usar /app/standardreports
+- /app/reports/profitandloss → usar sidebar em standardreports
+- /app/balance-sheet → usar sidebar em standardreports
+- /app/chart-of-accounts (sem jobId) → usar /app/chartofaccounts?jobId=accounting
+- /app/company → usar /app/settings?panel=company
 ```
 
 ### PROTOCOLOS DE FIX COMUNS (referencia rapida)
@@ -872,6 +886,10 @@ Refaca com snippets ainda menores (30 chars).
 ## 5. CONDITIONAL ({len(cond)} habilitados)
 
 {chr(10).join(cond_lines) if cond_lines else "Nenhum conditional check habilitado."}
+
+**BATCHING**: Fazer conditional checks em grupos de 3-4 (NAO todos de uma vez).
+Checkpoint `CID:C_BATCH` somente quando TODOS os conditional checks estiverem feitos.
+Se context compaction acontecer durante conditional: reler LATEST_SWEEP.json e continuar de onde parou.
 
 ## 5.1 CROSS-ENTITY VALIDATION (apenas multi-entity — rodar APOS todas entities individuais)
 
@@ -990,6 +1008,23 @@ open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=True))
 - Se o sweep for interrompido, o dashboard detecta e oferece "Retomar Sweep"
 - Na retomada, voce recebera progresso POR ENTITY — pule apenas as entities/stations ja feitas
 - **NUNCA** registrar station sem CID (formato antigo `D01` nao funciona no resume)
+
+**REGISTRAR FIXES APLICADOS** (OBRIGATORIO — evita duplicacao apos compaction):
+Apos CADA fix (rename, email change, JE, etc.), registre no LATEST_SWEEP.json:
+```bash
+python -c "
+import json; f='C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json'
+d=json.loads(open(f,encoding='utf-8').read())
+p=d.get('progress',{{}})
+fixes=p.get('fixes_applied',[])
+fixes.append({{'entity':'customer','name':'Andrew Allen Test','station':'D05','action':'renamed to Andrew Callahan'}})
+p['fixes_applied']=fixes
+d['progress']=p
+open(f,'w',encoding='utf-8').write(json.dumps(d,indent=2,ensure_ascii=True))
+"
+```
+**ANTES de aplicar qualquer fix**: checar se `fixes_applied` ja contem esse record.
+Se ja contem → PULAR (ja foi corrigido). NAO editar de novo.
 
 ## 11. CHECKLIST PRE-REPORT (OBRIGATORIO)
 
