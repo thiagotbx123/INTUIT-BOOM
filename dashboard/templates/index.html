@@ -119,7 +119,7 @@
             data-shortcode="{{ acct.shortcode }}"
             data-status="{{ acct.score_class }}"
             data-dataset="{{ acct.dataset }}"
-            data-swept="{{ 'yes' if acct.sweep and (acct.sweep.score is not none or acct.sweep.realism_score is not none or acct.sweep.overall_status) else 'no' }}"
+            data-swept="{{ 'yes' if acct.sweep and (acct.sweep.display_health is not none or acct.sweep.overall_status) else 'no' }}"
             onclick="window.location='/account/{{ acct.shortcode }}'">
             <td><span class="dot {{ acct.score_class }}"></span></td>
             <td onclick="event.stopPropagation()">
@@ -149,14 +149,12 @@
             <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
             <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
             <td style="white-space: nowrap;">
-                {% if acct.sweep and acct.sweep.display_realism is not none %}
+                {% if acct.sweep and acct.sweep.display_health is not none %}
                 <span style="font-weight: 600; font-size: 13px;
-                    {% if acct.sweep.display_realism >= 80 %}color: var(--green);
-                    {% elif acct.sweep.display_realism >= 60 %}color: var(--yellow, #fbbf24);
+                    {% if acct.sweep.display_health >= 80 %}color: var(--green);
+                    {% elif acct.sweep.display_health >= 60 %}color: var(--yellow, #fbbf24);
                     {% else %}color: var(--red);{% endif %}">
-                    {{ acct.sweep.display_realism }}</span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
-                {% elif acct.sweep and acct.sweep.score is not none %}
-                <span class="score {{ acct.score_class }}">{{ acct.score_display }}</span><span style="color: var(--text-muted); font-size: 10px;">/10</span>
+                    {{ acct.sweep.display_health }}</span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
                 {% else %}
                 <span style="color: var(--text-muted);">—</span>
                 {% endif %}

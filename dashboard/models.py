@@ -26,18 +26,17 @@ class SweepResult(BaseModel):
     surface_empty: int = 0
     surface_404: int = 0
 
-    # Display boost: +2 on /10 scale (cap 10), +20 on /100 scale (cap 100)
     @property
-    def display_score(self) -> float | None:
-        if self.score is None:
-            return None
-        return min(self.score + 2.0, 10.0)
+    def display_health(self) -> int | None:
+        """Unified /100 score for display. Applies +20 visual boost (cap 100).
 
-    @property
-    def display_realism(self) -> int | None:
-        if self.realism_score is None:
-            return None
-        return min(self.realism_score + 20, 100)
+        Priority: realism_score (native /100) > score (converted /10 → /100).
+        """
+        if self.realism_score is not None:
+            return min(self.realism_score + 20, 100)
+        if self.score is not None:
+            return min(int(self.score * 10) + 20, 100)
+        return None
 
 
 class AltCredential(BaseModel):
@@ -81,8 +80,8 @@ class Account(BaseModel):
 
     @property
     def score_display(self) -> str:
-        if self.sweep and self.sweep.display_score is not None:
-            return str(self.sweep.display_score)
+        if self.sweep and self.sweep.display_health is not None:
+            return str(self.sweep.display_health)
         return "\u2014"
 
     @property
@@ -92,8 +91,6 @@ class Account(BaseModel):
                 return "good"
             if self.sweep.overall_status == "FAIL":
                 return "warn"
-            if self.sweep.display_realism is not None:
-                return "good" if self.sweep.display_realism >= 60 else "warn"
-            if self.sweep.display_score is not None:
-                return "good" if self.sweep.display_score >= 7 else "warn"
+            if self.sweep.display_health is not None:
+                return "good" if self.sweep.display_health >= 70 else "warn"
         return "pending"
