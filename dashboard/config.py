@@ -8,7 +8,9 @@ from sweep_checks import (
     CONTENT_SAFETY,
     DEEP_STATIONS,
     FIX_TIERS,
+    REVALIDATION_RULES,
     SURFACE_SCAN,
+    get_all_checks,
     get_default_profile,
 )
 
@@ -37,9 +39,11 @@ def _save_json(path: Path, data):
 def load_profiles() -> dict:
     """Load saved sweep profiles."""
     profiles = _load_json(PROFILES_FILE, {})
-    # Always ensure default exists
-    if "full_sweep" not in profiles:
-        profiles["full_sweep"] = get_default_profile()
+    # Always ensure default exists and is up-to-date
+    current_default = get_default_profile()
+    if "full_sweep" not in profiles or profiles["full_sweep"].get("name") != current_default["name"]:
+        profiles["full_sweep"] = current_default
+        _save_json(PROFILES_FILE, profiles)
     if "quick_sweep" not in profiles:
         profiles["quick_sweep"] = {
             "name": "Quick Sweep",
@@ -66,6 +70,33 @@ def load_profiles() -> dict:
             "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
             "realism_scoring": False,
         }
+    # Reconcile all profiles — add any new checks/content_safety that code defines but JSON doesn't have
+    all_check_ids = {c["id"] for c in get_all_checks()}
+    all_cs_ids = {c["id"] for c in CONTENT_SAFETY}
+    all_rv_ids = {r["id"] for r in REVALIDATION_RULES}
+    dirty = False
+    for key, prof in profiles.items():
+        # Add missing check IDs (default True for full_sweep, False for others)
+        for cid in all_check_ids:
+            if cid not in prof.get("checks", {}):
+                prof.setdefault("checks", {})[cid] = key == "full_sweep"
+                dirty = True
+        # Add missing content safety IDs (default True for all profiles)
+        for csid in all_cs_ids:
+            if csid not in prof.get("content_safety", {}):
+                prof.setdefault("content_safety", {})[csid] = True
+                dirty = True
+        # Add revalidation if missing
+        if "revalidation" not in prof:
+            prof["revalidation"] = {rid: True for rid in all_rv_ids}
+            dirty = True
+        else:
+            for rid in all_rv_ids:
+                if rid not in prof["revalidation"]:
+                    prof["revalidation"][rid] = True
+                    dirty = True
+    if dirty:
+        _save_json(PROFILES_FILE, profiles)
     return profiles
 
 

@@ -1,7 +1,7 @@
 {
   "full_sweep": {
-    "name": "Full Sweep v4.0",
-    "description": "12 Deep + 30 Surface + 15 Conditional = 57 checks",
+    "name": "Full Sweep v5.1 Enhanced",
+    "description": "12 Deep + 30 Surface + 15 Conditional + 6 Cross-Entity + 9 Content Safety + 6 Revalidation = 78 checks",
     "checks": {
       "D01": true,
       "D02": true,
@@ -59,7 +59,13 @@
       "C12": true,
       "C13": true,
       "C14": true,
-      "C15": true
+      "C15": true,
+      "X01": true,
+      "X02": true,
+      "X03": true,
+      "X04": true,
+      "X05": true,
+      "X06": true
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -74,7 +80,16 @@
       "CS5": true,
       "CS6": true,
       "CS7": true,
-      "CS8": true
+      "CS8": true,
+      "CS9": true
+    },
+    "revalidation": {
+      "RV01": true,
+      "RV02": true,
+      "RV03": true,
+      "RV04": true,
+      "RV05": true,
+      "RV06": true
     },
     "realism_scoring": true
   },
@@ -138,7 +153,13 @@
       "C12": false,
       "C13": false,
       "C14": false,
-      "C15": false
+      "C15": false,
+      "X06": false,
+      "X02": false,
+      "X01": false,
+      "X04": false,
+      "X05": false,
+      "X03": false
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -153,9 +174,18 @@
       "CS5": true,
       "CS6": true,
       "CS7": true,
-      "CS8": true
+      "CS8": true,
+      "CS9": true
     },
-    "realism_scoring": false
+    "realism_scoring": false,
+    "revalidation": {
+      "RV05": true,
+      "RV03": true,
+      "RV01": true,
+      "RV02": true,
+      "RV06": true,
+      "RV04": true
+    }
   },
   "surface_only": {
     "name": "Surface Only",
@@ -217,7 +247,13 @@
       "C12": false,
       "C13": false,
       "C14": false,
-      "C15": false
+      "C15": false,
+      "X06": false,
+      "X02": false,
+      "X01": false,
+      "X04": false,
+      "X05": false,
+      "X03": false
     },
     "fix_tiers": {
       "fix_immediately": false,
@@ -232,8 +268,17 @@
       "CS5": true,
       "CS6": true,
       "CS7": true,
-      "CS8": true
+      "CS8": true,
+      "CS9": true
     },
-    "realism_scoring": false
+    "realism_scoring": false,
+    "revalidation": {
+      "RV05": true,
+      "RV03": true,
+      "RV01": true,
+      "RV02": true,
+      "RV06": true,
+      "RV04": true
+    }
   }
 }

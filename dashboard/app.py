@@ -213,6 +213,18 @@ def _get_sector_expectations(dataset):
     return expectations.get(dataset, expectations.get("construction", ""))
 
 
+def _build_cross_entity_block():
+    """Build the cross-entity validation block for SWEEP_ORDER.md."""
+    from sweep_checks import CROSS_ENTITY_CHECKS
+
+    lines = []
+    for x in CROSS_ENTITY_CHECKS:
+        items = "\n".join(f"  - {item}" for item in x["what_to_check"])
+        refs = ", ".join(x.get("cross_refs", []))
+        lines.append(f"**{x['id']} — {x['name']}**\n{x['description']}\n{items}\nCross-ref: {refs}\n")
+    return "\n".join(lines)
+
+
 def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, surface, cond, resume_from=None):
     """Generate a comprehensive SWEEP_ORDER.md the new Claude session can follow.
 
@@ -256,13 +268,26 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
         if s.get("enrichment"):
             enrich_items = "\n".join(f"  - {item}" for item in s["enrichment"])
             enrich_block = f"**ENRIQUECER** (proativo — nao espere erro, MELHORE o conteudo):\n{enrich_items}\n"
+        # Build optional sub_checks section (analytical deep-dive questions)
+        sub_block = ""
+        if s.get("sub_checks"):
+            sub_items = "\n".join(f"  - {item}" for item in s["sub_checks"])
+            sub_block = (
+                f"**ANALISE CONTEXTUAL** (responder CADA pergunta usando seu conhecimento do setor):\n{sub_items}\n"
+            )
+        # Build optional cross_refs section
+        xref_block = ""
+        if s.get("cross_refs"):
+            xref_block = f"**CROSS-REF**: Dados desta estacao conectam com {', '.join(s['cross_refs'])}. Anotar valores-chave para comparar depois.\n"
         deep_lines.append(
             f"### {s['id']} — {s['name']}\n"
             f"**Route**: `{s['route']}`\n"
             f"**VER** (ler via EXTRATOR JS):\n{check_items}\n"
             f"{drill_block}"
+            f"{sub_block}"
             f"**CORRIGIR** ({'OBRIGATORIO' if s['auto_fix'] and can_fix else 'Reportar apenas'}):\n{fix_items}\n"
             f"{enrich_block}"
+            f"{xref_block}"
             f"**AVANCAR**: Só passe ao proximo quando top records estao completos e contextualizados.\n"
         )
 
@@ -278,11 +303,14 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
         if checks.get(s["id"], True):
             cond_lines.append(f"- **{s['id']}** {s['name']} (if {s['condition']}) → `{s['route']}`")
 
-    # Build content safety
+    # Build content safety (with guidance when available)
     safety_lines = []
     for s in CONTENT_SAFETY:
         if safety.get(s["id"], True):
-            safety_lines.append(f"- **{s['id']}** {s['name']}: `{s['pattern']}` [{s['severity']}]")
+            line = f"- **{s['id']}** {s['name']}: `{s['pattern']}` [{s['severity']}]"
+            if s.get("guidance"):
+                line += f"\n  _{s['guidance']}_"
+            safety_lines.append(line)
 
     # Fix tiers description
     fix_desc = []
@@ -692,7 +720,7 @@ EXPECTATIVAS:
 
 ---
 
-## 3. DEEP STATIONS ({deep} habilitados) — VER/DRILL-IN/CORRIGIR/ENRIQUECER/AVANCAR
+## 3. DEEP STATIONS ({len(deep)} habilitados) — VER/DRILL-IN/CORRIGIR/ENRIQUECER/AVANCAR
 
 {"".join(deep_lines) if deep_lines else "Nenhum deep check habilitado."}
 
@@ -771,7 +799,7 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 {notes_for_sector}
 ```
 
-## 4. SURFACE SCAN ({surface} habilitados) — RAPIDO, SEM CORRECAO
+## 4. SURFACE SCAN ({len(surface)} habilitados) — RAPIDO, SEM CORRECAO
 
 {chr(10).join(surface_lines) if surface_lines else "Nenhum surface check habilitado."}
 
@@ -799,9 +827,26 @@ Se o resultado do run_code estourar o limite, NAO leia o arquivo salvo.
 Refaca com snippets ainda menores (30 chars).
 ```
 
-## 5. CONDITIONAL ({cond} habilitados)
+## 5. CONDITIONAL ({len(cond)} habilitados)
 
 {chr(10).join(cond_lines) if cond_lines else "Nenhum conditional check habilitado."}
+
+## 5.1 CROSS-ENTITY VALIDATION (apenas multi-entity — rodar APOS todas entities individuais)
+
+{"APLICAVEL — " + str(len(acct.companies)) + " entities detectadas. Executar APOS completar sweep de cada entity individual." if is_multi else "NAO APLICAVEL — entity unica, pular esta secao."}
+{_build_cross_entity_block() if is_multi else ""}
+
+## 5.2 REVALIDATION RULES (OBRIGATORIO apos cada fix)
+
+Toda correcao aplicada DEVE ser revalidada ANTES de avancar para a proxima estacao:
+- **RV01** — JE criado → voltar ao P&L e confirmar Net Income mudou. Se nao mudou, data do JE esta fora do periodo. Ajustar para 1o do mes atual.
+- **RV02** — Nome renomeado → voltar a lista e confirmar novo nome aparece. Checar 1 transacao vinculada.
+- **RV03** — Transacoes bancarias categorizadas → verificar que 'For Review' diminuiu. Checar 1 registro.
+- **RV04** — Projeto criado/renomeado → navegar a /app/projects e confirmar existencia + detalhe abre.
+- **RV05** — Campos enriquecidos (notes, terms, email, address) → voltar ao detalhe do record e confirmar campos persistiram.
+- **RV06** — Periodo do report alterado → confirmar report agora mostra dados nao-zero. Se $0 com All Dates, e gap de dados real.
+
+**REGRA**: Se a revalidacao FALHAR, NAO avance. Corrija primeiro.
 
 ## 6. CONTENT SAFETY (aplicar em TODAS as paginas)
 
@@ -809,6 +854,7 @@ Refaca com snippets ainda menores (30 chars).
 
 **Se encontrar CS1 (profanity) ou CS4 (PII)**: PARAR e corrigir IMEDIATAMENTE.
 **Se encontrar CS2 (placeholder como "Foo", "TBX")**: corrigir inline com nome realista.
+**Se encontrar CS9 (spam/nonsense)**: corrigir inline — renomear keyboard mash, truncar strings absurdas.
 
 ## 7. FIX RULES
 
@@ -851,14 +897,14 @@ CONTEXTO: [tipo empresa] ~$[X]M revenue, [N] entities, setor {acct.dataset}
 ...
 [D12] Settings ✓
 
---- SURFACE SCAN ({surface} pages) ---
+--- SURFACE SCAN ({len(surface)} pages) ---
 [S01-S06] ✓✓✓○✗✓
 [S07-S12] ✓✓✓✓✓✗
 [S13-S18] ✓✓✓✓○✓
 [S19-S24] ✓✓✓✓✓✓
-[S25-S{surface:02d}] ✓✓✓✓✓✓
+[S25-S{len(surface):02d}] ✓✓✓✓✓✓
 
---- CONDITIONAL ({cond}) ---
+--- CONDITIONAL ({len(cond)}) ---
 [C01-C04] ✓✓✓✓
 [C05-...] N/A N/A ...
 
