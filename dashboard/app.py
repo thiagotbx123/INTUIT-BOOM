@@ -1052,10 +1052,11 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     latest_file = pending_dir / "LATEST_SWEEP.json"
     latest_file.write_text(json_mod.dumps(sweep_order, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # Count enabled checks
-    deep = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("D") and v)
-    surface = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("S") and v)
-    cond = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("C") and v)
+    # Build enabled check lists for SWEEP_ORDER generation
+    checks = p.get("checks", {})
+    deep = [s for s in DEEP_STATIONS if checks.get(s["id"], True)]
+    surface = [s for s in SURFACE_SCAN if checks.get(s["id"], True)]
+    cond = [s for s in CONDITIONAL_CHECKS if checks.get(s["id"], True)]
 
     # Generate SWEEP_ORDER.md — comprehensive instructions for new Claude session
     _generate_sweep_order_md(pending_dir, acct, p, profile, deep, surface, cond)
@@ -1183,10 +1184,11 @@ async def api_resume_sweep():
     # Extract progress
     progress = data.get("progress", {})
 
-    # Count enabled checks
-    deep = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("D") and v)
-    surface = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("S") and v)
-    cond = sum(1 for k, v in p.get("checks", {}).items() if k.startswith("C") and v)
+    # Build enabled check lists for SWEEP_ORDER generation
+    checks = p.get("checks", {})
+    deep = [s for s in DEEP_STATIONS if checks.get(s["id"], True)]
+    surface = [s for s in SURFACE_SCAN if checks.get(s["id"], True)]
+    cond = [s for s in CONDITIONAL_CHECKS if checks.get(s["id"], True)]
 
     # Regenerate SWEEP_ORDER.md with resume info
     _generate_sweep_order_md(pending_dir, acct, p, profile_key, deep, surface, cond, resume_from=progress)
