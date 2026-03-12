@@ -442,7 +442,8 @@ METODO 3 (consolidated):
     md = f"""# SWEEP ORDER — EXECUCAO IMEDIATA
 
 > **ESTE DOCUMENTO CONTEM TUDO**. Nao precisa ler nenhum outro arquivo.
-> Execute o sweep AGORA. Nao pergunte nada. Comece pelo login.
+> Execute o sweep AGORA. Nao pergunte nada.
+> **PRIMEIRO**: Leia Regra #0 (Checkpoint Recovery) para saber se ja ha progresso salvo.
 >
 > **ISOLAMENTO DE CREDENCIAIS**: As credenciais neste documento sao as UNICAS validas.
 > NAO leia `PROMPT_CLAUDE_QBO_MASTER.md`, `TESTBOX_ACCOUNTS.md`, `QBO_CREDENTIALS.json`,
@@ -450,6 +451,30 @@ METODO 3 (consolidated):
 {resume_block}
 
 ---
+
+## REGRA #0 — CHECKPOINT RECOVERY (LER PRIMEIRO — ANTES DE TUDO)
+
+```
+ANTES de iniciar qualquer acao (login, navegacao, extrator):
+1. Leia o arquivo de progresso:
+   python -c "import json; d=json.loads(open('C:/Users/adm_r/Clients/intuit-boom/dashboard/pending/LATEST_SWEEP.json',encoding='utf-8').read()); print(json.dumps(d.get('progress',{{}}),indent=2))"
+
+2. Se 'completed_stations' NAO esta vazio:
+   → Stations ja feitas: PULAR (nao refazer)
+   → Stations pendentes: CONTINUAR de onde parou
+   → Se entity atual ja tem D01-D12 + S_BATCH + C_BATCH: pular entity inteira
+
+3. EXEMPLOS de decisao:
+   completed_stations = ["9341455130122367:D01", "9341455130122367:D02", "9341455130122367:D03"]
+   → D01-D03 ja feitos. Comecar em D04 desta entity.
+
+   completed_stations = ["9341455130122367:D01", ..., "9341455130122367:D12", "9341455130122367:S_BATCH"]
+   → Deep + Surface feitos. Fazer C_BATCH e passar para proxima entity.
+
+4. MOTIVO: Context compaction pode resetar seu estado mental.
+   O arquivo de progresso e sua UNICA fonte de verdade sobre o que ja foi feito.
+   SEMPRE consulte-o antes de iniciar ou retomar trabalho.
+```
 
 ## REGRA #1 — VOCE E UM ANALISTA TSA, NAO UM CHECKLIST BOT
 
@@ -517,13 +542,16 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 ```javascript
 () => {{
   const t = document.body.innerText || '';
-  const income = t.match(/(?:Total |Net )?Income[\\s:]*\\$?([\\d,.]+)/i)?.[1] || 'N/A';
-  const expenses = t.match(/(?:Total )?Expenses[\\s:]*\\$?([\\d,.]+)/i)?.[1] || 'N/A';
-  const net = t.match(/Net (?:Income|Profit)[\\s:]*\\-?\\$?([\\d,.\\-]+)/i)?.[1] || 'N/A';
-  const neg = t.includes('-$') || t.match(/Net.*-/);
-  return JSON.stringify({{income, expenses, net, negative: !!neg, title: document.title.substring(0,60)}});
+  const income = t.match(/Total\\s+Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || t.match(/Gross\\s+Income[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
+  const expenses = t.match(/Total\\s+Expenses[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || 'N/A';
+  const net = t.match(/Net\\s+(?:Income|Operating\\s+Income|Profit)[\\s\\S]{{0,20}}\\$?([\\-]?[\\d,.]+)/i)?.[1] || 'N/A';
+  const neg = t.includes('-$') || /Net\\s+(?:Income|Profit).*-/.test(t);
+  const cogs = t.match(/Cost\\s+of\\s+Goods\\s+Sold[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1] || null;
+  return JSON.stringify({{income, expenses, net, cogs, negative: !!neg, title: document.title.substring(0,60)}});
 }}
 ```
+
+> **ATENCAO**: Este extrator busca "Total Income" (nao apenas "Income") para evitar capturar numeros de conta (ex: "4000 Income" retornaria "4000"). Sempre valide que o valor faz sentido (>$10K para mid-market).
 
 **EXTRATOR 3 — Lista de Entidades (Customers/Vendors/Employees/Products):**
 ```javascript
@@ -672,6 +700,10 @@ Se JE form travar (IDs dinamicos):
 | Dataset | {acct.dataset} |
 
 **Procedimento:**
+0. **LIMPAR SESSAO ANTERIOR** (OBRIGATORIO — evita cached login de outra conta):
+   `browser_evaluate` com: `() => {{ document.cookie.split(';').forEach(c => {{ document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.intuit.com'; }}); return 'cookies_cleared'; }}`
+   Em seguida: `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
+   Se aparecer tela de "Welcome back [outro email]" ou auto-login: clicar "Sign in with a different account" ou "Switch account"
 1. `browser_navigate` para `https://accounts.intuit.com/app/sign-in`
 2. `browser_snapshot` para ver o formulario (UNICO uso permitido de snapshot para login)
 3. `browser_type` no campo de email → clicar next/continue
@@ -815,15 +847,25 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 
 **SE USAR browser_run_code para batching:**
 ```
-OBRIGATORIO: truncar TODOS os textos para 50 chars max.
+PROIBIDO: browser_run_code com Node.js context (require, fetch, etc.)
+OBRIGATORIO: usar APENAS browser_evaluate com page.evaluate() context
+
+Para batch de 5-6 URLs, faca um loop SEQUENCIAL:
+  Para cada URL:
+    1. browser_navigate(url)
+    2. browser_wait_for(time=3)
+    3. browser_evaluate com EXTRATOR 4
+    4. Anotar resultado (OK/X/EMPTY)
+
+NAO tente fazer batch em um unico browser_run_code.
+browser_evaluate roda no CONTEXTO DA PAGINA (document, window).
+browser_run_code roda no CONTEXTO NODE.JS (nao tem document!).
+
+TRUNCAR TODOS os textos para 50 chars max.
 Retornar APENAS status (OK/X/EMPTY) + snippet curto.
 NAO retornar bodyText.substring(0, 300) — isso estoura o limite.
 
-Exemplo correto:
-  results[id] = {{ status: is404 ? 'X' : hasData ? 'OK' : 'EMPTY', snippet: bodyText.substring(0, 50) }};
-
-NUNCA retornar campos longos como 'title', 'fullText', 'content'.
-Se o resultado do run_code estourar o limite, NAO leia o arquivo salvo.
+Se o resultado estourar o limite, NAO leia o arquivo salvo.
 Refaca com snippets ainda menores (30 chars).
 ```
 
