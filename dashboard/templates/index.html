@@ -13,7 +13,7 @@
     <div class="stat-chip">Accounts <span class="stat-value" id="stat-total">{{ accounts | length }}</span></div>
     <div class="stat-chip">Visible <span class="stat-value" id="stat-visible">{{ accounts | length }}</span></div>
     <div class="stat-chip">Swept <span class="stat-value">{{ accounts | selectattr('sweep') | list | length }}</span></div>
-    <div class="stat-chip">Score &ge;7 <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.score', 'defined') | selectattr('sweep.score', 'ne', none) | selectattr('sweep.score', 'ge', 7) | list | length }}</span></div>
+    <div class="stat-chip">PASS <span class="stat-value">{{ accounts | selectattr('sweep') | selectattr('sweep.overall_status', 'eq', 'PASS') | list | length }}</span></div>
     <div class="stat-chip">Entities <span class="stat-value">{{ total_entities }}</span></div>
 </div>
 
@@ -23,8 +23,8 @@
         <span class="filter-label">Status</span>
         <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
         <button class="filter-btn" data-filter="swept" onclick="setFilter('swept', this)">Swept</button>
-        <button class="filter-btn" data-filter="good" onclick="setFilter('good', this)">Score &ge;7</button>
-        <button class="filter-btn" data-filter="warn" onclick="setFilter('warn', this)">Score &lt;7</button>
+        <button class="filter-btn" data-filter="good" onclick="setFilter('good', this)">PASS</button>
+        <button class="filter-btn" data-filter="warn" onclick="setFilter('warn', this)">Needs Work</button>
         <button class="filter-btn" data-filter="pending" onclick="setFilter('pending', this)">Not Swept</button>
     </div>
     <div class="filter-group">
@@ -107,8 +107,7 @@
             <th>Accesses</th>
             <th>Dataset</th>
             <th>Entities</th>
-            <th>Score</th>
-            <th>Realism</th>
+            <th>Health</th>
             <th>Last Sweep</th>
             <th>Retool</th>
             <th></th>
@@ -120,7 +119,7 @@
             data-shortcode="{{ acct.shortcode }}"
             data-status="{{ acct.score_class }}"
             data-dataset="{{ acct.dataset }}"
-            data-swept="{{ 'yes' if acct.sweep and acct.sweep.score is not none else 'no' }}"
+            data-swept="{{ 'yes' if acct.sweep and (acct.sweep.score is not none or acct.sweep.realism_score is not none or acct.sweep.overall_status) else 'no' }}"
             onclick="window.location='/account/{{ acct.shortcode }}'">
             <td><span class="dot {{ acct.score_class }}"></span></td>
             <td onclick="event.stopPropagation()">
@@ -149,15 +148,15 @@
             </td>
             <td><span class="badge badge-dataset-{{ acct.dataset }}">{{ acct.dataset | replace('_', ' ') }}</span></td>
             <td title="{{ 'Includes Consolidated View' if '+C' in acct.entity_count else '' }}">{{ acct.entity_count }}</td>
-            <td><span class="score {{ acct.score_class }}">{{ acct.score_display }}</span></td>
             <td style="white-space: nowrap;">
                 {% if acct.sweep and acct.sweep.realism_score is not none %}
-                <span style="font-weight: 600; font-size: 12px;
+                <span style="font-weight: 600; font-size: 13px;
                     {% if acct.sweep.realism_score >= 80 %}color: var(--green);
                     {% elif acct.sweep.realism_score >= 60 %}color: var(--yellow, #fbbf24);
                     {% else %}color: var(--red);{% endif %}">
-                    {{ acct.sweep.realism_score }}
-                </span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
+                    {{ acct.sweep.realism_score }}</span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
+                {% elif acct.sweep and acct.sweep.score is not none %}
+                <span class="score {{ acct.score_class }}">{{ acct.score_display }}</span><span style="color: var(--text-muted); font-size: 10px;">/10</span>
                 {% else %}
                 <span style="color: var(--text-muted);">—</span>
                 {% endif %}

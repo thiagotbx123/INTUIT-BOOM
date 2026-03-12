@@ -146,12 +146,6 @@
             </span>
         </div>
         {% endif %}
-        {% if account.sweep.score is not none %}
-        <div class="card-row">
-            <span class="label">Score</span>
-            <span class="score {{ account.score_class }}">{{ account.sweep.score }}/10</span>
-        </div>
-        {% endif %}
         {% if account.sweep.realism_score is not none %}
         <div class="card-row">
             <span class="label">Realism</span>

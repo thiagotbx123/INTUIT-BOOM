@@ -74,6 +74,13 @@ class Account(BaseModel):
 
     @property
     def score_class(self) -> str:
-        if self.sweep and self.sweep.score is not None:
-            return "good" if self.sweep.score >= 7 else "warn"
+        if self.sweep:
+            if self.sweep.overall_status == "PASS":
+                return "good"
+            if self.sweep.overall_status == "FAIL":
+                return "warn"
+            if self.sweep.realism_score is not None:
+                return "good" if self.sweep.realism_score >= 60 else "warn"
+            if self.sweep.score is not None:
+                return "good" if self.sweep.score >= 7 else "warn"
         return "pending"

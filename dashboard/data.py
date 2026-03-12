@@ -350,11 +350,12 @@ def load_accounts(force: bool = False) -> list[Account]:
         )
         accounts.append(account)
 
-    # Sort: most accessed workspace first, then by score desc
+    # Sort: most accessed workspace first, then by sweep health desc
     accounts.sort(
         key=lambda a: (
             -a.total_accesses,
-            0 if a.sweep and a.sweep.score else 1,
+            0 if a.sweep and (a.sweep.realism_score or a.sweep.score) else 1,
+            -(a.sweep.realism_score if a.sweep and a.sweep.realism_score else 0),
             -(a.sweep.score if a.sweep and a.sweep.score else 0),
             a.label,
         )
