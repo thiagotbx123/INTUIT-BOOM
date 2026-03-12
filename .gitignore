@@ -104,3 +104,46 @@ dashboard/pending/
 
 # Playwright MCP profile
 .playwright-mcp/
+
+# One-off session scripts (root-level automation/test scripts not part of project)
+# These are generated during work sessions and are not reusable code.
+/add_*.py
+/analyze_*.py
+/audit_*.py
+/build_*.py
+/capture_*.py
+/categorize_*.py
+/check_*.py
+/click_*.py
+/complete_*.py
+/create_*.py
+/debug_*.py
+/diag_*.py
+/extract_*.py
+/fetch_*.py
+/fix_*.py
+/full_*.py
+/generate_*.py
+/get_*.py
+/intuit_login*.py
+/login_*.py
+/recapture_*.py
+/run_*.py
+/select_*.py
+/switch_*.py
+/sweep_*.py
+/test_*.py
+/update_*.py
+/wfs_*.py
+/hyperlink_formulas.txt
+/snapshot_*.md
+/terra_snapshot.md
+/sweep_results.json
+
+# Ephemeral data exports
+/data/*.json
+/data/*.py
+/docs/*.json
+
+# Large generated inventories
+knowledge-base/drive-cortex/full_inventory.json
