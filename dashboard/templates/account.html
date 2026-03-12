@@ -146,20 +146,20 @@
             </span>
         </div>
         {% endif %}
-        {% if account.sweep.realism_score is not none %}
+        {% if account.sweep.display_realism is not none %}
         <div class="card-row">
             <span class="label">Realism</span>
             <span class="value" style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-weight: 700; font-size: 16px;
-                    {% if account.sweep.realism_score >= 80 %}color: var(--green);
-                    {% elif account.sweep.realism_score >= 60 %}color: var(--yellow, #fbbf24);
+                    {% if account.sweep.display_realism >= 80 %}color: var(--green);
+                    {% elif account.sweep.display_realism >= 60 %}color: var(--yellow, #fbbf24);
                     {% else %}color: var(--red);{% endif %}">
-                    {{ account.sweep.realism_score }}/100
+                    {{ account.sweep.display_realism }}/100
                 </span>
                 <span style="flex: 1; max-width: 120px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
-                    <span style="display: block; width: {{ account.sweep.realism_score }}%; height: 100%; border-radius: 3px;
-                        {% if account.sweep.realism_score >= 80 %}background: var(--green);
-                        {% elif account.sweep.realism_score >= 60 %}background: var(--yellow, #fbbf24);
+                    <span style="display: block; width: {{ account.sweep.display_realism }}%; height: 100%; border-radius: 3px;
+                        {% if account.sweep.display_realism >= 80 %}background: var(--green);
+                        {% elif account.sweep.display_realism >= 60 %}background: var(--yellow, #fbbf24);
                         {% else %}background: var(--red);{% endif %}">
                     </span>
                 </span>
