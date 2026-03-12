@@ -139,7 +139,7 @@
             <button class="btn btn-sm" onclick="toggleAllChecks('conditional', false)">Disable All</button>
         </div>
     </div>
-    {% set conditions = ['multi_entity', 'construction', 'non_profit', 'advanced'] %}
+    {% set conditions = conditional_checks | map(attribute='condition') | unique | sort %}
     {% for cond in conditions %}
     <div class="condition-group">
         <h4 class="condition-label">{{ cond | replace('_', ' ') | title }}</h4>

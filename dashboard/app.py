@@ -112,18 +112,17 @@ async def account_detail(request: Request, shortcode: str):
 
 
 @app.get("/config", response_class=HTMLResponse)
-async def config_panel(request: Request, profile: str = "full_sweep", account: str = ""):
+async def config_panel(request: Request, profile: str = "", account: str = ""):
     accounts = load_accounts()
     profiles = load_profiles()
 
-    active_profile = profile if profile in profiles else "full_sweep"
-    p = profiles[active_profile]
-
-    # Merge account config overrides
+    # If account is specified and no explicit profile override, use account's saved profile
     acct_cfg = get_account_config(account) if account else {}
-    if acct_cfg.get("profile") and acct_cfg["profile"] in profiles and not profile:
+    if not profile and acct_cfg.get("profile") and acct_cfg["profile"] in profiles:
         active_profile = acct_cfg["profile"]
-        p = profiles[active_profile]
+    else:
+        active_profile = profile if profile and profile in profiles else "full_sweep"
+    p = profiles[active_profile]
 
     return templates.TemplateResponse(
         "config.html",
@@ -157,6 +156,8 @@ async def api_save_profile(request: Request):
         body = await request.json()
     except Exception:
         return JSONResponse({"error": "Invalid JSON body"}, status_code=422)
+    if "key" not in body or "profile" not in body:
+        return JSONResponse({"error": "Missing required fields: key, profile"}, status_code=422)
     save_profile(body["key"], body["profile"])
     return JSONResponse({"status": "ok"})
 
@@ -167,6 +168,8 @@ async def api_save_account(request: Request):
         body = await request.json()
     except Exception:
         return JSONResponse({"error": "Invalid JSON body"}, status_code=422)
+    if "shortcode" not in body or "config" not in body:
+        return JSONResponse({"error": "Missing required fields: shortcode, config"}, status_code=422)
     save_account_config(body["shortcode"], body["config"])
     return JSONResponse({"status": "ok"})
 
@@ -291,17 +294,22 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
             f"**AVANCAR**: Só passe ao proximo quando top records estao completos e contextualizados.\n"
         )
 
-    # Build enabled surface checks
+    # Build enabled surface checks (with enrichment actions when available)
     surface_lines = []
     for s in SURFACE_SCAN:
         if checks.get(s["id"], True):
-            surface_lines.append(f"- **{s['id']}** {s['name']} → `{s['route']}` — {s['description']}")
+            line = f"- **{s['id']}** {s['name']} → `{s['route']}` — {s['description']}"
+            if s.get("auto_fix") and can_fix and s.get("fix_actions"):
+                fix_items = chr(10).join(f"    - {a}" for a in s["fix_actions"])
+                line += f"\n  **ENRIQUECER SE VAZIO:**\n{fix_items}"
+            surface_lines.append(line)
 
     # Build enabled conditional checks
     cond_lines = []
     for s in CONDITIONAL_CHECKS:
         if checks.get(s["id"], True):
-            cond_lines.append(f"- **{s['id']}** {s['name']} (if {s['condition']}) → `{s['route']}`")
+            line = f"- **{s['id']}** {s['name']} (if {s['condition']}) → `{s['route']}` — {s['description']}"
+            cond_lines.append(line)
 
     # Build content safety (with guidance when available)
     safety_lines = []
@@ -462,8 +470,8 @@ TABELA DE DECISAO (seguir EXATAMENTE):
 │ CID:D10                                │ NAO navegar para Reports. PULAR.         │
 │ CID:D11                                │ NAO navegar para CoA. PULAR.             │
 │ CID:D12                                │ NAO navegar para Settings. PULAR.        │
-│ CID:S_BATCH                            │ NAO fazer Surface Scan. PULAR S01-S30.   │
-│ CID:C_BATCH                            │ NAO fazer Conditional. PULAR C01-C15.    │
+│ CID:S_BATCH                            │ NAO fazer Surface Scan. PULAR S01-S{len(SURFACE_SCAN):02d}.  │
+│ CID:C_BATCH                            │ NAO fazer Conditional. PULAR C01-C{len(CONDITIONAL_CHECKS):02d}.   │
 │ D01-D12 + S_BATCH + C_BATCH todos      │ PULAR entity inteira.                    │
 └─────────────────────────────────────────┴──────────────────────────────────────────┘
 
@@ -576,7 +584,7 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 }}
 ```
 
-**EXTRATOR 4 — Surface Scan Generico (S01-S30):**
+**EXTRATOR 4 — Surface Scan Generico (S01-S{len(SURFACE_SCAN):02d}):**
 ```javascript
 () => {{
   const t = document.body.innerText || '';
@@ -661,8 +669,8 @@ SE NAO CONSEGUIU CORRIGIR, explique POR QUE:
 ```
 Entity tipo PARENT:
   → D01 a D12 COMPLETO (todos os Deep Stations habilitados)
-  → S01-S30 Surface Scan completo
-  → C01-C15 Conditional completo
+  → S01-S{len(SURFACE_SCAN):02d} Surface Scan completo
+  → C01-C{len(CONDITIONAL_CHECKS):02d} Conditional completo
 
 Entity tipo CONSOLIDATED:
   → D01 (Dashboard), D02 (P&L), D10 (Reports), D11 (CoA)
@@ -1146,7 +1154,7 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
     env.pop("CLAUDECODE", None)  # Allow spawning Claude from within Claude sessions
 
     # Sanitize label for cmd.exe (strip parens and special chars)
-    safe_label = acct.label.replace("(", "").replace(")", "").replace("&", "").replace("|", "")
+    safe_label = "".join(c for c in acct.label if c.isalnum() or c in " -_.")
     sweep_title = f"QBO Sweep - {safe_label}"
 
     # Write batch file — avoids all quoting issues
@@ -1275,7 +1283,7 @@ async def api_resume_sweep():
     data["resumed_at"] = datetime.datetime.now().isoformat()
 
     # Sanitize label for cmd.exe
-    safe_label = acct.label.replace("(", "").replace(")", "").replace("&", "").replace("|", "")
+    safe_label = "".join(c for c in acct.label if c.isalnum() or c in " -_.")
     sweep_title = f"QBO Sweep - {safe_label}"
 
     # Write batch file
@@ -1284,7 +1292,7 @@ async def api_resume_sweep():
         f"@echo off\n"
         f"title {sweep_title}\n"
         f"cd /d {BASE.parent}\n"
-        f'claude "Retomar sweep interrompido conforme protocolo CLAUDE.md - continuar de onde parou"'
+        f'claude "Retomar sweep interrompido. Read dashboard/pending/SWEEP_ORDER.md and execute from where it left off. Use ONLY the credentials in SWEEP_ORDER.md."'
         f" --permission-mode bypassPermissions\n"
         f"echo.\n"
         f"echo === SWEEP FINALIZADO ===\n"

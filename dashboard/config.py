@@ -23,14 +23,21 @@ ACCOUNT_CONFIGS_FILE = CONFIG_DIR / "account_configs.json"
 
 def _load_json(path: Path, default=None):
     if path.exists():
-        with open(path, encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            # Corrupted JSON — return default to allow auto-regeneration
+            return default if default is not None else {}
     return default if default is not None else {}
 
 
 def _save_json(path: Path, data):
-    with open(path, "w", encoding="utf-8") as f:
+    # Atomic write: write to temp file, then rename to prevent corruption on crash
+    tmp = path.with_suffix(".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+    tmp.replace(path)
 
 
 # --- Profiles ---
@@ -44,27 +51,37 @@ def load_profiles() -> dict:
     if "full_sweep" not in profiles or profiles["full_sweep"].get("name") != current_default["name"]:
         profiles["full_sweep"] = current_default
         _save_json(PROFILES_FILE, profiles)
-    if "quick_sweep" not in profiles:
+    # Regenerate built-in profiles if check counts changed (detect stale profiles)
+    _expected_surface_count = len(SURFACE_SCAN)
+    _qs_stale = (
+        "quick_sweep" in profiles
+        and len([k for k in profiles["quick_sweep"].get("checks", {}) if k.startswith("S")]) < _expected_surface_count
+    )
+    if "quick_sweep" not in profiles or _qs_stale:
         profiles["quick_sweep"] = {
             "name": "Quick Sweep",
             "description": "Core financial health only (D01-D06 + Surface)",
             "checks": {
-                **{f"D{i:02d}": i <= 6 for i in range(1, 13)},
-                **{f"S{i:02d}": True for i in range(1, 31)},
-                **{f"C{i:02d}": False for i in range(1, 16)},
+                **{s["id"]: int(s["id"][1:]) <= 6 for s in DEEP_STATIONS},
+                **{s["id"]: True for s in SURFACE_SCAN},
+                **{s["id"]: False for s in CONDITIONAL_CHECKS},
             },
             "fix_tiers": {"fix_immediately": True, "fix_and_report": False, "never_fix": False},
             "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
             "realism_scoring": False,
         }
-    if "surface_only" not in profiles:
+    _so_stale = (
+        "surface_only" in profiles
+        and len([k for k in profiles["surface_only"].get("checks", {}) if k.startswith("S")]) < _expected_surface_count
+    )
+    if "surface_only" not in profiles or _so_stale:
         profiles["surface_only"] = {
             "name": "Surface Only",
-            "description": "30 surface pages — no corrections, fast scan",
+            "description": "Surface pages — no corrections, fast scan",
             "checks": {
-                **{f"D{i:02d}": False for i in range(1, 13)},
-                **{f"S{i:02d}": True for i in range(1, 31)},
-                **{f"C{i:02d}": False for i in range(1, 16)},
+                **{s["id"]: False for s in DEEP_STATIONS},
+                **{s["id"]: True for s in SURFACE_SCAN},
+                **{s["id"]: False for s in CONDITIONAL_CHECKS},
             },
             "fix_tiers": {"fix_immediately": False, "fix_and_report": False, "never_fix": False},
             "content_safety": {c["id"]: True for c in CONTENT_SAFETY},

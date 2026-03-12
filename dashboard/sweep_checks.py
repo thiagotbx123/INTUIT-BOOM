@@ -9,6 +9,23 @@ Changes from v5.0:
 - Enhanced CONTENT_SAFETY with semantic guidance + CS9 (spam/nonsense)
 - Surface Scan upgraded with `quality_checks` per page
 - All changes are ADDITIVE — existing fields untouched, new fields optional
+
+v5.4 Gap Coverage — 2026-03-12
+Changes from v5.1 (ALL ADDITIVE — zero modification of existing fields):
+- D02: Added D02.9-D02.13 (Report by Class/Location/Project + Expense deep-dive + spread)
+- D04: Added D04.7-D04.8 (transaction description quality + reconcile status)
+- D05: Added D05.7-D05.8 (invoice detail drill-in + payment chain)
+- D06: Added D06.7-D06.8 (bill-to-PO chain + bill detail drill-in)
+- D07: Added D07.5-D07.7 (time entry quality, rates, employee-project coverage)
+- D09: Added D09.6-D09.9 (milestones, tasks, budget tab, change orders)
+- D10: Added D10.4-D10.6 (report filter combos: by class, by project, estimate/PO reports)
+- D11: Added D11.8-D11.9 (classification integrity + coverage validation)
+- S03: Fixed route (POs 404 on IES)
+- S31-S39: 9 new surface checks (Proposals, Contracts, Leads, Time sub-tabs, etc.)
+- S40-S44: 5 new surface checks (Search, Email Preview, Batch Actions, Export, Customer View)
+- C03: Enhanced with IC JE deep-dive guidance
+- C16-C18: 3 new conditional checks (Time Approvals, Change Orders, Project Budgets)
+- X07: New cross-entity check for transaction chain integrity
 """
 
 DEEP_STATIONS = [
@@ -72,6 +89,11 @@ DEEP_STATIONS = [
             "D02.6 — JE Date Validation (CRITICAL): If you create a JE to fix P&L, the JE date MUST fall within the period displayed on the P&L report. Use the 1st of the current month. After saving, NAVIGATE BACK to the P&L and confirm Net Income changed. This is the #1 cause of fix regression (QSP BlueCraft reverted because JE was outside display period).",
             "D02.7 — Income Diversity: Are there 2+ income line items? A single 'Sales' line is weak. Look for service income, product sales, consulting fees — varied revenue tells a richer story.",
             "D02.8 — Negative Line Items: Scan for negative values in Income or positive values in Expenses. These indicate misclassified transactions (revenue recorded as expense or vice versa).",
+            "D02.9 — Report by Class (CRITICAL for Construction): Switch the P&L to 'by Class' view (column dropdown or report variant). If the construction dataset has classifications, EACH class column should show non-zero income AND expenses. If ALL classes show identical numbers or $0, classifications are broken — this is the #1 demo-killer for Construction because SEs always show 'P&L by Class' to demonstrate job costing granularity.",
+            "D02.10 — Report by Location: If multi-entity or location tracking is enabled, switch P&L to 'by Location'. Verify at least 2 locations have data. If only 1 location has all the data, location tracking is effectively useless for the demo.",
+            "D02.11 — Report by Customer/Project: Switch P&L to 'by Customer' or 'by Project'. Verify income is distributed across multiple customers/projects, not concentrated in 1. This is the bridge between P&L and D09 project profitability.",
+            "D02.12 — Expense Deep-Dive: Navigate to /app/expenses. Open the 3 most recent expenses. Verify: (a) vendor/payee is assigned (not blank), (b) category/account is specific (not 'Uncategorized Expense'), (c) description is meaningful (not empty or 'test'), (d) amounts are realistic for the category (e.g., office supplies < $5K, rent = monthly consistent), (e) project assignment exists where applicable. Expenses are half the P&L story — weak expense data undermines the financial narrative.",
+            "D02.13 — Expense Monthly Spread: From the expense list, scan dates. Are expenses distributed across months, or clustered on a few dates? Real businesses have expenses every week. If 80%+ of expenses share the same date, the data looks batch-imported.",
         ],
         "cross_refs": ["D01", "D03", "D08", "D11"],
         "auto_fix": True,
@@ -147,6 +169,8 @@ DEEP_STATIONS = [
             "D04.4 — Connection Health: Are bank connections active or showing errors (Error 103 = auth expired, Error 324 = institution issue)? Note connection age if visible.",
             "D04.5 — QB vs Bank Ratio: Compare QB Balance to Bank Balance for each account. A ratio >10x in either direction or QB negative while Bank positive is an anomaly worth noting — is it reconciliation lag, pending transactions, or data corruption?",
             "D04.6 — Scale Appropriateness: Are bank balances proportional to the business revenue you saw in D02? A $20M money market account in a $900K/year consulting firm is disproportionate. Note it and assess whether it's a platform artifact or genuine data issue.",
+            "D04.7 — Transaction Description Quality (SAMPLE): Open the first bank account tab. Read the descriptions of the 5 most recent transactions. Are they realistic payee names (e.g., 'Home Depot #4521', 'ADP Payroll')? Or generic/empty ('Bank Transfer', '', 'Transaction')? Description quality affects the categorization demo.",
+            "D04.8 — Reconcile Status: Check the 'Reconcile' action for the primary checking account. Has this account EVER been reconciled? If 'Last reconciled: Never', the reconciliation demo is unavailable. Note the last reconciled date if available.",
         ],
         "cross_refs": ["D03", "D05", "D06"],
         "auto_fix": True,
@@ -191,6 +215,8 @@ DEEP_STATIONS = [
             "D05.4 — Customer-Invoice Linkage: Click into top 3 customers. Does their balance match their open invoices? A customer with $50K balance but no invoices has phantom AR.",
             "D05.5 — Invoice Value Diversity: Are invoice amounts varied? If 80%+ of invoices have the exact same amount, the demo looks obviously auto-generated.",
             "D05.6 — Sector Name Coherence: Do customer names fit the industry? A tire shop shouldn't have 'Dr. Smith Pediatrics', and a non-profit shouldn't have 'ACME Heavy Equipment'.",
+            "D05.7 — Invoice Detail Drill-In (SAMPLE): Open 1 random invoice from the list. Verify: (a) line items render correctly, (b) amounts are non-zero and look realistic, (c) customer name matches, (d) project assignment if applicable, (e) status (paid/unpaid/overdue) is visually clear. This is what SEs actually demo — if the detail page looks broken, the demo fails.",
+            "D05.8 — Invoice → Payment Chain: On the opened invoice, check if a payment is linked. If the invoice shows 'Paid', click into the payment record. Does the payment reference the invoice? Is the payment amount correct? Then check if the payment flows to a bank deposit. This chain (Invoice → Payment → Deposit → Bank) is the full revenue recognition story.",
         ],
         "cross_refs": ["D03", "D06", "D09"],
         "auto_fix": True,
@@ -236,6 +262,8 @@ DEEP_STATIONS = [
             "D06.4 — AP vs Revenue: Is total AP proportional to annual revenue? AP exceeding annual revenue means the company owes more than it earns per year — a red flag for any demo.",
             "D06.5 — Negative Vendor Balance: Any vendor with a large negative balance (credit > $100K)? This usually means an overpayment or credit memo — note it.",
             "D06.6 — Vendor-Customer Overlap: Does any non-IC entity appear as both vendor AND customer? This is confusing in demos (unless it's an intercompany entity, which is normal).",
+            "D06.7 — Bill → PO Chain (Construction): Open 1 bill that references a PO. Verify: (a) the PO number is visible/linked on the bill, (b) the products on the bill match the PO products (TXN-13131 bug: mismatched products cause ingestion failures), (c) the vendor is the same on both. If no bills reference POs, note as gap — Construction procurement flow is Estimate → PO → Bill.",
+            "D06.8 — Bill Detail Drill-In (SAMPLE): Open 1 random bill from the list. Verify: (a) line items render with descriptions, (b) vendor name correct, (c) amounts realistic, (d) due date and terms present, (e) payment status clear. Bills are the AP counterpart of invoices — they need equal detail quality.",
         ],
         "cross_refs": ["D02", "D03", "D05"],
         "auto_fix": True,
@@ -265,6 +293,9 @@ DEEP_STATIONS = [
             "D07.2 — Overdue Tax Filings: Count the TO DO items. More than 5 overdue filings makes the demo look non-compliant — bad for Intuit's brand. Note the count and types.",
             "D07.3 — Job Title Coherence: Do employee titles make sense for the sector? A construction company with 'VP of Digital Marketing' or a non-profit with 'Drilling Supervisor' is inconsistent.",
             "D07.4 — Active vs Terminated: Is the majority of the workforce active? If 60%+ employees are terminated, the demo looks like a company that laid everyone off.",
+            "D07.5 — Time Entry Spot-Check: Navigate to /app/time (Time Entries tab). Open the most recent week. (a) Are entries present for multiple employees? (b) Are hours per day realistic (2-10h, not 0.01 or 24)? (c) Are entries assigned to projects? (d) Is the billable/non-billable split reasonable (60-90% billable for services/construction)? If time entries are empty, note as gap — time tracking is a core workforce demo.",
+            "D07.6 — Time Entry Rates: On a few time entries, check if hourly rates are populated and realistic for the role. A senior engineer at $5/hr or an intern at $500/hr is a data quality issue. Rates should align with payroll ranges from D07.1.",
+            "D07.7 — Employee-Project Coverage: Are time entries spread across multiple projects, or is 90%+ of time logged to a single project? Even distribution across 3-5 active projects is realistic. All time on 1 project suggests auto-generated test data.",
         ],
         "cross_refs": ["D02"],
         "auto_fix": False,
@@ -347,6 +378,10 @@ DEEP_STATIONS = [
             "D09.3 — Both Sides of Profitability: Each project should ideally have BOTH income (invoices) AND expenses. A project with only income or only expenses cannot demonstrate the profitability tracking feature.",
             "D09.4 — Date Spread: Are all projects started on the same date? Mass-created projects on one date look synthetic. Projects should span 6-18 months.",
             "D09.5 — Customer Linkage: Every project should have a customer assigned. An orphan project (no customer) breaks the narrative of 'who is paying for this work.'",
+            "D09.6 — Milestones Tab (Construction): Click into the top project and navigate to the Milestones tab. Do milestones exist? Are dates sequential (start < end, milestone N before milestone N+1)? Are names realistic for the project type (e.g., 'Foundation', 'Framing', 'Rough-in', 'Final Inspection')? If no milestones exist on any project, note as gap — Construction SEs demo project milestone tracking.",
+            "D09.7 — Tasks Tab: On the same project detail, check the Tasks tab. Do tasks exist? Is there status variety (not all 'draft' or all 'complete')? Are descriptions meaningful? Tasks show project management maturity.",
+            "D09.8 — Budget Tab: Check if the project has a Budget tab. If visible, does it have budget lines? Budget vs Actual is the #1 construction PM demo. If budget tab is empty or missing, note as a significant demo gap — project profitability without a budget baseline is incomplete.",
+            "D09.9 — Change Orders (Construction EXCLUSIVE): Check if any project has change orders visible. Change Orders are THE differentiator feature of QBO Construction edition. If no change orders exist across any project, note as CRITICAL gap for Construction demos. If they exist, verify: (a) linked to correct project, (b) amount and description present, (c) status is clear (approved/pending).",
         ],
         "cross_refs": ["D02", "D05", "D08"],
         "auto_fix": True,
@@ -374,6 +409,9 @@ DEEP_STATIONS = [
             "D10.1 — Core 4 Reports: Run P&L, Balance Sheet, AR Aging, AP Aging. ALL four must show non-zero data with 'All Dates' selected. If any is zeroed, the report is useless for demos.",
             "D10.2 — AR Aging Cross-Check: Compare the AR Aging total with the AR figure from D03 Balance Sheet and the customer balances from D05. Large discrepancies indicate reconciliation gaps.",
             "D10.3 — Report Period Consistency: Are all reports defaulting to sensible periods? Mismatched periods between P&L and AR Aging create confusing demos.",
+            "D10.4 — Report by Class Availability: From the report list, locate 'Profit and Loss by Class' (or equivalent). Open it. Does it render with data? Are class columns populated? If the report exists but shows $0 across all classes, classification data is missing or misconfigured. Cross-ref with D02.9.",
+            "D10.5 — Report by Project: Locate 'Profit and Loss by Project' or 'Project Profitability'. Open it. Does each project show both income and expenses? This is the bridge report that SEs use to demo job costing — if it's empty, the entire project profitability story collapses.",
+            "D10.6 — Estimates & PO Reports: Check if 'Estimate List' and 'Purchase Order List' reports exist and render. If Construction, also check 'Open Purchase Orders by Job'. These procurement reports are secondary but strengthen the end-to-end demo narrative.",
         ],
         "cross_refs": ["D02", "D03", "D05", "D06"],
         "auto_fix": True,
@@ -405,6 +443,8 @@ DEEP_STATIONS = [
             "D11.5 — Duplicate Account Detection: Look for near-duplicate accounts: 'Office Supplies' vs 'Office Supply', 'Travel' vs 'Travel Expenses'. These cause transaction miscategorization and confusing reports.",
             "D11.6 — Income Account Mapping: Cross-check with D02 — do the income accounts here match the revenue line items on the P&L? If the P&L shows 'Services' but the COA has no 'Service Income' account, there's a mapping inconsistency.",
             "D11.7 — BS Fallback Verification: If D03 Balance Sheet was truncated on IES, this is your fallback. Review account balances here and verify the key figures: Total Assets, Total Liabilities, Total Equity. Do they balance?",
+            "D11.8 — Classification Integrity (Construction CRITICAL): Navigate to /app/class (or Dimensions page). Verify: (a) classes exist with sector-appropriate names (Earthwork, Utilities, Concrete, etc. for Construction), (b) classes are ACTIVE (not archived), (c) at least 3 distinct class values exist. Then run a 'P&L by Class' report (cross-ref D02.9/D10.4) — if each class column has data, classifications are properly linked to transactions. If all columns show $0, the classification linkage is broken at the line-item level — this is THE #1 hidden data integrity issue because it's invisible until someone runs a class-based report.",
+            "D11.9 — Classification Coverage: If P&L by Class shows data in some columns but $0 in others, note WHICH classes have gaps. A class with zero transactions means no invoices/expenses were tagged with that class — the data exists but isn't classified. For Construction, all major cost groups should have both income AND expenses.",
         ],
         "cross_refs": ["D02", "D03", "D08"],
         "auto_fix": True,
@@ -462,8 +502,8 @@ SURFACE_SCAN = [
     {
         "id": "S03",
         "name": "Purchase Orders",
-        "route": "/app/purchaseorders",
-        "description": "Page exists, has data, PO count",
+        "route": "/app/purchaseorders (NOTE: returns 404 on IES — access POs via Expenses & Bills nav or search 'Purchase Order')",
+        "description": "Page exists (or accessible via alt nav), has data, PO count. On IES, POs may not have a standalone list page — try Expenses & Bills section or use global search",
     },
     {"id": "S04", "name": "Expenses", "route": "/app/expenses", "description": "Has expenses registered, entry count"},
     {
@@ -471,6 +511,16 @@ SURFACE_SCAN = [
         "name": "Recurring Transactions",
         "route": "/app/recurring",
         "description": "Recurrences configured, entry count",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF EMPTY: Create 5-8 recurring transaction templates via +New > Recurring. Use these sector-appropriate templates:",
+            "  ALL SECTORS: Office Rent (monthly, 1st), Internet/Phone (monthly), Insurance (monthly), Software Subscriptions (monthly)",
+            "  CONSTRUCTION: Equipment Lease (monthly), Safety Supplies (weekly), Waste Disposal (bi-weekly)",
+            "  TIRE SHOP: Tire Inventory Order (weekly), Fleet Maintenance Contract (monthly)",
+            "  NON-PROFIT: Donor Newsletter Mailout (monthly), Grant Reporting (quarterly)",
+            "Set each template as: Type=Bill or Expense, Interval=Monthly, Start=1st of current month, Vendor=pick from existing vendors (D06)",
+            "IMPORTANT: Set templates to 'Reminder' not 'Automatically create' — we want templates to exist without generating phantom transactions",
+        ],
     },
     {
         "id": "S06",
@@ -497,16 +547,58 @@ SURFACE_SCAN = [
         "description": "Configured, filing status, entry count",
     },
     {"id": "S10", "name": "Reconcile", "route": "/app/reconcile", "description": "Accounts reconciled, pending count"},
-    {"id": "S11", "name": "Bank Rules", "route": "/app/banking > Rules tab", "description": "How many rules active"},
+    {
+        "id": "S11",
+        "name": "Bank Rules",
+        "route": "/app/banking > Rules tab",
+        "description": "How many rules active",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF 0 RULES: Create 5-8 bank rules based on TOP recurring vendors/payees from D06 and bank transaction descriptions from D04.",
+            "Rule pattern: IF description CONTAINS 'vendor_name' THEN Categorize as [expense account] + Assign to [vendor]",
+            "Example rules by sector:",
+            "  CONSTRUCTION: 'Home Depot' -> Materials & Supplies / Home Depot, 'ADP' -> Payroll Expenses, 'United Rentals' -> Equipment Rental",
+            "  TIRE SHOP: 'Bridgestone' -> Inventory / Tire Supplier, 'NAPA' -> Auto Parts",
+            "  ALL: 'AT&T/Verizon' -> Phone & Internet, 'Progressive/State Farm' -> Insurance",
+            "Set Auto-add=OFF for all rules (we want the rules to exist for demo, not silently categorize everything)",
+        ],
+    },
     {"id": "S12", "name": "Receipts", "route": "/app/receipts", "description": "Has receipts captured"},
-    {"id": "S13", "name": "Budgets", "route": "/app/budgets", "description": "Has budgets (Construction relevant)"},
+    {
+        "id": "S13",
+        "name": "Budgets",
+        "route": "/app/budgets",
+        "description": "Has budgets (Construction relevant)",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF EMPTY AND CONSTRUCTION/MANUFACTURING: Create 1 annual P&L budget via the Budget wizard.",
+            "Steps: /app/budgets > Create Budget > Type=P&L > Period=Fiscal Year > Format=Monthly > Pre-fill=Actual data",
+            "Using 'Pre-fill from Actual' auto-populates budget lines from real P&L data — this is the fastest way to create a realistic budget",
+            "After creating: verify Budget vs Actual report shows data (Reports > Budget vs Actual). Both Budget and Actual columns should be non-zero",
+            "WARNING: Do NOT create budget if P&L is broken (negative net income from D02). Fix P&L FIRST, then create budget from actuals",
+        ],
+    },
     {
         "id": "S14",
         "name": "Dimensions / Classes",
         "route": "/app/class",
         "description": "How many active, names appropriate",
     },
-    {"id": "S15", "name": "Workflows", "route": "/app/workflows", "description": "Has automations configured"},
+    {
+        "id": "S15",
+        "name": "Workflows",
+        "route": "/app/workflows",
+        "description": "Has automations configured",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF EMPTY: Create 2-3 workflow automations that demonstrate the feature:",
+            "  'Invoice Reminder' — Trigger: Invoice overdue 7 days, Action: Send reminder email",
+            "  'Late Payment Alert' — Trigger: Invoice overdue 30 days, Action: Send notification to admin",
+            "  'Expense Approval' — Trigger: Expense > $500, Action: Require approval",
+            "Steps: /app/workflows > Create Workflow > select trigger > configure action > Activate",
+            "NOTE: If workflow builder page shows 'Coming soon' or feature unavailable, annotate as BLOCKED and skip",
+        ],
+    },
     {
         "id": "S16",
         "name": "Payment Links",
@@ -553,12 +645,31 @@ SURFACE_SCAN = [
         "name": "Tags",
         "route": "/app/tags",
         "description": "Tags feature enabled, has tags defined, tagged transactions exist",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF NO TAGS DEFINED: Create 3-5 tag groups with 2-4 tags each. Sector examples:",
+            "  CONSTRUCTION: Group 'Priority' (Urgent, Standard, Low), Group 'Region' (North, South, East, West)",
+            "  TIRE SHOP: Group 'Service Type' (Rotation, Alignment, Replacement), Group 'Warranty' (In-Warranty, Out-of-Warranty)",
+            "  NON-PROFIT: Group 'Funding Source' (Federal Grant, State Grant, Private Donation), Group 'Fiscal Year' (FY25, FY26)",
+            "Steps: /app/tags > Add tag group > Name > Add tags within group > Save",
+            "After creating: tag 2-3 existing invoices or expenses with the new tags to demonstrate the feature in use",
+        ],
     },
     {
         "id": "S27",
         "name": "Custom Fields",
         "route": "/app/customfields",
         "description": "Custom fields configured, visible on transaction forms",
+        "auto_fix": True,
+        "fix_actions": [
+            "IF EMPTY: Create 2-3 custom fields that demonstrate the feature for this sector:",
+            "  CONSTRUCTION: 'Job Site Address' (text, on Invoice+Estimate+PO), 'Permit Number' (text, on Invoice+Estimate)",
+            "  TIRE SHOP: 'Vehicle VIN' (text, on Invoice+Estimate), 'Fleet ID' (text, on Invoice)",
+            "  NON-PROFIT: 'Grant Number' (text, on Invoice+Expense), 'Program Code' (dropdown, on Invoice+Bill)",
+            "  GENERAL: 'PO Number' (text, on Invoice), 'Department' (dropdown, on Expense+Bill)",
+            "Steps: Settings > Custom Fields > Add field > Name, Type, apply to transaction types > Save",
+            "After creating: open 1 invoice form (+New > Invoice) to verify the custom field appears on the form",
+        ],
     },
     {
         "id": "S28",
@@ -577,6 +688,92 @@ SURFACE_SCAN = [
         "name": "Mileage",
         "route": "/app/mileage",
         "description": "Mileage tracking feature loads, trips logged or module accessible",
+    },
+    # v5.4 additions — Customer Hub sub-features, Time sub-tabs, additional modules
+    {
+        "id": "S31",
+        "name": "Proposals",
+        "route": "/app/proposals (Customer Hub sub-nav)",
+        "description": "Proposals feature exists, page loads, has data or empty state. IES Customer Hub feature",
+    },
+    {
+        "id": "S32",
+        "name": "Contracts",
+        "route": "/app/contracts (Customer Hub sub-nav)",
+        "description": "Contracts feature exists, page loads, has data or empty state. IES Customer Hub feature",
+    },
+    {
+        "id": "S33",
+        "name": "Leads",
+        "route": "/app/leads (Customer Hub sub-nav)",
+        "description": "Leads/CRM feature exists, page loads. Leads pipeline visible. IES Customer Hub feature",
+    },
+    {
+        "id": "S34",
+        "name": "Time — Approvals",
+        "route": "/app/time/approval",
+        "description": "Time approval workflow exists (marked NEW in IES). Can approve/reject time entries. Feature functional",
+    },
+    {
+        "id": "S35",
+        "name": "Time — Schedule",
+        "route": "/app/time/schedule",
+        "description": "Employee scheduling feature loads, schedule grid visible or empty state",
+    },
+    {
+        "id": "S36",
+        "name": "Time — Assignments",
+        "route": "/app/time/assignments",
+        "description": "Employee-project assignments visible, assignments configured or empty state",
+    },
+    {
+        "id": "S37",
+        "name": "Expense Claims",
+        "route": "/app/expenseclaims (or via Expenses & Bills nav)",
+        "description": "Employee expense claim/reimbursement feature. Page loads, claims exist or empty state",
+    },
+    {
+        "id": "S38",
+        "name": "Integration Transactions",
+        "route": "/app/apptransactions (Accounting sub-nav)",
+        "description": "Third-party app transaction sync. Page loads, shows synced transactions or empty state",
+    },
+    {
+        "id": "S39",
+        "name": "Inventory Overview",
+        "route": "/app/inventory",
+        "description": "Inventory module loads, shows stock levels, reorder points. Critical for product-based businesses",
+    },
+    # v5.4b additions — Functional workflow checks (non-page-navigation)
+    {
+        "id": "S40",
+        "name": "Global Search",
+        "route": "Search bar (top nav)",
+        "description": "Type a known customer name in the search bar. Does it return results? Search by invoice number. Search by amount. If search returns no results for data that exists, the search index may be broken",
+    },
+    {
+        "id": "S41",
+        "name": "Invoice Email Preview",
+        "route": "Open any invoice > Send button",
+        "description": "Open 1 invoice, click Send/Preview. Does the email template render? Is company name/logo correct? Is the 'From' address populated (not blank)? Do NOT actually send — just verify the preview renders without error",
+    },
+    {
+        "id": "S42",
+        "name": "Batch Actions",
+        "route": "/app/invoices > select multiple > Batch actions",
+        "description": "On the invoice list, select 2-3 invoices via checkbox. Does a batch action bar appear? Can you see options like 'Send', 'Print', 'Mark as Paid'? Test that the batch bar renders — do NOT execute batch actions",
+    },
+    {
+        "id": "S43",
+        "name": "Report Export",
+        "route": "Any report > Export button",
+        "description": "Open any report (P&L or AR Aging). Click the Export/Print button. Does the export dropdown appear (PDF, Excel, Print)? Click Print Preview — does it render? Do NOT download, just verify the export flow is functional",
+    },
+    {
+        "id": "S44",
+        "name": "Invoice Customer View",
+        "route": "Open any sent invoice > 'View as customer' or shareable link",
+        "description": "If available, check the customer-facing invoice view. Does it render with company branding? Is the payment button present? This is what the customer sees — SEs occasionally demo this external view",
     },
 ]
 
@@ -601,7 +798,7 @@ CONDITIONAL_CHECKS = [
         "name": "IC Transactions",
         "condition": "multi_entity",
         "route": "/app/multi-entity-transactions?jobId=accounting",
-        "description": "Intercompany transactions exist (JEs, allocations)",
+        "description": "Intercompany transactions exist (JEs, allocations). DEEP: Open 1 IC JE — verify debits=credits, descriptions realistic, entity names correct on each line. Check if IC elimination entries exist (should net to ~$0 across group). Note total IC JE count and monthly distribution — IC activity only in 1 month looks artificial.",
     },
     {
         "id": "C04",
@@ -691,6 +888,28 @@ CONDITIONAL_CHECKS = [
         "route": "/app/contractors",
         "description": "Contractor list exists, 1099 tracking active, payments mapped",
     },
+    # v5.4 additions — Construction-specific and IES-specific features
+    {
+        "id": "C16",
+        "name": "Time Approvals Workflow",
+        "condition": "construction",
+        "route": "/app/time/approval",
+        "description": "Time entry approval pipeline: pending approvals exist, can approve/reject, approved hours flow to invoices. Construction requires time tracking with approval before billing",
+    },
+    {
+        "id": "C17",
+        "name": "Change Orders",
+        "condition": "construction",
+        "route": "Project detail > Change Orders tab",
+        "description": "Change orders exist on projects, linked correctly, amounts and descriptions present. THE differentiator feature of QBO Construction — if absent, note as critical gap",
+    },
+    {
+        "id": "C18",
+        "name": "Project Budgets",
+        "condition": "construction",
+        "route": "Project detail > Budget tab",
+        "description": "Project has budget lines, budget vs actual comparison available. Core of construction project management — without budgets, profitability tracking is incomplete",
+    },
 ]
 
 CROSS_ENTITY_CHECKS = [
@@ -775,6 +994,20 @@ CROSS_ENTITY_CHECKS = [
         ],
         "cross_refs": ["D01", "D04"],
     },
+    # v5.4 addition
+    {
+        "id": "X07",
+        "name": "Transaction Chain Integrity",
+        "category": "Cross-Entity Data Quality",
+        "description": "End-to-end transaction chains should be intact within each entity. Estimate→PO→Bill→Payment and Invoice→Payment→Deposit chains validate that the data tells a coherent business story, not just isolated records.",
+        "what_to_check": [
+            "Pick 1 Estimate per entity that has status 'Accepted'. Trace: does a PO reference it? Does a Bill reference that PO? Was the Bill paid?",
+            "Pick 1 Paid Invoice per entity. Trace: does a Payment exist? Does the Payment appear in a Bank Deposit? Does the Deposit match a bank transaction?",
+            "For Construction: pick 1 project with both income and expenses. Can you trace from Estimate → PO → Bill AND from Estimate → Invoice? Both sides of the project lifecycle should be present.",
+            "Note any BROKEN chains (e.g., PO exists but Bill doesn't, Invoice paid but no deposit). These are demo integrity gaps — the SE cannot walk through the full workflow.",
+        ],
+        "cross_refs": ["D05", "D06", "D09", "S01", "S03"],
+    },
 ]
 
 CONTENT_SAFETY = [
@@ -840,6 +1073,11 @@ FIX_TIERS = {
             "Create bank rules (impacts categorization)",
             "Rename products/services (may affect invoices)",
             "Adjust product prices (impacts margins)",
+            "Create recurring transaction templates (Reminder mode only — no auto-generation)",
+            "Create budget from actuals (only if P&L is healthy first)",
+            "Create custom fields (visible on transaction forms)",
+            "Create tag groups and tags (organizational feature)",
+            "Create workflow automations (if available)",
         ],
     },
     "never_fix": {
@@ -918,29 +1156,25 @@ def get_all_checks():
     for c in DEEP_STATIONS:
         checks.append({**c, "tier": "deep", "enabled": True})
     for c in SURFACE_SCAN:
-        checks.append(
-            {
-                **c,
-                "tier": "surface",
-                "category": "Surface Scan",
-                "enabled": True,
-                "what_to_check": [c["description"]],
-                "auto_fix": False,
-                "fix_actions": ["Navigate, wait 3s, evaluate page, annotate status"],
-            }
-        )
+        defaults = {
+            "tier": "surface",
+            "category": "Surface Scan",
+            "enabled": True,
+            "what_to_check": [c["description"]],
+            "auto_fix": False,
+            "fix_actions": ["Navigate, wait 3s, evaluate page, annotate status"],
+        }
+        checks.append({**defaults, **c})
     for c in CONDITIONAL_CHECKS:
-        checks.append(
-            {
-                **c,
-                "tier": "conditional",
-                "category": f"Conditional ({c['condition']})",
-                "enabled": True,
-                "what_to_check": [c["description"]],
-                "auto_fix": False,
-                "fix_actions": ["Annotate if absent/broken"],
-            }
-        )
+        defaults = {
+            "tier": "conditional",
+            "category": f"Conditional ({c['condition']})",
+            "enabled": True,
+            "what_to_check": [c["description"]],
+            "auto_fix": False,
+            "fix_actions": ["Annotate if absent/broken"],
+        }
+        checks.append({**defaults, **c})
     for c in CROSS_ENTITY_CHECKS:
         checks.append(
             {
@@ -957,8 +1191,8 @@ def get_all_checks():
 def get_default_profile():
     """Return the default full sweep profile."""
     return {
-        "name": "Full Sweep v5.1 Enhanced",
-        "description": "12 Deep + 30 Surface + 15 Conditional + 6 Cross-Entity + 9 Content Safety + 6 Revalidation = 78 checks",
+        "name": "Full Sweep v5.4 Gap Coverage",
+        "description": "12 Deep (91 sub_checks) + 44 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 96 items",
         "checks": {c["id"]: True for c in get_all_checks()},
         "fix_tiers": {"fix_immediately": True, "fix_and_report": True, "never_fix": False},
         "content_safety": {c["id"]: True for c in CONTENT_SAFETY},

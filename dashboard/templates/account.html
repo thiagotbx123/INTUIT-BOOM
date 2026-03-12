@@ -28,7 +28,7 @@
             <span class="value masked-field">
                 <span class="masked-value" data-revealed="false" data-real="{{ account.password }}">••••••••••</span>
                 <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
-                <button class="btn btn-sm" onclick="copyToClipboard('{{ account.password }}', this)">Copy</button>
+                <button class="btn btn-sm" onclick="copyToClipboard({{ account.password | tojson }}, this)">Copy</button>
             </span>
         </div>
         <div class="card-row">
@@ -40,7 +40,7 @@
             <span class="value masked-field">
                 <code class="masked-value mono" data-revealed="false" data-real="{{ account.totp_secret }}">••••••••••••••••</code>
                 <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
-                <button class="btn btn-sm" onclick="copyToClipboard('{{ account.totp_secret }}', this)">Copy</button>
+                <button class="btn btn-sm" onclick="copyToClipboard({{ account.totp_secret | tojson }}, this)">Copy</button>
             </span>
         </div>
         {% if account.alt_credentials %}
@@ -56,7 +56,7 @@
                 <span class="value masked-field">
                     <span class="masked-value" data-revealed="false" data-real="{{ alt.password }}">••••••••••</span>
                     <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
-                    <button class="btn btn-sm" onclick="copyToClipboard('{{ alt.password }}', this)">Copy</button>
+                    <button class="btn btn-sm" onclick="copyToClipboard({{ alt.password | tojson }}, this)">Copy</button>
                 </span>
             </div>
             <div class="card-row">
@@ -64,7 +64,7 @@
                 <span class="value masked-field">
                     <code class="masked-value mono" data-revealed="false" data-real="{{ alt.totp_secret }}">••••••••••••••••</code>
                     <button class="btn btn-sm btn-ghost" onclick="toggleMask(this.previousElementSibling)">Show</button>
-                    <button class="btn btn-sm" onclick="copyToClipboard('{{ alt.totp_secret }}', this)">Copy</button>
+                    <button class="btn btn-sm" onclick="copyToClipboard({{ alt.totp_secret | tojson }}, this)">Copy</button>
                 </span>
             </div>
             {% endfor %}
@@ -254,7 +254,7 @@
         Configure Sweep
     </a>
     <button class="btn"
-            onclick="copyToClipboard('{{ account.email }}\n{{ account.password }}', this)">
+            onclick="copyToClipboard({{ (account.email ~ '\n' ~ account.password) | tojson }}, this)">
         Copy Credentials
     </button>
 </div>

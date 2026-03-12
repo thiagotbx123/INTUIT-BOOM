@@ -1,7 +1,7 @@
 {
   "full_sweep": {
-    "name": "Full Sweep v5.1 Enhanced",
-    "description": "12 Deep + 30 Surface + 15 Conditional + 6 Cross-Entity + 9 Content Safety + 6 Revalidation = 78 checks",
+    "name": "Full Sweep v5.4 Gap Coverage",
+    "description": "12 Deep (84 sub_checks) + 39 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 91 items",
     "checks": {
       "D01": true,
       "D02": true,
@@ -45,6 +45,15 @@
       "S28": true,
       "S29": true,
       "S30": true,
+      "S31": true,
+      "S32": true,
+      "S33": true,
+      "S34": true,
+      "S35": true,
+      "S36": true,
+      "S37": true,
+      "S38": true,
+      "S39": true,
       "C01": true,
       "C02": true,
       "C03": true,
@@ -60,12 +69,21 @@
       "C13": true,
       "C14": true,
       "C15": true,
+      "C16": true,
+      "C17": true,
+      "C18": true,
       "X01": true,
       "X02": true,
       "X03": true,
       "X04": true,
       "X05": true,
-      "X06": true
+      "X06": true,
+      "X07": true,
+      "S42": true,
+      "S44": true,
+      "S43": true,
+      "S40": true,
+      "S41": true
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -139,6 +157,20 @@
       "S28": true,
       "S29": true,
       "S30": true,
+      "S31": true,
+      "S32": true,
+      "S33": true,
+      "S34": true,
+      "S35": true,
+      "S36": true,
+      "S37": true,
+      "S38": true,
+      "S39": true,
+      "S40": true,
+      "S41": true,
+      "S42": true,
+      "S43": true,
+      "S44": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -154,12 +186,16 @@
       "C13": false,
       "C14": false,
       "C15": false,
-      "X06": false,
+      "C16": false,
+      "C17": false,
+      "C18": false,
       "X02": false,
+      "X07": false,
+      "X03": false,
       "X01": false,
-      "X04": false,
       "X05": false,
-      "X03": false
+      "X06": false,
+      "X04": false
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -179,17 +215,17 @@
     },
     "realism_scoring": false,
     "revalidation": {
-      "RV05": true,
       "RV03": true,
       "RV01": true,
-      "RV02": true,
+      "RV04": true,
       "RV06": true,
-      "RV04": true
+      "RV05": true,
+      "RV02": true
     }
   },
   "surface_only": {
     "name": "Surface Only",
-    "description": "30 surface pages — no corrections, fast scan",
+    "description": "Surface pages — no corrections, fast scan",
     "checks": {
       "D01": false,
       "D02": false,
@@ -233,6 +269,20 @@
       "S28": true,
       "S29": true,
       "S30": true,
+      "S31": true,
+      "S32": true,
+      "S33": true,
+      "S34": true,
+      "S35": true,
+      "S36": true,
+      "S37": true,
+      "S38": true,
+      "S39": true,
+      "S40": true,
+      "S41": true,
+      "S42": true,
+      "S43": true,
+      "S44": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -248,12 +298,16 @@
       "C13": false,
       "C14": false,
       "C15": false,
-      "X06": false,
+      "C16": false,
+      "C17": false,
+      "C18": false,
       "X02": false,
+      "X07": false,
+      "X03": false,
       "X01": false,
-      "X04": false,
       "X05": false,
-      "X03": false
+      "X06": false,
+      "X04": false
     },
     "fix_tiers": {
       "fix_immediately": false,
@@ -273,12 +327,12 @@
     },
     "realism_scoring": false,
     "revalidation": {
-      "RV05": true,
       "RV03": true,
       "RV01": true,
-      "RV02": true,
+      "RV04": true,
       "RV06": true,
-      "RV04": true
+      "RV05": true,
+      "RV02": true
     }
   }
 }
