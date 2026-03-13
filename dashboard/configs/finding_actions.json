@@ -1,0 +1,102 @@
+{
+  "_doc": "Maps finding text patterns to prescribed actions. First matching pattern wins.",
+  "actions": [
+    {
+      "pattern": "P&L.*negative|P&L.*-\\$|Needs JE|Entity \\d+ P&L",
+      "owner": "auto",
+      "action": "Criar JE via sweep: DR Accounts Receivable / CR Revenue",
+      "blocker": "Entity switch precisa funcionar (URL falhou — tentar click manual no dropdown)",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "TBX references|TBX.*rename",
+      "owner": "auto",
+      "action": "Rename inline durante station checks do sweep (S04, S07, S19, S40)",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "TBX names|IC Transaction.*TBX|IC.*cleanup",
+      "owner": "auto",
+      "action": "Rename IC transaction names durante check C03 no sweep",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "404.*IES|IES.*404|not fixable by sweep|IES routing issue",
+      "owner": "platform",
+      "action": "Limitacao IES — sem workaround. Usar rotas alternativas documentadas no SWEEP_ORDER",
+      "when": "never"
+    },
+    {
+      "pattern": "Negative bank|negative balances.*structural|prior cycle data",
+      "owner": "platform",
+      "action": "Dados estruturais de ciclo anterior. Precisaria nova importacao de bank feed pela Intuit",
+      "when": "backlog"
+    },
+    {
+      "pattern": "IES Routing Pattern.*\\d+/\\d+|surface scan routes.*404",
+      "owner": "platform",
+      "action": "Limitacao conhecida IES — rotas funcionais cobrem core accounting. Documentar 404s",
+      "when": "never"
+    },
+    {
+      "pattern": "CID.*[Ss]wap|CID.*mapping|CID-to-name",
+      "owner": "auto",
+      "action": "Corrigir mapeamento CID em account_configs.json e LATEST_SWEEP.json",
+      "when": "immediate"
+    },
+    {
+      "pattern": "Parent Entity Limitations|expected empty states",
+      "owner": "none",
+      "action": "Comportamento esperado para holding company. Nenhuma acao necessaria",
+      "when": "never"
+    },
+    {
+      "pattern": "Shared COA|same.*Chart of Accounts",
+      "owner": "none",
+      "action": "Confirma setup multi-entity correto. Nenhuma acao necessaria",
+      "when": "never"
+    },
+    {
+      "pattern": "Manufacturing Dataset|construction-specific.*N/A",
+      "owner": "none",
+      "action": "Checks condicionais N/A para este dataset type",
+      "when": "never"
+    },
+    {
+      "pattern": "content safety warning|CS\\d.*WARN|CS\\d.*FLAG",
+      "owner": "auto",
+      "action": "Verificar e corrigir flags de content safety durante proximo sweep",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "config issue|LATEST_SWEEP",
+      "owner": "auto",
+      "action": "Atualizar configuracao no repositorio",
+      "when": "immediate"
+    },
+    {
+      "pattern": "Intuit SE email|intuit\\.com",
+      "owner": "manual",
+      "action": "Pedir remoção de email Intuit SE ao time de plataforma ou editar via QBO Settings",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "Not sure.*Other.*None|business type.*unset|should be set",
+      "owner": "auto",
+      "action": "Configurar business type correto via QBO Settings durante sweep",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "duplicate|duplicat",
+      "owner": "auto",
+      "action": "Identificar e marcar duplicatas como inativas via QBO list management",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "overdue.*invoice|invoices.*overdue",
+      "owner": "auto",
+      "action": "Criar pagamentos ou ajustar datas via sweep para reduzir overdue rate",
+      "when": "next_sweep"
+    }
+  ]
+}

@@ -267,20 +267,38 @@
     <div style="border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; font-size: 12px;">
         <div style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;">What Changed ({{ delta.prev_date }} → {{ delta.curr_date }})</div>
         {% if delta.new_findings %}
-        <div style="margin-bottom: 6px;">
+        <div style="margin-bottom: 8px;">
             {% for f in delta.new_findings %}
-            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
-                {% set fl = f | lower %}
-                {% if 'not fixable' in fl or 'structural' in fl or 'not fix' in fl or 'no workaround' in fl %}
-                <span style="color: var(--text-muted); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(148,163,184,0.15); padding: 1px 5px; border-radius: 4px;">WON'T FIX</span>
-                {% elif 'failed' in fl or 'blocked' in fl or 'could not' in fl or 'couldn\'t' in fl %}
-                <span style="color: #f59e0b; font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(245,158,11,0.12); padding: 1px 5px; border-radius: 4px;">BLOCKED</span>
-                {% elif 'need' in fl or 'should' in fl or 'must' in fl or 'requires' in fl or 'cleanup' in fl %}
-                <span style="color: #fb923c; font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(251,146,60,0.12); padding: 1px 5px; border-radius: 4px;">TODO</span>
-                {% else %}
-                <span style="color: var(--red); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(239,68,68,0.12); padding: 1px 5px; border-radius: 4px;">NEW</span>
+            <div style="margin-bottom: 6px; padding: 6px 8px; background: rgba(0,0,0,0.15); border-radius: 6px; border-left: 3px solid {% if f.owner == 'platform' %}var(--text-muted){% elif f.owner == 'auto' %}{% if f.blocker %}#f59e0b{% else %}var(--accent, #6366f1){% endif %}{% elif f.owner == 'manual' %}#fb923c{% elif f.owner == 'none' %}var(--text-muted){% else %}var(--red){% endif %};">
+                <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 2px;">
+                    {% if f.owner == 'platform' %}
+                    <span style="color: var(--text-muted); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(148,163,184,0.15); padding: 1px 5px; border-radius: 4px;">PLATFORM</span>
+                    {% elif f.owner == 'auto' and f.blocker %}
+                    <span style="color: #f59e0b; font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(245,158,11,0.12); padding: 1px 5px; border-radius: 4px;">BLOCKED</span>
+                    {% elif f.owner == 'auto' %}
+                    <span style="color: var(--accent, #6366f1); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(99,102,241,0.12); padding: 1px 5px; border-radius: 4px;">AUTO-FIX</span>
+                    {% elif f.owner == 'manual' %}
+                    <span style="color: #fb923c; font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(251,146,60,0.12); padding: 1px 5px; border-radius: 4px;">MANUAL</span>
+                    {% elif f.owner == 'none' %}
+                    <span style="color: var(--text-muted); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(148,163,184,0.15); padding: 1px 5px; border-radius: 4px;">INFO</span>
+                    {% else %}
+                    <span style="color: var(--red); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(239,68,68,0.12); padding: 1px 5px; border-radius: 4px;">NEW</span>
+                    {% endif %}
+                    {% if f.when == 'immediate' %}
+                    <span style="color: var(--red); font-size: 9px; font-weight: 600; flex-shrink: 0;">ASAP</span>
+                    {% elif f.when == 'next_sweep' %}
+                    <span style="color: var(--text-muted); font-size: 9px; font-weight: 600; flex-shrink: 0;">NEXT SWEEP</span>
+                    {% elif f.when == 'backlog' %}
+                    <span style="color: var(--text-muted); font-size: 9px; font-weight: 600; flex-shrink: 0;">BACKLOG</span>
+                    {% endif %}
+                    <span style="color: var(--text-secondary);">{{ f.text }}</span>
+                </div>
+                {% if f.action %}
+                <div style="margin-left: 0; margin-top: 3px; font-size: 11px; color: var(--text-muted);">
+                    <span style="opacity: 0.6;">→</span> {{ f.action }}
+                    {% if f.blocker %}<br><span style="opacity: 0.6;">⚠</span> <span style="color: #f59e0b;">{{ f.blocker }}</span>{% endif %}
+                </div>
                 {% endif %}
-                <span style="color: var(--text-secondary);">{{ f }}</span>
             </div>
             {% endfor %}
         </div>
@@ -290,7 +308,7 @@
             {% for f in delta.resolved_findings %}
             <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
                 <span style="color: var(--green); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(52,211,153,0.12); padding: 1px 5px; border-radius: 4px;">FIXED</span>
-                <span style="color: var(--text-secondary); text-decoration: line-through; opacity: 0.7;">{{ f }}</span>
+                <span style="color: var(--text-secondary); text-decoration: line-through; opacity: 0.7;">{{ f.text }}</span>
             </div>
             {% endfor %}
         </div>
@@ -298,9 +316,19 @@
         {% if delta.persistent_findings %}
         <div>
             {% for f in delta.persistent_findings %}
-            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
-                <span style="color: var(--yellow); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(251,191,36,0.12); padding: 1px 5px; border-radius: 4px;">OPEN</span>
-                <span style="color: var(--text-muted);">{{ f }}</span>
+            <div style="margin-bottom: 6px; padding: 6px 8px; background: rgba(0,0,0,0.1); border-radius: 6px; border-left: 3px solid var(--yellow);">
+                <div style="display: flex; align-items: baseline; gap: 6px;">
+                    <span style="color: var(--yellow); font-weight: 700; font-size: 10px; flex-shrink: 0; background: rgba(251,191,36,0.12); padding: 1px 5px; border-radius: 4px;">OPEN</span>
+                    {% if f.when == 'next_sweep' %}
+                    <span style="color: var(--text-muted); font-size: 9px; font-weight: 600; flex-shrink: 0;">NEXT SWEEP</span>
+                    {% endif %}
+                    <span style="color: var(--text-muted);">{{ f.text }}</span>
+                </div>
+                {% if f.action %}
+                <div style="margin-top: 3px; font-size: 11px; color: var(--text-muted);">
+                    <span style="opacity: 0.6;">→</span> {{ f.action }}
+                </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>

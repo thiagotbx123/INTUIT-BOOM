@@ -14,6 +14,41 @@ WORKSPACE_XLSX = Path.home() / "Downloads" / "Intuit_usersworkspace_march32026.x
 
 _cache: dict = {"accounts": [], "ts": 0}
 CACHE_TTL = 60  # seconds
+CONFIGS_DIR = Path(__file__).resolve().parent / "configs"
+
+# Finding actions registry (lazy-loaded)
+_finding_actions: list[dict] | None = None
+
+
+def _load_finding_actions() -> list[dict]:
+    """Load finding action patterns from config."""
+    global _finding_actions
+    if _finding_actions is None:
+        path = CONFIGS_DIR / "finding_actions.json"
+        if path.exists():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            _finding_actions = data.get("actions", [])
+        else:
+            _finding_actions = []
+    return _finding_actions
+
+
+def classify_finding(text: str) -> dict:
+    """Enrich a finding string with action metadata from the registry.
+
+    Returns dict with: text, owner, action, blocker, when.
+    owner: auto | manual | platform | none
+    when: immediate | next_sweep | backlog | never
+    """
+    result = {"text": text, "owner": "", "action": "", "blocker": "", "when": ""}
+    for entry in _load_finding_actions():
+        if re.search(entry["pattern"], text, re.IGNORECASE):
+            result["owner"] = entry.get("owner", "")
+            result["action"] = entry.get("action", "")
+            result["blocker"] = entry.get("blocker", "")
+            result["when"] = entry.get("when", "")
+            break
+    return result
 
 
 def _parse_sweep_score(text: str) -> float | None:
@@ -595,7 +630,7 @@ def compute_sweep_delta(shortcode: str) -> dict | None:
         "fixes_delta": (curr.fixes_applied or 0) - (prev.fixes_applied or 0),
         "deep_pass_delta": curr.deep_pass - prev.deep_pass,
         "surface_ok_delta": curr.surface_ok - prev.surface_ok,
-        "new_findings": list(curr_findings - prev_findings),
-        "resolved_findings": list(prev_findings - curr_findings),
-        "persistent_findings": list(curr_findings & prev_findings),
+        "new_findings": [classify_finding(f) for f in curr_findings - prev_findings],
+        "resolved_findings": [classify_finding(f) for f in prev_findings - curr_findings],
+        "persistent_findings": [classify_finding(f) for f in curr_findings & prev_findings],
     }
