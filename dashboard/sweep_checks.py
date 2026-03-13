@@ -289,6 +289,13 @@ DEEP_STATIONS = [
         "fix_actions": [
             "Edit vendor names, fill email/address/terms/notes",
             "DO NOT create bills (increases COGS, can negativize P&L)",
+            "FIX OVERDUE BILLS (safe — does NOT affect P&L):",
+            "  STEP 1 — CHECK AGING: Open AP Aging Summary report (/app/standardreports > A/P Aging Summary). Note the distribution across buckets: Current, 1-30, 31-60, 61-90, 91+. If 60%+ is in the 91+ bucket, proceed to fix.",
+            "  STEP 2 — CHECK BANK BALANCE: Before paying any bills, check the primary checking account balance (D04 or BS). If balance < $10K, STOP — paying bills will overdraw the account and create a worse problem (negative bank = D03.6 failure). If balance is healthy (>$50K), proceed.",
+            "  STEP 3 — PAY OLDEST BILLS: Navigate to /app/bills. Sort by Due Date ascending (oldest first). For the 5-10 oldest overdue bills (91+ days), click each and select 'Mark as paid' or 'Record payment'. For each payment: (a) Payment date = 3-7 days after the original due date (realistic delay, not today's date), (b) Payment account = primary checking account, (c) Payment method = Check or Bank Transfer. This is accounting-safe: DR Accounts Payable / CR Cash — no P&L impact, only BS movement.",
+            "  STEP 4 — TARGET DISTRIBUTION: After paying 5-10 bills, re-check the AP Aging report. Target: 91+ bucket < 30% of total AP. If still heavy, pay 5 more. Do NOT pay ALL bills — keep 20-40% as Current or 1-30 days (healthy businesses always have some open payables).",
+            "  STEP 5 — RECHECK BANK: After all payments, verify bank balance is still positive and reasonable (not $0.43). If bank dropped below $5K, you paid too many — note in report but do not reverse.",
+            "  STEP 6 — VERIFY VENDOR SCREEN: Navigate to /app/vendors. Top vendors should now show a mix of 'Open balance' (current unpaid) and no balance (fully paid). If a vendor still shows $0 but has overdue bills in AP Aging, the payment didn't link correctly — investigate that specific bill.",
         ],
     },
     {
@@ -807,6 +814,20 @@ SURFACE_SCAN = [
         "name": "Analytics Dashboards",
         "route": "/app/business-intelligence/dashboards (or via BI sidebar nav)",
         "description": "Dashboards gallery loads showing pre-built dashboards (Profitability, etc.). Click into 1 dashboard to verify: (a) charts render with actual data (not empty/placeholder), (b) edit mode accessible via pencil/edit icon, (c) data panel opens allowing chart data source configuration and visualization type selection. Evidence: Keystone Par shows dashboard gallery with Profitability dashboard, functional edit mode, and data panel for chart config with 6 chart types and historical trends. Fall+Winter Release BI feature",
+        "auto_fix": True,
+        "fix_actions": [
+            "STEP 1 — GALLERY: Open /app/business-intelligence/dashboards. Count how many pre-built dashboards exist. If gallery is EMPTY (no dashboards at all), annotate as BLOCKED — the BI module may not be active on this tenant. Stop here.",
+            "STEP 2 — TRIAGE EACH DASHBOARD: Click into each dashboard one by one. For EACH dashboard, classify every chart widget as: DATA (has values), EMPTY (shows $0 or 'No data'), or ERROR (broken/spinner stuck).",
+            "STEP 3 — FIX EMPTY CHARTS (period mismatch): For each EMPTY chart, click the chart's Edit/pencil icon to open the data panel. Check the date range — if set to 'Last 30 days' or 'This Quarter' but the data is older, change to 'This Year' or 'Last 12 Months'. Save. If the chart now shows data, move on. This is the #1 cause of empty dashboards.",
+            "STEP 4 — FIX EMPTY CHARTS (wrong data source): If changing the period didn't help, check the data source in the data panel. Common fixes by dashboard type:",
+            "  PROFITABILITY: Revenue chart empty → data source should map to Income accounts (not 'Sales of Product Income' only — include 'Services' too). Expense chart empty → ensure it maps to Expense + COGS accounts.",
+            "  CASH FLOW: Cash In/Out empty → data source needs Bank + AR + AP accounts. If bank txns are uncategorized (D04), the cash flow chart won't populate — go fix D04 first, then return.",
+            "  SALES: Revenue by Customer empty → requires invoices with customer assignments (D05). Top Products empty → requires invoice line items with product assignments (D08).",
+            "  EXPENSES: Expense by Category empty → requires categorized expenses or bank txns (D04). Vendor Spend empty → requires bills with vendor assignments (D06).",
+            "  PROJECTS: Budget vs Actual empty → requires project budgets (C18/S13). Time by Project empty → requires time entries assigned to projects (D07.5).",
+            "STEP 5 — FIX EMPTY CHARTS (missing upstream data): If the chart is empty because the UNDERLYING data doesn't exist (no invoices, no projects, no time entries), do NOT create fake data here. Instead annotate: 'Dashboard chart [name] empty — requires [invoices/projects/time entries] — see [D05/D09/D07]'. The fix must happen at the source station, not at the dashboard level.",
+            "STEP 6 — VERIFY: After fixing, navigate back to the dashboard gallery and re-open each fixed dashboard. Confirm charts now show data. A dashboard where 80%+ of charts have data is PASS. A dashboard where 50%+ is empty after fixes is NEEDS WORK.",
+        ],
     },
 ]
 
