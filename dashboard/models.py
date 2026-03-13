@@ -39,6 +39,22 @@ class SweepResult(BaseModel):
         return None
 
 
+class SweepHistoryEntry(BaseModel):
+    """Single data point in a sweep history time-series."""
+
+    date: str
+    health: int | None = None
+    realism_score: int | None = None
+    score: float | None = None
+    overall_status: str = ""
+    fixes_applied: int | None = None
+    p1_findings: list[str] = []
+    report_file: str = ""
+    deep_pass: int = 0
+    surface_ok: int = 0
+    surface_404: int = 0
+
+
 class AltCredential(BaseModel):
     email: str
     password: str

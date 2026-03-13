@@ -1308,6 +1308,76 @@ td[title]:not(:empty) { cursor: help; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.14); }
 
+/* ─── Trend Indicators (dashboard table) ─── */
+.trend-indicator {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 4px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    vertical-align: middle;
+    letter-spacing: -0.02em;
+}
+
+.trend-up { color: var(--green); background: var(--green-soft); }
+.trend-down { color: var(--red); background: var(--red-soft); }
+.trend-stable { color: var(--text-muted); }
+
+/* ─── Sparkline (account detail) ─── */
+.sparkline-container { padding: 8px 0; }
+
+.sparkline {
+    width: 100%;
+    max-width: 400px;
+    height: 50px;
+}
+
+/* ─── Delta Badges (account detail) ─── */
+.delta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.delta-badge.delta-up {
+    background: var(--green-soft);
+    border: 1px solid var(--green-border);
+    color: var(--green);
+}
+
+.delta-badge.delta-down {
+    background: var(--red-soft);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+}
+
+.delta-badge.delta-stable {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+}
+
+.delta-arrow { font-size: 16px; font-weight: 700; }
+.delta-value { font-weight: 600; }
+.delta-label { font-size: 11px; color: var(--text-secondary); }
+
+/* ─── History Table (account detail) ─── */
+.history-table {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: none !important;
+}
+
+.history-table th { font-size: 10px; padding: 8px 12px; }
+.history-table td { padding: 8px 12px; font-size: 12px; }
+
 /* ─── Reduced Motion ─── */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

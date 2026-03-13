@@ -155,6 +155,10 @@
                     {% elif acct.sweep.display_health >= 60 %}color: var(--yellow, #fbbf24);
                     {% else %}color: var(--red);{% endif %}">
                     {{ acct.sweep.display_health }}</span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
+                {% if deltas.get(acct.shortcode) %}
+                {% set d = deltas[acct.shortcode] %}
+                <span class="trend-indicator trend-{{ d.direction }}" title="{{ d.prev_date }}: {{ d.prev_health }} → {{ d.curr_date }}: {{ d.curr_health }}">{{ d.arrow }}{% if d.health_delta is not none and d.health_delta != 0 %}{{ d.health_delta | abs }}{% endif %}</span>
+                {% endif %}
                 {% else %}
                 <span style="color: var(--text-muted);">—</span>
                 {% endif %}

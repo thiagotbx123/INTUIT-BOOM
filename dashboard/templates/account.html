@@ -233,6 +233,114 @@
     </div>
 </div>
 
+<!-- Sweep History & Delta -->
+{% if history | length > 1 %}
+<div class="card" style="margin-bottom: 16px">
+    <h3>Sweep History ({{ history | length }} sweeps)</h3>
+
+    {% if delta %}
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;">
+        <div class="delta-badge delta-{{ delta.direction }}">
+            <span class="delta-arrow">{{ delta.arrow }}</span>
+            <span class="delta-value">{% if delta.health_delta is not none and delta.health_delta != 0 %}{{ delta.health_delta | abs }} pts{% else %}stable{% endif %}</span>
+            <span class="delta-label">since {{ delta.prev_date }}</span>
+        </div>
+        {% if delta.prev_status and delta.curr_status and delta.prev_status != delta.curr_status %}
+        <div class="delta-badge delta-{{ 'up' if delta.curr_status == 'PASS' else 'down' }}">
+            <span class="delta-value">{{ delta.prev_status }} → {{ delta.curr_status }}</span>
+        </div>
+        {% endif %}
+        {% if delta.resolved_findings %}
+        <div class="delta-badge delta-up">
+            <span class="delta-value">{{ delta.resolved_findings | length }} resolved</span>
+        </div>
+        {% endif %}
+        {% if delta.new_findings %}
+        <div class="delta-badge delta-down">
+            <span class="delta-value">{{ delta.new_findings | length }} new findings</span>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if sparkline | length > 1 %}
+    <div class="sparkline-container">
+        <svg viewBox="0 0 200 50" preserveAspectRatio="none" class="sparkline">
+            {% set ns = namespace(min_h=100, max_h=0) %}
+            {% for p in sparkline %}
+                {% if p.health < ns.min_h %}{% set ns.min_h = p.health %}{% endif %}
+                {% if p.health > ns.max_h %}{% set ns.max_h = p.health %}{% endif %}
+            {% endfor %}
+            {% set range_h = [ns.max_h - ns.min_h, 1] | max %}
+            {% set step_x = 180.0 / ([sparkline | length - 1, 1] | max) %}
+            {% set ns2 = namespace(pts='') %}
+            {% for p in sparkline %}
+                {% set x = 10 + loop.index0 * step_x %}
+                {% set y = 45 - ((p.health - ns.min_h) / range_h * 40) %}
+                {% set ns2.pts = ns2.pts ~ x | round(1) | string ~ ',' ~ y | round(1) | string ~ ' ' %}
+            {% endfor %}
+            <polyline points="{{ ns2.pts }}" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+            {% for p in sparkline %}
+                {% set x = 10 + loop.index0 * step_x %}
+                {% set y = 45 - ((p.health - ns.min_h) / range_h * 40) %}
+                <circle cx="{{ x | round(1) }}" cy="{{ y | round(1) }}" r="3.5" fill="var(--bg-card)" stroke="var(--green)" stroke-width="1.5">
+                    <title>{{ p.date }}: {{ p.health }}/100</title>
+                </circle>
+            {% endfor %}
+        </svg>
+        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); max-width: 400px;">
+            <span>{{ sparkline[0].date }}</span>
+            <span>{{ sparkline[-1].date }}</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <table class="history-table" style="margin-top: 12px;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Health</th>
+                <th>Status</th>
+                <th>Deep</th>
+                <th>Surface</th>
+                <th>Fixes</th>
+                <th>Report</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in history | reverse %}
+            <tr {% if loop.first %}style="background: rgba(16, 185, 129, 0.04);"{% endif %}>
+                <td>{{ e.date or '—' }}</td>
+                <td>
+                    {% if e.health is not none %}
+                    <span style="font-weight: 600;
+                        {% if e.health >= 80 %}color: var(--green);
+                        {% elif e.health >= 60 %}color: var(--yellow);
+                        {% else %}color: var(--red);{% endif %}">{{ e.health }}</span><span style="color: var(--text-muted); font-size: 10px;">/100</span>
+                    {% else %}—{% endif %}
+                </td>
+                <td>
+                    {% if e.overall_status %}
+                    <span style="font-size: 11px; font-weight: 600;
+                        {% if e.overall_status == 'PASS' %}color: var(--green);{% else %}color: var(--red);{% endif %}">
+                        {{ e.overall_status }}
+                    </span>
+                    {% else %}—{% endif %}
+                </td>
+                <td><span style="color: var(--green);">{{ e.deep_pass }}</span><span style="color: var(--text-muted);">/12</span></td>
+                <td>
+                    <span style="color: var(--green);">{{ e.surface_ok }}</span>
+                    {% if e.surface_404 %}<span style="color: var(--red); font-size: 11px; margin-left: 2px;">({{ e.surface_404 }}x404)</span>{% endif %}
+                </td>
+                <td>{{ e.fixes_applied if e.fixes_applied is not none else '—' }}</td>
+                <td style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);">{{ e.report_file }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
 <!-- Notes -->
 {% if account.notes %}
 <div class="card" style="margin-bottom: 28px">

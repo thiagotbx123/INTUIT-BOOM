@@ -18,7 +18,7 @@ from config import (
     save_account_config,
     save_profile,
 )
-from data import get_account, load_accounts
+from data import compute_sweep_delta, get_account, load_accounts, load_sweep_history
 from sweep_checks import (
     CONDITIONAL_CHECKS,
     CONTENT_SAFETY,
@@ -83,6 +83,12 @@ async def index(request: Request):
     accounts = load_accounts()
     total_entities = sum(len(a.companies) for a in accounts)
     active_sweep = _get_active_sweep()
+    # Compute deltas for trend indicators in the table
+    deltas = {}
+    for acct in accounts:
+        d = compute_sweep_delta(acct.shortcode)
+        if d:
+            deltas[acct.shortcode] = d
     return templates.TemplateResponse(
         "index.html",
         {
@@ -90,6 +96,7 @@ async def index(request: Request):
             "accounts": accounts,
             "total_entities": total_entities,
             "active_sweep": active_sweep,
+            "deltas": deltas,
         },
     )
 
@@ -99,13 +106,28 @@ async def account_detail(request: Request, shortcode: str):
     account = get_account(shortcode)
     if not account:
         return HTMLResponse(f"<h2>Account '{shortcode}' not found</h2>", status_code=404)
+    history = load_sweep_history(shortcode)
+    delta = compute_sweep_delta(shortcode)
+    # Build sparkline data (only entries with health)
+    sparkline = [{"date": e.date, "health": e.health} for e in history if e.health is not None]
     return templates.TemplateResponse(
         "account.html",
         {
             "request": request,
             "account": account,
+            "history": history,
+            "delta": delta,
+            "sparkline": sparkline,
         },
     )
+
+
+@app.get("/api/accounts/{shortcode}/history")
+async def account_history(shortcode: str):
+    """API: return sweep history + delta for an account."""
+    history = load_sweep_history(shortcode)
+    delta = compute_sweep_delta(shortcode)
+    return {"history": [e.model_dump() for e in history], "delta": delta}
 
 
 # ─── Config Panel ───

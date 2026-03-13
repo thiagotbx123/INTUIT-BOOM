@@ -5,7 +5,7 @@ import re
 import time
 from pathlib import Path
 
-from models import Account, AltCredential, Company, SweepResult
+from models import Account, AltCredential, Company, SweepHistoryEntry, SweepResult
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_PATH = BASE_DIR / "knowledge-base" / "access" / "QBO_CREDENTIALS.json"
@@ -17,16 +17,20 @@ CACHE_TTL = 60  # seconds
 
 
 def _parse_sweep_score(text: str) -> float | None:
-    """Extract score from sweep report header (first 30 lines only)."""
+    """Extract score from sweep report (header first, then full text tables)."""
     header = "\n".join(text.split("\n")[:30])
     patterns = [
-        r"\*\*Overall\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
-        r"\*\*Revalidation\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10",
+        r"\*\*Overall\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10(?!\d)",
+        r"\*\*Revalidation\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10(?!\d)",
     ]
     for pat in patterns:
         m = re.search(pat, header, re.IGNORECASE)
         if m:
             return float(m.group(1))
+    # Fallback: table format "| Realism Score | **6.3/10** |"
+    m = re.search(r"\|\s*Realism\s+Score\s*\|\s*\*?\*?(\d+(?:\.\d+)?)/10(?!\d)", text, re.IGNORECASE)
+    if m:
+        return float(m.group(1))
     return None
 
 
@@ -61,7 +65,11 @@ def _parse_overall_status(text: str) -> str:
         if m:
             return m.group(1).upper()
     # Fallback: search full text for table format or summary section
-    for pat in [r"\*\*Overall\s+Score\*\*\s*\|\s*\*\*(PASS|FAIL)\*\*", r"OVERALL\s+RESULT:\s*(PASS|FAIL)"]:
+    for pat in [
+        r"\*\*Overall\s+Score\*\*\s*\|\s*\*\*(PASS|FAIL)\*\*",
+        r"OVERALL\s+RESULT:\s*(PASS|FAIL)",
+        r"\|\s*Overall\s+Score\s*\|\s*\*?\*?(PASS|FAIL)",
+    ]:
         m = re.search(pat, text, re.IGNORECASE)
         if m:
             return m.group(1).upper()
@@ -175,6 +183,49 @@ def _parse_p1_findings(text: str) -> list[str]:
     return findings
 
 
+def _extract_shortcode_from_filename(stem: str) -> str:
+    """Extract shortcode from report filename like 'mid_market_v2_2026-03-06'.
+
+    Gets everything before the date pattern, strips version/session suffixes,
+    and normalizes underscores to hyphens to match credential shortcodes.
+    """
+    m = re.match(r"(.+?)_(\d{4}-\d{2}-\d{2})", stem)
+    if not m:
+        return ""
+    prefix = m.group(1).lower()
+    # Strip known suffixes that are session labels, not part of shortcode
+    prefix = re.sub(r"_(?:v\d+|revalidation|fix_session|PARTIAL)$", "", prefix, flags=re.IGNORECASE)
+    return prefix.replace("_", "-")
+
+
+_email_sc_cache: dict = {"data": {}, "ts": 0}
+
+
+def _get_email_to_shortcode_map() -> dict[str, str]:
+    """Load {email: shortcode} from credentials. Cached for CACHE_TTL."""
+    now = time.time()
+    if _email_sc_cache["data"] and (now - _email_sc_cache["ts"]) < CACHE_TTL:
+        return _email_sc_cache["data"]
+
+    mapping: dict[str, str] = {}
+    try:
+        with open(CREDENTIALS_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        for email, info in data.get("accounts", {}).items():
+            sc = info.get("shortcode", "").lower()
+            if sc:
+                mapping[email.lower()] = sc
+                for alt in info.get("alt_credentials", []):
+                    if alt.get("email"):
+                        mapping[alt["email"].lower()] = sc
+    except Exception:
+        pass
+
+    _email_sc_cache["data"] = mapping
+    _email_sc_cache["ts"] = now
+    return mapping
+
+
 def _load_sweep_reports() -> dict[str, SweepResult]:
     """Load and parse all sweep reports, keyed by shortcode AND email."""
     results: dict[str, SweepResult] = {}
@@ -186,8 +237,8 @@ def _load_sweep_reports() -> dict[str, SweepResult]:
             continue
         text = f.read_text(encoding="utf-8", errors="replace")
 
-        # Extract shortcode from filename (e.g. tco_2026-03-11.md → tco)
-        shortcode_from_file = f.stem.split("_")[0].lower() if "_" in f.stem else ""
+        # Extract shortcode from filename (e.g. mid_market_v2_2026-03-06.md → mid-market)
+        shortcode_from_file = _extract_shortcode_from_filename(f.stem)
 
         # Extract email from Account line (strips backticks, parens)
         email_match = re.search(r"\*\*Account:\*\*\s*(?:\w+\s*)?[(\`]?(\S+@\S+?)[)\`]?(?:\s|$)", text[:500])
@@ -372,3 +423,145 @@ def get_account(shortcode: str) -> Account | None:
         if a.shortcode == shortcode:
             return a
     return None
+
+
+# ─── Sweep History & Delta ───
+
+_history_cache: dict = {"data": {}, "ts": 0}
+
+
+def _build_history_index() -> dict[str, list[SweepHistoryEntry]]:
+    """Parse all sweep reports, group by shortcode key. Cached for CACHE_TTL."""
+    now = time.time()
+    if _history_cache["data"] and (now - _history_cache["ts"]) < CACHE_TTL:
+        return _history_cache["data"]
+
+    index: dict[str, list[SweepHistoryEntry]] = {}
+    if not SWEEP_DIR.exists():
+        return index
+
+    email_sc_map = _get_email_to_shortcode_map()
+
+    for f in sorted(SWEEP_DIR.glob("*.md")):
+        if f.name == "README.md":
+            continue
+        text = f.read_text(encoding="utf-8", errors="replace")
+
+        # Extract shortcode from filename (e.g. mid_market_v2_2026-03-06 → mid-market)
+        shortcode_from_file = _extract_shortcode_from_filename(f.stem)
+
+        # Extract email and resolve to shortcode via credentials
+        email_match = re.search(r"\*\*Account:\*\*\s*.*?([\w.\-]+@[\w.\-]+)", text[:500])
+        email = email_match.group(1).lower() if email_match else ""
+        shortcode_from_email = email_sc_map.get(email, "")
+
+        # Extract shortcode from Account line text (plain word before email)
+        sc_match = re.search(r"\*\*Account:\*\*\s*(\w+)", text[:500])
+        shortcode_from_text = sc_match.group(1).lower() if sc_match else ""
+        # Normalize underscore to hyphen
+        shortcode_from_text = shortcode_from_text.replace("_", "-")
+
+        keys = set()
+        if shortcode_from_email:
+            keys.add(shortcode_from_email)
+        if shortcode_from_file:
+            keys.add(shortcode_from_file)
+        if shortcode_from_text and shortcode_from_text not in (
+            "quickbooks",
+            "mid",
+            "qsp",
+        ):
+            keys.add(shortcode_from_text)
+        if not keys:
+            continue
+
+        # Parse metrics
+        date = _parse_sweep_date(text) or ""
+        score = _parse_sweep_score(text)
+        realism = _parse_realism_score(text)
+        status = _parse_overall_status(text)
+        fixes = _parse_fixes_applied(text)
+        stations = _parse_station_summary(text)
+        p1s = _parse_p1_findings(text)
+
+        # Compute display_health (same formula as SweepResult.display_health)
+        health = None
+        if realism is not None:
+            health = min(realism + 20, 100)
+        elif score is not None:
+            health = min(int(score * 10) + 20, 100)
+
+        entry = SweepHistoryEntry(
+            date=date,
+            health=health,
+            realism_score=realism,
+            score=score,
+            overall_status=status,
+            fixes_applied=fixes,
+            p1_findings=p1s,
+            report_file=f.name,
+            deep_pass=stations["deep_pass"],
+            surface_ok=stations["surface_ok"],
+            surface_404=stations["surface_404"],
+        )
+
+        for key in keys:
+            index.setdefault(key, []).append(entry)
+
+    # Sort each group by date, deduplicate same date (keep higher health)
+    for key in index:
+        index[key].sort(key=lambda e: (e.date, -(e.health or 0)))
+        seen: set[str] = set()
+        unique: list[SweepHistoryEntry] = []
+        for e in index[key]:
+            if e.date not in seen:
+                seen.add(e.date)
+                unique.append(e)
+        index[key] = unique
+
+    _history_cache["data"] = index
+    _history_cache["ts"] = now
+    return index
+
+
+def load_sweep_history(shortcode: str) -> list[SweepHistoryEntry]:
+    """Get all sweep reports for an account, sorted oldest to newest."""
+    index = _build_history_index()
+    return index.get(shortcode.lower(), [])
+
+
+def compute_sweep_delta(shortcode: str) -> dict | None:
+    """Compare last two sweeps for an account. Returns None if <2 sweeps."""
+    history = load_sweep_history(shortcode)
+    if len(history) < 2:
+        return None
+
+    prev, curr = history[-2], history[-1]
+
+    health_delta = None
+    if curr.health is not None and prev.health is not None:
+        health_delta = curr.health - prev.health
+
+    direction = "up" if (health_delta or 0) > 0 else "down" if (health_delta or 0) < 0 else "stable"
+    arrow = "\u2191" if direction == "up" else "\u2193" if direction == "down" else "\u2192"
+
+    prev_findings = set(prev.p1_findings)
+    curr_findings = set(curr.p1_findings)
+
+    return {
+        "prev_date": prev.date,
+        "curr_date": curr.date,
+        "prev_health": prev.health,
+        "curr_health": curr.health,
+        "health_delta": health_delta,
+        "direction": direction,
+        "arrow": arrow,
+        "prev_status": prev.overall_status,
+        "curr_status": curr.overall_status,
+        "fixes_delta": (curr.fixes_applied or 0) - (prev.fixes_applied or 0),
+        "deep_pass_delta": curr.deep_pass - prev.deep_pass,
+        "surface_ok_delta": curr.surface_ok - prev.surface_ok,
+        "new_findings": list(curr_findings - prev_findings),
+        "resolved_findings": list(prev_findings - curr_findings),
+        "persistent_findings": list(curr_findings & prev_findings),
+    }
