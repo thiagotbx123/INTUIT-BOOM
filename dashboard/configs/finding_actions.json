@@ -4,98 +4,98 @@
     {
       "pattern": "P&L.*negative|P&L.*-\\$|Needs JE|Entity \\d+ P&L",
       "owner": "auto",
-      "action": "Criar JE via sweep: DR Accounts Receivable / CR Revenue",
-      "blocker": "Entity switch precisa funcionar (URL falhou — tentar click manual no dropdown)",
+      "action": "Create JE via sweep: DR Accounts Receivable / CR Revenue",
+      "blocker": "Entity switch must work (URL failed — try manual dropdown click)",
       "when": "next_sweep"
     },
     {
       "pattern": "TBX references|TBX.*rename",
       "owner": "auto",
-      "action": "Rename inline durante station checks do sweep (S04, S07, S19, S40)",
+      "action": "Inline rename during sweep station checks (S04, S07, S19, S40)",
       "when": "next_sweep"
     },
     {
       "pattern": "TBX names|IC Transaction.*TBX|IC.*cleanup",
       "owner": "auto",
-      "action": "Rename IC transaction names durante check C03 no sweep",
+      "action": "Rename IC transaction names during C03 check in sweep",
       "when": "next_sweep"
     },
     {
       "pattern": "404.*IES|IES.*404|not fixable by sweep|IES routing issue",
       "owner": "platform",
-      "action": "Limitacao IES — sem workaround. Usar rotas alternativas documentadas no SWEEP_ORDER",
+      "action": "IES limitation — no workaround. Use alternative routes documented in SWEEP_ORDER",
       "when": "never"
     },
     {
       "pattern": "Negative bank|negative balances.*structural|prior cycle data",
       "owner": "platform",
-      "action": "Dados estruturais de ciclo anterior. Precisaria nova importacao de bank feed pela Intuit",
+      "action": "Structural data from prior cycle. Would need new bank feed import by Intuit",
       "when": "backlog"
     },
     {
       "pattern": "IES Routing Pattern.*\\d+/\\d+|surface scan routes.*404",
       "owner": "platform",
-      "action": "Limitacao conhecida IES — rotas funcionais cobrem core accounting. Documentar 404s",
+      "action": "Known IES limitation — working routes cover core accounting. Document 404s",
       "when": "never"
     },
     {
       "pattern": "CID.*[Ss]wap|CID.*mapping|CID-to-name",
       "owner": "auto",
-      "action": "Corrigir mapeamento CID em account_configs.json e LATEST_SWEEP.json",
+      "action": "Fix CID mapping in account_configs.json and LATEST_SWEEP.json",
       "when": "immediate"
     },
     {
       "pattern": "Parent Entity Limitations|expected empty states",
       "owner": "none",
-      "action": "Comportamento esperado para holding company. Nenhuma acao necessaria",
+      "action": "Expected behavior for holding company. No action needed",
       "when": "never"
     },
     {
       "pattern": "Shared COA|same.*Chart of Accounts",
       "owner": "none",
-      "action": "Confirma setup multi-entity correto. Nenhuma acao necessaria",
+      "action": "Confirms correct multi-entity setup. No action needed",
       "when": "never"
     },
     {
       "pattern": "Manufacturing Dataset|construction-specific.*N/A",
       "owner": "none",
-      "action": "Checks condicionais N/A para este dataset type",
+      "action": "Conditional checks N/A for this dataset type",
       "when": "never"
     },
     {
       "pattern": "content safety warning|CS\\d.*WARN|CS\\d.*FLAG",
       "owner": "auto",
-      "action": "Verificar e corrigir flags de content safety durante proximo sweep",
+      "action": "Check and fix content safety flags during next sweep",
       "when": "next_sweep"
     },
     {
       "pattern": "config issue|LATEST_SWEEP",
       "owner": "auto",
-      "action": "Atualizar configuracao no repositorio",
+      "action": "Update configuration in repository",
       "when": "immediate"
     },
     {
       "pattern": "Intuit SE email|intuit\\.com",
       "owner": "manual",
-      "action": "Pedir remoção de email Intuit SE ao time de plataforma ou editar via QBO Settings",
+      "action": "Request Intuit SE email removal from platform team or edit via QBO Settings",
       "when": "next_sweep"
     },
     {
       "pattern": "Not sure.*Other.*None|business type.*unset|should be set",
       "owner": "auto",
-      "action": "Configurar business type correto via QBO Settings durante sweep",
+      "action": "Set correct business type via QBO Settings during sweep",
       "when": "next_sweep"
     },
     {
       "pattern": "duplicate|duplicat",
       "owner": "auto",
-      "action": "Identificar e marcar duplicatas como inativas via QBO list management",
+      "action": "Identify and mark duplicates as inactive via QBO list management",
       "when": "next_sweep"
     },
     {
       "pattern": "overdue.*invoice|invoices.*overdue",
       "owner": "auto",
-      "action": "Criar pagamentos ou ajustar datas via sweep para reduzir overdue rate",
+      "action": "Create payments or adjust dates via sweep to reduce overdue rate",
       "when": "next_sweep"
     }
   ]
