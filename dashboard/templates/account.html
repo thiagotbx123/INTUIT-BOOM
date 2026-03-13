@@ -261,6 +261,43 @@
         </div>
         {% endif %}
     </div>
+
+    <!-- What Changed detail -->
+    {% if delta.new_findings or delta.resolved_findings or delta.persistent_findings %}
+    <div style="border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; font-size: 12px;">
+        <div style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;">What Changed ({{ delta.prev_date }} → {{ delta.curr_date }})</div>
+        {% if delta.new_findings %}
+        <div style="margin-bottom: 6px;">
+            {% for f in delta.new_findings %}
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
+                <span style="color: var(--red); font-weight: 700; font-size: 11px; flex-shrink: 0;">NEW</span>
+                <span style="color: var(--text-secondary);">{{ f }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if delta.resolved_findings %}
+        <div style="margin-bottom: 6px;">
+            {% for f in delta.resolved_findings %}
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
+                <span style="color: var(--green); font-weight: 700; font-size: 11px; flex-shrink: 0;">FIXED</span>
+                <span style="color: var(--text-secondary); text-decoration: line-through; opacity: 0.7;">{{ f }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if delta.persistent_findings %}
+        <div>
+            {% for f in delta.persistent_findings %}
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px;">
+                <span style="color: var(--yellow); font-weight: 700; font-size: 11px; flex-shrink: 0;">OPEN</span>
+                <span style="color: var(--text-muted);">{{ f }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
     {% endif %}
 
     {% if sparkline | length > 1 %}
@@ -335,6 +372,20 @@
                 <td>{{ e.fixes_applied if e.fixes_applied is not none else '—' }}</td>
                 <td style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);">{{ e.report_file }}</td>
             </tr>
+            {% if e.p1_findings %}
+            <tr style="border-top: none;">
+                <td colspan="7" style="padding: 0 12px 8px 24px; border-top: none;">
+                    {% for f in e.p1_findings[:5] %}
+                    <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+                        <span style="color: var(--yellow); margin-right: 4px;">-</span>{{ f }}
+                    </div>
+                    {% endfor %}
+                    {% if e.p1_findings | length > 5 %}
+                    <div style="font-size: 10px; color: var(--text-muted); font-style: italic;">+{{ e.p1_findings | length - 5 }} more</div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>
