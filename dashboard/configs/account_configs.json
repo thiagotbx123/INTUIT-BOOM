@@ -47,5 +47,11 @@
     "notes": "",
     "hidden": false
   },
-  "x": {}
+  "x": {},
+  "keystone-se": {
+    "profile": "full_sweep",
+    "overrides": {},
+    "notes": "",
+    "hidden": false
+  }
 }

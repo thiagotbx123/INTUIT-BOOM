@@ -180,6 +180,40 @@ def _parse_p1_findings(text: str) -> list[str]:
             line = re.sub(r"^\d+\.\s+", "", line).strip().rstrip("*")
             if line and line not in findings:
                 findings.append(line)
+    # Extract from "FIXES NEEDED" section (Summit v4.0+ format)
+    fixes_needed = re.search(r"##\s*FIXES\s+NEEDED[^\n]*\n+((?:\d+\.\s+.+\n?)+)", text, re.IGNORECASE)
+    if fixes_needed:
+        for line in fixes_needed.group(1).strip().split("\n"):
+            line = re.sub(r"^\d+\.\s+", "", line).strip().rstrip("*")
+            if line and line not in findings:
+                findings.append(line)
+    # Extract inline ⚠ FINDING markers from station checks (e.g. "[D02] P&L ⚠ FINDING")
+    for m in re.finditer(r"\*\*\[([A-Z]\d+)\]\s*([^*]+)\*\*\s*⚠\s*FINDING", text):
+        tag = f"[{m.group(1)}] {m.group(2).strip()}"
+        # Grab the first detail bullet after the finding marker
+        pos = m.end()
+        detail_match = re.search(r"\n\s*[-*]\s*\*\*(.+?)\*\*", text[pos : pos + 200])
+        finding = f"{tag}: {detail_match.group(1).strip()}" if detail_match else tag
+        if finding not in findings:
+            findings.append(finding)
+    # Extract Content Safety FLAG/WARN from CS tables (e.g. "| CS6 | ... | FLAG | ...")
+    for m in re.finditer(r"\|\s*(CS\d+)\s*\|[^|]*\|\s*(?:FLAG|WARN)\s*\|\s*([^|]+)\|", text):
+        finding = f"[{m.group(1)}] {m.group(2).strip()}"
+        if finding not in findings:
+            findings.append(finding)
+    # Extract Summary bullet issues (e.g. "- **1 known IES routing issue** (...)")
+    summary_section = re.search(r"##\s*Summary\s*\n+((?:\s*[-*]\s+.+\n?)+)", text, re.IGNORECASE)
+    if summary_section:
+        for line in summary_section.group(1).strip().split("\n"):
+            line = line.strip().lstrip("-* ").strip()
+            line = re.sub(r"\*\*(.+?)\*\*", r"\1", line)  # strip bold markers
+            # Only capture lines that mention issues/warnings/flags (not positive "all pass" lines)
+            if line and re.search(r"issue|warning|flag|negative|error|block|fail|404|swap", line, re.IGNORECASE):
+                if line not in findings:
+                    findings.append(line)
+    # Final cleanup: strip remaining markdown bold markers from all findings
+    findings = [re.sub(r"\*\*(.+?)\*\*", r"\1", f) for f in findings]
+    findings = [f.replace("**", "") for f in findings]  # catch orphaned **
     return findings
 
 
