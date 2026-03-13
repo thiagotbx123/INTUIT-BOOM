@@ -1,7 +1,7 @@
 {
   "full_sweep": {
-    "name": "Full Sweep v5.4 Gap Coverage",
-    "description": "12 Deep (91 sub_checks) + 44 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 96 items",
+    "name": "Full Sweep v5.5 Release Coverage",
+    "description": "12 Deep (96 sub_checks) + 46 Surface + 19 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 99 items",
     "checks": {
       "D01": true,
       "D02": true,
@@ -59,6 +59,8 @@
       "S42": true,
       "S43": true,
       "S44": true,
+      "S45": true,
+      "S46": true,
       "C01": true,
       "C02": true,
       "C03": true,
@@ -77,6 +79,7 @@
       "C16": true,
       "C17": true,
       "C18": true,
+      "C19": true,
       "X01": true,
       "X02": true,
       "X03": true,
@@ -171,6 +174,8 @@
       "S42": true,
       "S43": true,
       "S44": true,
+      "S45": true,
+      "S46": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -189,13 +194,14 @@
       "C16": false,
       "C17": false,
       "C18": false,
+      "C19": false,
+      "X04": false,
+      "X06": false,
+      "X01": false,
+      "X03": false,
       "X02": false,
       "X07": false,
-      "X03": false,
-      "X01": false,
-      "X05": false,
-      "X06": false,
-      "X04": false
+      "X05": false
     },
     "fix_tiers": {
       "fix_immediately": true,
@@ -216,11 +222,11 @@
     "realism_scoring": false,
     "revalidation": {
       "RV03": true,
-      "RV01": true,
-      "RV04": true,
       "RV06": true,
-      "RV05": true,
-      "RV02": true
+      "RV04": true,
+      "RV01": true,
+      "RV02": true,
+      "RV05": true
     }
   },
   "surface_only": {
@@ -283,6 +289,8 @@
       "S42": true,
       "S43": true,
       "S44": true,
+      "S45": true,
+      "S46": true,
       "C01": false,
       "C02": false,
       "C03": false,
@@ -301,13 +309,14 @@
       "C16": false,
       "C17": false,
       "C18": false,
+      "C19": false,
+      "X04": false,
+      "X06": false,
+      "X01": false,
+      "X03": false,
       "X02": false,
       "X07": false,
-      "X03": false,
-      "X01": false,
-      "X05": false,
-      "X06": false,
-      "X04": false
+      "X05": false
     },
     "fix_tiers": {
       "fix_immediately": false,
@@ -328,11 +337,11 @@
     "realism_scoring": false,
     "revalidation": {
       "RV03": true,
-      "RV01": true,
-      "RV04": true,
       "RV06": true,
-      "RV05": true,
-      "RV02": true
+      "RV04": true,
+      "RV01": true,
+      "RV02": true,
+      "RV05": true
     }
   }
 }

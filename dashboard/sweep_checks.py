@@ -26,6 +26,21 @@ Changes from v5.1 (ALL ADDITIVE — zero modification of existing fields):
 - C03: Enhanced with IC JE deep-dive guidance
 - C16-C18: 3 new conditional checks (Time Approvals, Change Orders, Project Budgets)
 - X07: New cross-entity check for transaction chain integrity
+
+v5.5 Release Coverage — 2026-03-12
+Changes from v5.4 (ALL ADDITIVE — cross-referenced with Fall+Winter+Feb Release evidence):
+- D01: Added D01.6 (Finance AI / Agent Presence in Business Feed — evidenced by Keystone Par ID13)
+- D02: Added D02.14 (Modern Report UI — sparkles, 5+ Insights, Compact/100% — evidenced by ID21)
+- D03: Added D03.8 (Balance Sheet by Dimension — Feb Release 'Dimensions on BS')
+- D04: Added D04.9 (Accounting AI Ready-to-Post — evidenced by ID10)
+- D09: Added D09.10 (Negative Change Order values — evidenced by ID32 CO#1008 -588% margin)
+- S45: KPI Scorecard & Library (Fall+Winter — evidenced by ID16, 5 categories confirmed)
+- S46: Analytics Dashboards (Fall+Winter — evidenced by ID17, gallery+edit mode confirmed)
+- C19: Smart Dimension Assignment v2 (Feb Release — evidenced by ID22, 3 tabs + AI sparkle)
+SKIPPED (insufficient evidence / contradicted):
+- Calculated Fields: 2/3 screenshots were 404 (ID19) — evidence too weak
+- Parallel Approval: Evidence shows SEQUENTIAL not parallel (ID25) — contradicted
+- ME Employee Hub: Evidence confirms 404 in Consolidated View (ID36) — broken
 """
 
 DEEP_STATIONS = [
@@ -56,6 +71,7 @@ DEEP_STATIONS = [
             "D01.3 — Widget vs Report: Note the P&L widget numbers. When you reach D02, verify they match the full P&L report. If they disagree, the display period is misaligned.",
             "D01.4 — Invoice Pipeline: Are all invoices overdue? If 80%+ of unpaid invoices are overdue, the demo looks like an abandoned business. Note for D05.",
             "D01.5 — Business Feed: Check the most recent item in Business Feed. If the newest action is 60+ days old, the environment looks inactive.",
+            "D01.6 — AI Agent Presence (Fall+Winter Release): In the Business Feed or homepage, look for AI-generated tiles: 'Financial Summary for [Month]' (Finance AI), 'New project estimates'/'New project budgets' (PM Agent), Customer Agent insights, cost group assignments, dimension assignment suggestions. If Finance AI banner exists, click 'Review Summary' to verify the Financial Summary page renders with Performance Highlights (income/expense trends, A/R and A/P summaries, notable spikes). Evidence from Keystone Par: 8 AI-generated insights in January summary including COGS decrease, income trends, expense spikes (Legal $31K, Advertising $59K). If ZERO AI entries in Business Feed, note as gap — AI agents are the headline feature of Fall+Winter releases and SEs demo them prominently.",
         ],
         "cross_refs": ["D02", "D04", "D05"],
         "auto_fix": True,
@@ -94,6 +110,7 @@ DEEP_STATIONS = [
             "D02.11 — Report by Customer/Project: Switch P&L to 'by Customer' or 'by Project'. Verify income is distributed across multiple customers/projects, not concentrated in 1. This is the bridge between P&L and D09 project profitability.",
             "D02.12 — Expense Deep-Dive: Navigate to /app/expenses. Open the 3 most recent expenses. Verify: (a) vendor/payee is assigned (not blank), (b) category/account is specific (not 'Uncategorized Expense'), (c) description is meaningful (not empty or 'test'), (d) amounts are realistic for the category (e.g., office supplies < $5K, rent = monthly consistent), (e) project assignment exists where applicable. Expenses are half the P&L story — weak expense data undermines the financial narrative.",
             "D02.13 — Expense Monthly Spread: From the expense list, scan dates. Are expenses distributed across months, or clustered on a few dates? Real businesses have expenses every week. If 80%+ of expenses share the same date, the data looks batch-imported.",
+            "D02.14 — Modern Report UI (Feb Release): While viewing the P&L report, check for Modern View indicators: (a) AI sparkle icons (✨) next to dollar amounts — clicking reveals AI-generated insights per line item, (b) '5+ Insights' button in report header — clicking opens AI analysis panel, (c) Compact/100% layout toggle in report toolbar, (d) Finance AI banner at top: 'I generated a financial summary for [Month]...' with link to full summary, (e) Cash/Accrual toggle, (f) 'Video Tour' and 'New updates' links. Evidence from Keystone Par: Modern View confirmed with sparkle icons on amounts, '5+ Insights' button visible. These are the 'New Modern Reports' features from the February Release. If sparkle icons are absent, the modern report engine may not be active on this tenant — annotate as BLOCKED (feature flag), not as data issue.",
         ],
         "cross_refs": ["D01", "D03", "D08", "D11"],
         "auto_fix": True,
@@ -127,6 +144,7 @@ DEEP_STATIONS = [
             "D03.5 — AR vs Invoices: Does total AR approximately match the open invoice total from D05? A massive gap (AR $5M but open invoices $50K) means phantom receivables exist.",
             "D03.6 — Negative Balances: Flag any asset account with a negative balance. A checking account at -$1.83M or negative fixed assets is a demo blocker.",
             "D03.7 — IES Truncation Workaround: If the BS report truncates on IES (only Assets section renders, Equity/Liability missing), use the COA page as fallback — navigate to /app/chartofaccounts?jobId=accounting and review account balances there.",
+            "D03.8 — Balance Sheet by Dimension (Feb Release 'Dimensions on BS'): Switch the Balance Sheet report to 'by Class' or 'by Dimension' column view (use the column dropdown or report variant selector — same method as D02.9 for P&L). Verify: (a) dimension/class columns appear as separate columns, (b) at least 2 dimensions show non-zero balances in both Assets and Liabilities, (c) row totals across dimension columns equal the overall total column. This is the 'Dimensions on Balance Sheet' feature from February Release. If the 'by Class' option is unavailable on BS (only on P&L), annotate as BLOCKED — the feature flag may not be active. Do NOT confuse with P&L by Class which was already available.",
         ],
         "cross_refs": ["D02", "D04", "D05", "D06", "D11"],
         "auto_fix": False,
@@ -171,6 +189,7 @@ DEEP_STATIONS = [
             "D04.6 — Scale Appropriateness: Are bank balances proportional to the business revenue you saw in D02? A $20M money market account in a $900K/year consulting firm is disproportionate. Note it and assess whether it's a platform artifact or genuine data issue.",
             "D04.7 — Transaction Description Quality (SAMPLE): Open the first bank account tab. Read the descriptions of the 5 most recent transactions. Are they realistic payee names (e.g., 'Home Depot #4521', 'ADP Payroll')? Or generic/empty ('Bank Transfer', '', 'Transaction')? Description quality affects the categorization demo.",
             "D04.8 — Reconcile Status: Check the 'Reconcile' action for the primary checking account. Has this account EVER been reconciled? If 'Last reconciled: Never', the reconciliation demo is unavailable. Note the last reconciled date if available.",
+            "D04.9 — Accounting AI Ready-to-Post (Feb Release): On the Banking page, look for a 'Ready to Post' banner on any bank account tab. This banner appears when Accounting AI has 3+ transactions with >90% confidence categorization — it reads 'X transactions ready to post — Review'. Check: (a) does the banner exist on any account tab? (b) if yes, click 'Review' to verify the batch post interface loads showing suggested categories, (c) also check for a 'Ready-to-Post' filter option in the transaction filter dropdown. Additionally, look for QBAA (QuickBooks Accounting Agent) presence — an AI assistant icon or 'Accounting Agent' label near the bank feed. Evidence from Keystone Par: Accounting AI confirmed with AI-powered transaction matching. If the banner is absent, the bank feed may not have enough categorization history yet — note as informational, not critical.",
         ],
         "cross_refs": ["D03", "D05", "D06"],
         "auto_fix": True,
@@ -382,6 +401,7 @@ DEEP_STATIONS = [
             "D09.7 — Tasks Tab: On the same project detail, check the Tasks tab. Do tasks exist? Is there status variety (not all 'draft' or all 'complete')? Are descriptions meaningful? Tasks show project management maturity.",
             "D09.8 — Budget Tab: Check if the project has a Budget tab. If visible, does it have budget lines? Budget vs Actual is the #1 construction PM demo. If budget tab is empty or missing, note as a significant demo gap — project profitability without a budget baseline is incomplete.",
             "D09.9 — Change Orders (Construction EXCLUSIVE): Check if any project has change orders visible. Change Orders are THE differentiator feature of QBO Construction edition. If no change orders exist across any project, note as CRITICAL gap for Construction demos. If they exist, verify: (a) linked to correct project, (b) amount and description present, (c) status is clear (approved/pending).",
+            "D09.10 — Negative Change Order Values (Winter Release): If change orders exist (from D09.9), open 1 CO detail form. Verify the system correctly handles: (a) negative markup percentages on line items (e.g., -98.82%), (b) negative estimated profit margin display (e.g., -588.77%), (c) scenarios where total change in cost > total change in income (cost overrun). Also verify the CO shows: linked estimate with 'Previous estimate total' and 'New estimate total' breakdown, and 'Linked records' sidebar. Evidence from Keystone Par: CO #1008 showed negative markup (-98.82%, -99.999%), margin -588.77%, total cost $100K vs income $14,517.61, linked to Estimate #1019. This is the 'Negative Change Orders' feature from Winter Release — if all COs have only positive values, the feature works but hasn't been exercised, which is fine. Only flag if CO form errors on negative values.",
         ],
         "cross_refs": ["D02", "D05", "D08"],
         "auto_fix": True,
@@ -775,6 +795,19 @@ SURFACE_SCAN = [
         "route": "Open any sent invoice > 'View as customer' or shareable link",
         "description": "If available, check the customer-facing invoice view. Does it render with company branding? Is the payment button present? This is what the customer sees — SEs occasionally demo this external view",
     },
+    # v5.5 additions — Release feature coverage (Fall+Winter+Feb Release evidence-backed)
+    {
+        "id": "S45",
+        "name": "KPI Scorecard & Library",
+        "route": "/app/business-intelligence/kpi-scorecard (or via Reports sidebar > KPI Scorecard)",
+        "description": "KPI Scorecard page loads with chart data. Click 'Manage KPIs' to open KPI Library — verify 5 categories exist: Finance, Sales, Projects, Workforce, Inventory. Check if custom KPIs are present (user-created beyond defaults). Look for 3P KPIs (CRM, Payroll, Time) if app integrations are connected. Evidence: Keystone Par shows full KPI Library with all 5 categories, custom KPI 'Revenue Compared to Expenses*', and 3P data sources integrated. Fall+Winter Release headline BI feature",
+    },
+    {
+        "id": "S46",
+        "name": "Analytics Dashboards",
+        "route": "/app/business-intelligence/dashboards (or via BI sidebar nav)",
+        "description": "Dashboards gallery loads showing pre-built dashboards (Profitability, etc.). Click into 1 dashboard to verify: (a) charts render with actual data (not empty/placeholder), (b) edit mode accessible via pencil/edit icon, (c) data panel opens allowing chart data source configuration and visualization type selection. Evidence: Keystone Par shows dashboard gallery with Profitability dashboard, functional edit mode, and data panel for chart config with 6 chart types and historical trends. Fall+Winter Release BI feature",
+    },
 ]
 
 CONDITIONAL_CHECKS = [
@@ -909,6 +942,14 @@ CONDITIONAL_CHECKS = [
         "condition": "construction",
         "route": "Project detail > Budget tab",
         "description": "Project has budget lines, budget vs actual comparison available. Core of construction project management — without budgets, profitability tracking is incomplete",
+    },
+    # v5.5 additions — Release feature coverage (evidence-backed)
+    {
+        "id": "C19",
+        "name": "Smart Dimension Assignment v2",
+        "condition": "advanced",
+        "route": "/app/dimensions/assignment?type=items (also accessible via Dimensions Hub > 'Dimension assignment' button with AI sparkle, or Business Feed tile)",
+        "description": "Smart Dimension Assignment v2 page loads with AI sparkle icon on page title. Verify 3 tabs: 'For review' (AI-suggested assignments), 'Saved for later' (draft/deferred items), 'All products and services' (complete list). Bulk assignment table with Select all checkbox, columns: Product Name, Type, Category, Sales/Purchase Description, dimension columns, Action. 'Give feedback' button present. Evidence: Keystone Par confirmed page at /app/dimensions/assignment?type=items with isDimensionsV2FeatureFlagEnabled=true, AI sparkle icon, all 3 tabs functional. Feb Release feature. If page 404s, try: Gear menu > Dimensions > click 'Dimension assignment' button",
     },
 ]
 
@@ -1191,8 +1232,8 @@ def get_all_checks():
 def get_default_profile():
     """Return the default full sweep profile."""
     return {
-        "name": "Full Sweep v5.4 Gap Coverage",
-        "description": "12 Deep (91 sub_checks) + 44 Surface + 18 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 96 items",
+        "name": "Full Sweep v5.5 Release Coverage",
+        "description": "12 Deep (96 sub_checks) + 46 Surface + 19 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 99 items",
         "checks": {c["id"]: True for c in get_all_checks()},
         "fix_tiers": {"fix_immediately": True, "fix_and_report": True, "never_fix": False},
         "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
