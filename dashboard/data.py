@@ -164,8 +164,11 @@ def _parse_station_summary(text: str) -> dict:
                 result["deep_pass"] += 1
             elif "\u25cb" in line:  # ○ empty but checked
                 result["deep_pass"] += 1
-        # Stop after first section header for next entity
-        if re.search(r"#{2,3}\s+(?:Entity|Child|Summit|Ether|Apex|Global|Road)", line) and result["deep_pass"] > 0:
+        # Stop after first entity section header (generic — works for any dataset)
+        if (
+            re.search(r"#{2,3}\s+(?:ENTITY\s+\d+|Entity\s+\d+|Child\s+\d+)", line, re.IGNORECASE)
+            and result["deep_pass"] > 0
+        ):
             first_entity_done = True
         if first_entity_done and re.search(r"\|\s*D01\b", line):
             break  # stop counting at second entity
