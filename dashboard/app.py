@@ -298,7 +298,8 @@ def _generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep,
     surface_lines = []
     for s in SURFACE_SCAN:
         if checks.get(s["id"], True):
-            line = f"- **{s['id']}** {s['name']} → `{s['route']}` — {s['description']}"
+            ies_tag = " ⚠IES:404" if s.get("ies_known_404") else ""
+            line = f"- **{s['id']}** {s['name']} → `{s['route']}`{ies_tag} — {s['description']}"
             if s.get("auto_fix") and can_fix and s.get("fix_actions"):
                 fix_items = chr(10).join(f"    - {a}" for a in s["fix_actions"])
                 line += f"\n  **ENRIQUECER SE VAZIO:**\n{fix_items}"
@@ -542,6 +543,23 @@ CERTO (analista contextual):
 - document.body.innerText.substring(0, N) onde N > 500
 - Retornar JSON com campo "text" ou "snippet" longo
 
+=== SUAS RESPOSTAS NO CHAT (CRITICO — EVITAR CONTEXT COMPACTION) ===
+Context compaction APAGA seu historico e forca re-leitura de tudo.
+Para EVITAR compaction, suas respostas devem ser CURTAS:
+
+FORMATO OBRIGATORIO por station:
+  [D01] ✓ Net $292K | Income $256K | Bank $11.3M | No placeholders
+
+FORMATO PROIBIDO (desperdiça tokens):
+  "Excellent! The dashboard loaded successfully. I can see the following data:
+   - Net Profit: $292,418 (which is positive, that's good)
+   - Income: $256,840 (for February)
+   ... [20 linhas de analise]"
+
+REGRA: 1 linha por station. Detalhes SÓ se houver PROBLEMA ou FIX.
+NAO reexplicar dados ja capturados. NAO narrar cada tool call.
+NAO dizer "Let me..." ou "Now I'll..." — apenas FACA.
+
 === OBRIGATORIO: USAR EXTRATORES PRE-PRONTOS ===
 Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 ```
@@ -632,6 +650,83 @@ Copie e cole os extratores abaixo EXATAMENTE como estao. NAO improvise JS.
 }}
 ```
 
+**EXTRATOR 8 — Banking Categorization Helper (D04):**
+```javascript
+() => {{
+  // Get all visible transaction rows with their pre-filled categories
+  const rows = [...document.querySelectorAll('tr, [role="row"]')].filter(r => {{
+    const t = r.innerText || '';
+    return t.includes('Categorize') || t.includes('Match');
+  }});
+  const txns = rows.slice(0, 10).map((r, i) => {{
+    const cells = [...r.querySelectorAll('td, [role="cell"], [role="gridcell"], div[class*="cell"]')];
+    if (cells.length < 3) return null;
+    return {{
+      idx: i,
+      date: (cells[1]?.innerText || '').substring(0, 12),
+      desc: (cells[2]?.innerText || '').substring(0, 40),
+      amount: (cells[3]?.innerText || cells[4]?.innerText || '').substring(0, 15),
+      account: (cells[5]?.innerText || cells[6]?.innerText || '').split('\\n')[0]?.substring(0, 40) || '',
+      vendor: (cells[7]?.innerText || '').substring(0, 30),
+      hasPost: !!(r.querySelector('button') && [...r.querySelectorAll('button')].find(b => b.innerText?.trim() === 'Post'))
+    }};
+  }}).filter(Boolean);
+  const pending = document.body.innerText.match(/(\\d+)\\s*(?:for review|pending|uncategorized)/i)?.[1] || '?';
+  return JSON.stringify({{pending, txnCount: txns.length, txns}});
+}}
+```
+> **USO**: Apos abrir Banking, rodar este extrator para ver transacoes pendentes COM categorias pre-preenchidas.
+> Para postar: click na description cell (NAO vendor cell — evita popover), esperar form expandir, click Post, handle dialog "Post without class" → click "Post anyway".
+> **IMPORTANTE**: Apos CADA post, refs ficam stale. Rodar extrator de novo antes do proximo post.
+
+**EXTRATOR 9 — Balance Sheet Universal (D03):**
+```javascript
+() => {{
+  const rows = [...document.querySelectorAll('tr')];
+  const data = {{}};
+  rows.forEach(r => {{
+    const text = (r.innerText || '').replace(/\\n/g, ' ').trim();
+    const match = text.match(/^(Total\\s+(?:for\\s+)?[\\w\\s&\\/()-]+?)\\s+\\$?(-?[\\d,.]+)/i);
+    if (match) data[match[1].trim().substring(0, 50)] = match[2];
+  }});
+  // Fallback: try key accounts directly
+  const t = document.body.innerText || '';
+  const fallbacks = {{
+    'AR': t.match(/Accounts\\s+Receivable[\\s\\S]{{0,30}}\\$([\\d,.]+)/i)?.[1],
+    'AP': t.match(/Accounts\\s+Payable[\\s\\S]{{0,30}}\\$([\\d,.]+)/i)?.[1],
+    'Bank': t.match(/(?:Total for )?Bank Accounts[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1],
+    'OBE': t.match(/Opening\\s+Balance\\s+Equity[\\s\\S]{{0,20}}\\$([\\d,.]+)/i)?.[1],
+    'Retained': t.match(/Retained\\s+Earnings[\\s\\S]{{0,20}}\\$?(-?[\\d,.]+)/i)?.[1],
+    'NetIncome': t.match(/Net\\s+Income[\\s\\S]{{0,20}}\\$?(-?[\\d,.]+)/i)?.[1]
+  }};
+  const negatives = t.match(/-\\$[\\d,.]+/g)?.slice(0, 5) || [];
+  const period = t.match(/As of[\\s\\S]{{0,30}}/i)?.[0]?.substring(0, 40) || 'N/A';
+  const totalRows = rows.length;
+  return JSON.stringify({{totals: data, fallbacks, negatives, period, totalRows}});
+}}
+```
+> **USO**: Rodar UMA VEZ apos BS carregar. Captura TODOS os "Total for X" de uma vez.
+> Se totalRows < 40, a pagina pode estar truncada — scroll para baixo e rodar de novo.
+> NAO tente regex no body inteiro — use as rows da tabela.
+
+**EXTRATOR 10 — Surface Scan Batch (verificar pagina carregou com dados):**
+```javascript
+() => {{
+  const t = document.body.innerText || '';
+  const lines = t.split('\\n').filter(l => l.trim().length > 2);
+  const is404 = /not found|404|page doesn't exist|we can't find/i.test(t);
+  const isEmpty = lines.length < 5;
+  const hasPH = /\\b(TBX|Lorem|Foo|TODO|Test Company)\\b/i.test(t);
+  const hasData = lines.length > 10 && !is404;
+  return JSON.stringify({{
+    status: is404 ? 'X' : isEmpty ? 'EMPTY' : hasPH ? 'WARN' : 'OK',
+    lines: lines.length,
+    title: document.title.substring(0, 40),
+    snippet: lines.slice(2, 5).map(l => l.substring(0, 40)).join(' | ')
+  }});
+}}
+```
+
 ## REGRA #2B — POS-NAVEGACAO (OBRIGATORIO)
 
 ```
@@ -707,6 +802,43 @@ Se JE form travar (IDs dinamicos):
   → NAO recarregue a pagina — perdera dados preenchidos
 ```
 
+## REGRA #5B — SESSION KEEPALIVE E RECOVERY
+
+```
+=== PREVENCAO (fazer DURANTE o sweep) ===
+A cada 15 minutos de sweep (ou entre blocos de estacoes):
+  → browser_navigate("https://qbo.intuit.com/app/homepage")
+  → browser_evaluate com EXTRATOR 1 para confirmar sessao ativa
+  → Se retornar dados normais → sessao OK, continuar
+  → Se redirecionar para accounts.intuit.com → sessao expirou, fazer RECOVERY
+
+MOMENTOS IDEAIS para keepalive:
+  - Entre D06 e D07 (meio dos deep stations)
+  - Antes de iniciar Surface Scan (transicao de fase)
+  - Antes de trocar de entity (se multi-entity)
+
+=== RECOVERY (sessao expirou) ===
+1. NAO tente manipular o challenge picker via JS (nao funciona)
+2. Seguir o MESMO fluxo de login da Secao 1 (cookie clear → email → password → TOTP)
+3. Se challenge picker congelar (botoes nao transicionam):
+   a. browser_navigate para URL completamente nova: https://accounts.intuit.com/app/sign-in
+   b. Esperar 5 segundos
+   c. Se aparecer "Welcome back" → clicar na conta
+   d. Se pedir password → digitar password
+   e. Se pedir TOTP → gerar via python e digitar
+   f. Se pedir "Skip phone verification" → clicar Skip
+4. Se NADA funcionar apos 3 tentativas:
+   a. Salvar progresso (LATEST_SWEEP.json ja esta atualizado se seguiu Regra #10)
+   b. Reportar BLOCKED: "Session expired, re-auth failed after 3 attempts"
+   c. O dashboard vai oferecer "Retomar Sweep" na proxima execucao
+   d. NAO perca 15+ tool calls tentando — 3 tentativas e o maximo
+
+=== DETECCAO AUTOMATICA ===
+Se QUALQUER browser_evaluate retornar pagina com "Sign in" ou "Intuit Accounts":
+  → Sessao expirou. Executar RECOVERY imediatamente.
+  → NAO tente continuar navegando em outras paginas.
+```
+
 ---
 
 ## 1. LOGIN
@@ -777,39 +909,66 @@ EXPECTATIVAS:
 
 {"".join(deep_lines) if deep_lines else "Nenhum deep check habilitado."}
 
-### IES WORKAROUNDS (rotas que dao 404 no IES)
+### IES URL MAP (MAPA COMPLETO — SEGUIR A RISCA)
 
 ```
-PROBLEMA: /app/reportlist retorna 404 no IES (Intuit Enterprise Suite)
+=== DOMINIO CORRETO ===
+SEMPRE usar: qbo.intuit.com (sem "app." no subdominio)
+ERRADO: app.qbo.intuit.com/app/customers  → pode funcionar MAS redireciona e perde sessao
+CERTO:  qbo.intuit.com/app/customers
 
-WORKAROUND para P&L e Balance Sheet:
+=== ROTAS FUNCIONAIS NO IES (usar EXATAMENTE como estao) ===
+Dashboard:        /app/homepage
+Banking:          /app/banking?jobId=accounting
+Bank Rules:       /app/olbrules?jobId=accounting
+Customers:        /app/customers
+Customer Hub:     /app/customers-overview?jobId=customers
+Vendors:          /app/vendors
+Expenses:         /app/expense-overview?jobId=expenses
+Employees:        /app/employees?jobId=team
+Employees (alt):  /app/employees
+Products:         /app/items
+Inventory:        /app/inventory/overview?jobId=inventory
+Projects:         /app/projects
+Reports Hub:      /app/standardreports  ← UNICO ponto de entrada para reports
+Chart of Accts:   /app/chartofaccounts?jobId=accounting  ← sem hyphens + jobId
+Settings:         Gear icon → "Account and settings" → /app/accountsettings
+Estimates:        /app/estimates
+Purchase Orders:  /app/purchaseorders
+Sales Receipts:   /app/salesreceipts
+Invoices:         /app/invoices
+Bills:            /app/bills
+Journal Entry:    /app/journal
+Reconcile:        /app/reconcile?jobId=accounting
+
+=== ROTAS QUE DAO 404 NO IES (NUNCA usar) ===
+/app/reportlist           → usar /app/standardreports
+/app/reports/profitandloss → click no link dentro de standardreports
+/app/balance-sheet        → click no link dentro de standardreports
+/app/chart-of-accounts    → /app/chartofaccounts?jobId=accounting
+/app/company              → gear icon → Account and settings
+/app/companysettings      → gear icon → Account and settings
+
+=== WORKAROUND PARA REPORTS ===
+P&L e Balance Sheet NAO tem URL direta no IES.
 1. browser_navigate("https://qbo.intuit.com/app/standardreports")
 2. browser_wait_for(time=3)
-3. browser_evaluate com EXTRATOR 6 para encontrar links de reports
+3. browser_evaluate com EXTRATOR 6 para encontrar links
 4. browser_click no link de "Profit and Loss" ou "Balance Sheet"
+   (link tera formato /app/report/builder?rptId=...&token=PANDL)
 5. browser_wait_for(time=5)
-6. browser_evaluate com EXTRATOR 2 para ler numeros
+6. browser_evaluate com EXTRATOR 2 (P&L) ou EXTRATOR 9 (BS)
+DICA: Na PRIMEIRA visita a standardreports, extrair TODOS os hrefs
+de reports e SALVAR mentalmente. Reutilizar nas proximas estacoes.
 
-ROTAS FUNCIONAIS NO IES:
-- /app/homepage — Dashboard
-- /app/banking?jobId=accounting — Banking
-- /app/customers-overview?jobId=customers — Customer Hub
-- /app/customers — Customer list
-- /app/vendors — Vendor list
-- /app/expense-overview?jobId=expenses — Expenses
-- /app/employees?jobId=team — Employees
-- /app/inventory/overview?jobId=inventory — Inventory
-- /app/projects-overview?jobId=projects — Projects
-- /app/standardreports — Reports (sidebar, click links)
-- /app/chartofaccounts?jobId=accounting — Chart of Accounts
-- /app/settings?panel=company — Settings
-
-ROTAS QUE DAO 404 NO IES (NUNCA usar):
-- /app/reportlist → usar /app/standardreports
-- /app/reports/profitandloss → usar sidebar em standardreports
-- /app/balance-sheet → usar sidebar em standardreports
-- /app/chart-of-accounts (sem jobId) → usar /app/chartofaccounts?jobId=accounting
-- /app/company → usar /app/settings?panel=company
+=== DETECCAO DE SESSAO EXPIRADA ===
+Se browser_navigate redirecionar para accounts.intuit.com:
+  → Sessao expirou. Ver REGRA #5B para recovery.
+Se pagina retornar "We're sorry, we can't find the page":
+  → Pode ser 404 (URL errada) OU sessao expirada.
+  → Testar: navegar para /app/homepage primeiro.
+  → Se homepage funciona → URL estava errada, usar mapa acima.
+  → Se homepage TAMBEM falha → sessao expirou, fazer re-login.
 ```
 
 ### PROTOCOLOS DE FIX COMUNS (referencia rapida)
@@ -826,6 +985,37 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 8. browser_click("Save and close")
 9. browser_wait_for(time=3)
 10. Verificar P&L com EXTRATOR 2 para confirmar Net Income positivo
+```
+
+**Categorizar Bank Transactions (D04 — PROTOCOLO OTIMIZADO):**
+```
+ANTES: ~14 tool calls por transacao (visto em sweep real)
+AGORA: ~4 tool calls por transacao
+
+PROTOCOLO PARA CADA TRANSACAO:
+1. browser_evaluate com EXTRATOR 8 → ver transacoes pendentes
+2. browser_click na DESCRIPTION CELL da transacao (NAO na vendor cell!)
+   MOTIVO: clicar no vendor cell dispara AI Vendor Suggestion popover que bloqueia tudo
+3. Esperar form expandir (browser_wait_for time=2)
+4. browser_evaluate: () => {{
+     const btns = [...document.querySelectorAll('button')];
+     const post = btns.find(b => b.innerText?.trim() === 'Post' && b.offsetParent);
+     if (post) {{ post.click(); return 'posted'; }}
+     return 'no-post-btn';
+   }}
+5. browser_wait_for(time=2) — dialog "Post without class" VAI aparecer (100% das vezes)
+6. browser_evaluate: () => {{
+     const btns = [...document.querySelectorAll('button')];
+     const pa = btns.find(b => b.innerText?.trim() === 'Post anyway');
+     if (pa) {{ pa.click(); return 'confirmed'; }}
+     return 'no-dialog';
+   }}
+7. PROXIMO: Rodar EXTRATOR 8 de novo (refs ficam stale apos post)
+
+PARA 5 TRANSACOES: ~20 tool calls total (antes: ~70)
+
+IMPORTANTE: Escolher transacoes com CATEGORIAS VARIADAS (nao 5x o mesmo account).
+Buscar: Contract labor, Supplies, Insurance, Utilities, Taxes & Licenses, etc.
 ```
 
 **Renomear placeholder (customer/vendor/product):**
@@ -853,12 +1043,32 @@ ROTAS QUE DAO 404 NO IES (NUNCA usar):
 {notes_for_sector}
 ```
 
+### IES ROUTE CHEATSHEET (CONSULTAR ANTES DE CADA browser_navigate)
+
+```
+D01=/app/homepage  D02=standardreports>P&L  D03=standardreports>BS
+D04=/app/banking?jobId=accounting  D05=/app/customers  D06=/app/vendors
+D07=/app/employees?jobId=team  D08=/app/items  D09=/app/projects
+D10=/app/standardreports  D11=/app/chartofaccounts?jobId=accounting
+D12=Gear icon>Account and settings (NAO /app/company!)
+Reports: SEMPRE via /app/standardreports > clicar link (nao tem URL direta)
+404 CONFIRMADOS SEM ALT: paymentlinks, subscriptions, customformstyles, cashflow, expenseclaims
+```
+
+> **REGRA #6 — POS-COMPACTION RECOVERY**
+> Se voce perdeu contexto (compaction aconteceu), ANTES de continuar:
+> 1. Consultar este CHEATSHEET para rotas corretas
+> 2. NAO inventar URLs curtos — usar EXATAMENTE a rota do header da estacao
+> 3. Se em duvida, rodar: `Read(dashboard/pending/SWEEP_ORDER.md)` linhas 1-50 para re-ler rotas
+> 4. Stations com `⚠IES:404` → marcar como ✗ e pular (nao navegar, economizar tempo)
+
 ## 4. SURFACE SCAN ({len(surface)} habilitados) — RAPIDO, SEM CORRECAO
 
 {chr(10).join(surface_lines) if surface_lines else "Nenhum surface check habilitado."}
 
 **Protocolo**: `browser_navigate` → `browser_wait_for(time=3)` → `browser_evaluate` com **EXTRATOR 4** → anotar ✓/○/✗/⚠ → proximo
 - ✓ = tem dados | ○ = vazio | ✗ = 404 | ⚠ = placeholder/problema
+- ⚠IES:404 = PULAR — 404 confirmado em IES, nao gastar tool calls
 
 **OTIMIZACAO**: Agrupar 5-6 surface scans consecutivos, reportar em lote:
 ```
@@ -1062,7 +1272,7 @@ QUALITY:
 {f"## 12. NOTAS{chr(10)}{chr(10)}{notes}" if notes else ""}
 
 ---
-*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v5.0*
+*Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager Dashboard v5.6*
 """
 
     order_file = pending_dir / "SWEEP_ORDER.md"

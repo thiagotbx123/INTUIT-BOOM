@@ -552,14 +552,16 @@ SURFACE_SCAN = [
     {
         "id": "S06",
         "name": "Fixed Assets",
-        "route": "/app/fixedassets",
+        "route": "/app/fixed-assets?jobId=accounting",
         "description": "Module exists, has assets, asset count",
+        "ies_note": "Old route /app/fixedassets 404s on IES — use hyphenated + jobId",
     },
     {
         "id": "S07",
         "name": "Revenue Recognition",
-        "route": "/app/revenuerecognition",
+        "route": "/app/revenue-recognition?jobId=accounting",
         "description": "Module exists (Advanced only), entry count",
+        "ies_note": "Old route /app/revenuerecognition 404s on IES — use hyphenated + jobId",
     },
     {
         "id": "S08",
@@ -631,9 +633,22 @@ SURFACE_SCAN = [
         "name": "Payment Links",
         "route": "/app/paymentlinks",
         "description": "Feature exists, loads without error",
+        "ies_known_404": True,
     },
-    {"id": "S17", "name": "Subscriptions", "route": "/app/subscriptions", "description": "Feature exists, has data"},
-    {"id": "S18", "name": "My Accountant", "route": "/app/myaccountant", "description": "Accountant invite status"},
+    {
+        "id": "S17",
+        "name": "Subscriptions",
+        "route": "/app/subscriptions",
+        "description": "Feature exists, has data",
+        "ies_known_404": True,
+    },
+    {
+        "id": "S18",
+        "name": "My Accountant",
+        "route": "/app/my-accountant?jobId=accounting",
+        "description": "Accountant invite status",
+        "ies_note": "Old route /app/myaccountant 404s on IES",
+    },
     {"id": "S19", "name": "Audit Log", "route": "/app/auditlog", "description": "Accessible, has activity"},
     {"id": "S20", "name": "Lending", "route": "Via menu", "description": "Feature visible in menu"},
     # v4.0 additions — Settings panels, forms, and missing modules
@@ -666,6 +681,7 @@ SURFACE_SCAN = [
         "name": "Custom Form Styles",
         "route": "/app/customformstyles",
         "description": "Custom templates exist, logo uploaded, preview renders without error",
+        "ies_known_404": True,
     },
     {
         "id": "S26",
@@ -703,6 +719,7 @@ SURFACE_SCAN = [
         "name": "Cash Flow Planner",
         "route": "/app/cashflow",
         "description": "Cash flow projection loads, chart renders, bank accounts linked",
+        "ies_known_404": True,
     },
     {
         "id": "S29",
@@ -758,6 +775,7 @@ SURFACE_SCAN = [
         "name": "Expense Claims",
         "route": "/app/expenseclaims (or via Expenses & Bills nav)",
         "description": "Employee expense claim/reimbursement feature. Page loads, claims exist or empty state",
+        "ies_known_404": True,
     },
     {
         "id": "S38",
@@ -768,8 +786,9 @@ SURFACE_SCAN = [
     {
         "id": "S39",
         "name": "Inventory Overview",
-        "route": "/app/inventory",
+        "route": "/app/inventory/overview?jobId=inventory",
         "description": "Inventory module loads, shows stock levels, reorder points. Critical for product-based businesses",
+        "ies_note": "Old route /app/inventory 404s on IES — use /overview?jobId=inventory",
     },
     # v5.4b additions — Functional workflow checks (non-page-navigation)
     {
