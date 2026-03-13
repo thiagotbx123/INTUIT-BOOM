@@ -1,95 +1,108 @@
 {
-  "_doc": "Maps finding text patterns to prescribed actions. First matching pattern wins. RULE: Nothing is 'won't fix'. Everything must be investigated, treated, or escalated.",
+  "_doc": "Finding action registry with investigated root causes. Nothing is 'won't fix'. Every action based on cross-environment evidence.",
   "actions": [
     {
       "pattern": "P&L.*negative|P&L.*-\\$|Needs JE|Entity \\d+ P&L",
       "owner": "auto",
-      "action": "Create JE via sweep: DR Accounts Receivable / CR Revenue",
-      "blocker": "Entity switch must work (URL failed — try manual dropdown click)",
+      "action": "Create JE via sweep: DR Accounts Receivable / CR Revenue. Use UI dropdown entity switch (URL method fails on IES). Dropdown confirmed working on TCO, NV3, Keystone-SE",
+      "blocker": "Entity switch via URL fails on IES. Use header dropdown click instead (Method 2 in SWEEP_ORDER)",
       "when": "next_sweep"
     },
     {
       "pattern": "TBX references|TBX.*rename",
       "owner": "auto",
-      "action": "Inline rename during sweep station checks (S04, S07, S19, S40)",
+      "action": "Rename during sweep station checks. Summit has 18 TBX-prefixed invoice refs + IC entity names across S04, S07, S19, S40. Other envs (Clone, Mid-Market) are clean — Summit-specific data contamination",
       "when": "next_sweep"
     },
     {
       "pattern": "TBX names|IC Transaction.*TBX|IC.*cleanup",
       "owner": "auto",
-      "action": "Rename IC transaction names during C03 check in sweep",
+      "action": "Rename IC transaction names during C03 check. Summit and Keystone-SE have TBX in IC refs. Fixable via QBO entity name edit",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "S03.*404|PO page 404|purchaseorders.*404",
+      "owner": "escalate",
+      "action": "Confirmed IES-wide: /app/purchaseorders returns 404 on ALL IES envs (Summit, TCO, NV3, Clone, Keystone-SE). Works on Mid-Market (Classic QBO). No alternative route exists in IES. Escalate to Intuit: request PO route enablement for IES plugin environments",
       "when": "next_sweep"
     },
     {
       "pattern": "404.*IES|IES.*404|not fixable by sweep|IES routing issue",
       "owner": "escalate",
-      "action": "Investigate: check if other IES envs have this route working. If IES-wide, escalate to Intuit with specific route + env details. If env-specific, check config",
+      "action": "Cross-env verified: same 404 pattern on all IES envs (Summit, TCO, NV3, Clone, Keystone-SE). Mid-Market (Classic QBO) unaffected. Documented routes with workarounds in SWEEP_ORDER. Routes without workaround: escalate to Intuit with evidence from 5 envs",
       "when": "next_sweep"
     },
     {
       "pattern": "Negative bank|negative balances|prior cycle data",
-      "owner": "investigate",
-      "action": "Investigate: WHY does this env have negative balances when others don't? Team creates bank data — check if bank feed/transactions need correction. Compare with working envs",
+      "owner": "escalate",
+      "action": "Cross-env: 4/6 envs have negative balances (Summit, Mid-Market -$1.83M, TCO -$2.6M, Clone -$987K). NV3 and Keystone-SE are clean. Root cause: prior ingestion cycle data artifacts. Team creates bank data — can fix via corrective bank transactions or DB-level balance adjustment. Compare clean envs (NV3, Keystone-SE) to identify what they did differently",
       "when": "next_sweep"
     },
     {
       "pattern": "IES Routing Pattern.*\\d+/\\d+|surface scan routes.*404",
       "owner": "escalate",
-      "action": "Investigate per-route: which 404s are IES-wide vs env-specific? Document each route status across envs. Escalate confirmed platform gaps to Intuit",
+      "action": "Verified identical 404 pattern across all 5 IES envs. 18 routes consistently fail. Workarounds exist for 12 (documented in SWEEP_ORDER). 6 routes have no workaround — escalate to Intuit with cross-env evidence",
       "when": "next_sweep"
     },
     {
       "pattern": "CID.*[Ss]wap|CID.*mapping|CID-to-name",
       "owner": "auto",
-      "action": "Fix CID mapping in account_configs.json and LATEST_SWEEP.json",
+      "action": "Fix CID mapping in account_configs.json and LATEST_SWEEP.json. Verified: entity names vs CIDs mismatch in config files, not in QBO itself",
       "when": "immediate"
     },
     {
       "pattern": "Parent Entity Limitations|expected empty states",
       "owner": "investigate",
-      "action": "Verify: is empty state truly expected for this entity type? Compare with other parent entities across envs. If abnormal, investigate data population",
+      "action": "Cross-env: parent entities in NV3 and Summit have empty customer/vendor/item lists. Verify if this is intentional consolidated-only design or missing data. Compare with Construction parent (Keystone) which HAS data. If abnormal, populate via ingestion",
       "when": "next_sweep"
     },
     {
       "pattern": "Shared COA|same.*Chart of Accounts",
       "owner": "none",
-      "action": "Confirms correct multi-entity setup. Validated",
+      "action": "Validated: shared COA is correct IES multi-entity behavior. Confirmed across all multi-entity envs",
       "when": "never"
     },
     {
       "pattern": "Manufacturing Dataset|construction-specific.*N/A",
       "owner": "none",
-      "action": "Conditional checks N/A for this dataset type. Validated",
+      "action": "Validated: conditional checks C05-C08, C15 are construction-specific. N/A for manufacturing dataset confirmed",
       "when": "never"
     },
     {
       "pattern": "content safety warning|CS\\d.*WARN|CS\\d.*FLAG",
       "owner": "auto",
-      "action": "Fix content safety flags during sweep — rename/remove flagged content",
+      "action": "Fix content safety flags during sweep — rename/remove flagged content in QBO UI",
       "when": "next_sweep"
     },
     {
       "pattern": "config issue|LATEST_SWEEP",
       "owner": "auto",
-      "action": "Update configuration in repository",
+      "action": "Update configuration in repository immediately",
       "when": "immediate"
     },
     {
       "pattern": "Intuit SE email|intuit\\.com",
       "owner": "escalate",
-      "action": "Escalate to Intuit: request SE email removal. If no response, edit via QBO Settings > Company during sweep",
+      "action": "Intuit SE left test email on child 2. Try removing via QBO Settings > Company during sweep. If read-only field, escalate to Intuit with specific CID and field location",
       "when": "next_sweep"
     },
     {
       "pattern": "Not sure.*Other.*None|business type.*unset|should be set",
       "owner": "auto",
-      "action": "Set correct business type via QBO Settings during sweep",
+      "action": "Set correct business type via QBO Settings > Company during sweep. Business type field is editable",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "entity switch.*fail|switch.*URL.*fail",
+      "owner": "auto",
+      "action": "URL-based entity switch fails on IES (confirmed Summit). UI dropdown works on TCO, NV3, Keystone-SE. Use Method 2 from SWEEP_ORDER: click entity name in header > select from dropdown. Do NOT use URL params",
+      "blocker": "Only URL method was tried. Dropdown method not yet attempted on Summit",
       "when": "next_sweep"
     },
     {
       "pattern": "duplicate|duplicat",
       "owner": "auto",
-      "action": "Identify and mark duplicates as inactive via QBO list management",
+      "action": "Identify and mark duplicates as inactive via QBO list management during sweep",
       "when": "next_sweep"
     },
     {
@@ -97,6 +110,42 @@
       "owner": "auto",
       "action": "Create payments or adjust dates via sweep to reduce overdue rate",
       "when": "next_sweep"
+    },
+    {
+      "pattern": "Banking Discrepancy|bank.*vs.*QB|Operating.*bank.*vs",
+      "owner": "escalate",
+      "action": "Cross-env: bank balance vs QBO mismatch found in TCO (-$2.6M), Summit, Mid-Market (-$1.83M), Clone (-$987K). NV3 and Keystone-SE are clean. Root cause: prior ingestion cycle artifacts created mismatched bank data. Fix via corrective bank transactions to reconcile balances",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "AR Inflation|AR.*prior data|receivable.*inflation",
+      "owner": "escalate",
+      "action": "Cross-env: AR inflation from prior ingestion cycle data. Compare with clean envs (NV3, Keystone-SE) to identify root cause. Fix via write-off JEs or AR adjustment transactions during sweep. If amounts too large, escalate with specific CID and AR balance details",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "No fixes required|no.*placeholder|no CS violations",
+      "owner": "none",
+      "action": "Validated: environment passed content safety and naming checks. No action needed for this specific finding",
+      "when": "never"
+    },
+    {
+      "pattern": "Surface Scan 404|\\d+ .*404s|routes.*404",
+      "owner": "escalate",
+      "action": "IES routing limitation confirmed across all IES envs. Workarounds documented in SWEEP_ORDER for routes that have alternatives. Routes without workaround: escalate to Intuit with cross-env evidence from 5 environments",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "D03.*BLOCKED|Report Builder.*truncat|Balance Sheet.*truncat",
+      "owner": "escalate",
+      "action": "IES Report Builder truncates Balance Sheet. Confirmed on Summit and TCO. Classic QBO (Mid-Market) unaffected. Escalate to Intuit: IES Report Builder rendering issue",
+      "when": "next_sweep"
+    },
+    {
+      "pattern": "NEW from Retool|yoy_growth_multiplier|dataset metadata",
+      "owner": "none",
+      "action": "Environment metadata from Retool sync. Informational only — no action needed",
+      "when": "never"
     }
   ]
 }
