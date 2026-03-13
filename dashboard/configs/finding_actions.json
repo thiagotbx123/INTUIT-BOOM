@@ -1,5 +1,5 @@
 {
-  "_doc": "Maps finding text patterns to prescribed actions. First matching pattern wins.",
+  "_doc": "Maps finding text patterns to prescribed actions. First matching pattern wins. RULE: Nothing is 'won't fix'. Everything must be investigated, treated, or escalated.",
   "actions": [
     {
       "pattern": "P&L.*negative|P&L.*-\\$|Needs JE|Entity \\d+ P&L",
@@ -22,21 +22,21 @@
     },
     {
       "pattern": "404.*IES|IES.*404|not fixable by sweep|IES routing issue",
-      "owner": "platform",
-      "action": "IES limitation — no workaround. Use alternative routes documented in SWEEP_ORDER",
-      "when": "never"
+      "owner": "escalate",
+      "action": "Investigate: check if other IES envs have this route working. If IES-wide, escalate to Intuit with specific route + env details. If env-specific, check config",
+      "when": "next_sweep"
     },
     {
-      "pattern": "Negative bank|negative balances.*structural|prior cycle data",
-      "owner": "platform",
-      "action": "Structural data from prior cycle. Would need new bank feed import by Intuit",
-      "when": "backlog"
+      "pattern": "Negative bank|negative balances|prior cycle data",
+      "owner": "investigate",
+      "action": "Investigate: WHY does this env have negative balances when others don't? Team creates bank data — check if bank feed/transactions need correction. Compare with working envs",
+      "when": "next_sweep"
     },
     {
       "pattern": "IES Routing Pattern.*\\d+/\\d+|surface scan routes.*404",
-      "owner": "platform",
-      "action": "Known IES limitation — working routes cover core accounting. Document 404s",
-      "when": "never"
+      "owner": "escalate",
+      "action": "Investigate per-route: which 404s are IES-wide vs env-specific? Document each route status across envs. Escalate confirmed platform gaps to Intuit",
+      "when": "next_sweep"
     },
     {
       "pattern": "CID.*[Ss]wap|CID.*mapping|CID-to-name",
@@ -46,26 +46,26 @@
     },
     {
       "pattern": "Parent Entity Limitations|expected empty states",
-      "owner": "none",
-      "action": "Expected behavior for holding company. No action needed",
-      "when": "never"
+      "owner": "investigate",
+      "action": "Verify: is empty state truly expected for this entity type? Compare with other parent entities across envs. If abnormal, investigate data population",
+      "when": "next_sweep"
     },
     {
       "pattern": "Shared COA|same.*Chart of Accounts",
       "owner": "none",
-      "action": "Confirms correct multi-entity setup. No action needed",
+      "action": "Confirms correct multi-entity setup. Validated",
       "when": "never"
     },
     {
       "pattern": "Manufacturing Dataset|construction-specific.*N/A",
       "owner": "none",
-      "action": "Conditional checks N/A for this dataset type",
+      "action": "Conditional checks N/A for this dataset type. Validated",
       "when": "never"
     },
     {
       "pattern": "content safety warning|CS\\d.*WARN|CS\\d.*FLAG",
       "owner": "auto",
-      "action": "Check and fix content safety flags during next sweep",
+      "action": "Fix content safety flags during sweep — rename/remove flagged content",
       "when": "next_sweep"
     },
     {
@@ -76,8 +76,8 @@
     },
     {
       "pattern": "Intuit SE email|intuit\\.com",
-      "owner": "manual",
-      "action": "Request Intuit SE email removal from platform team or edit via QBO Settings",
+      "owner": "escalate",
+      "action": "Escalate to Intuit: request SE email removal. If no response, edit via QBO Settings > Company during sweep",
       "when": "next_sweep"
     },
     {
