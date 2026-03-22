@@ -138,7 +138,13 @@ dashboard/pending/
 /hyperlink_formulas.txt
 /snapshot_*.md
 /terra_snapshot.md
+/*_snapshot.md
+/coa_snapshot.md
+/je_validation_error.md
 /sweep_results.json
+/upload_*.py
+/sessions/
+/data/*_snapshot.md
 
 # Ephemeral data exports
 /data/*.json
