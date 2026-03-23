@@ -6,6 +6,9 @@ import time
 from pathlib import Path
 
 from models import Account, AltCredential, Company, SweepHistoryEntry, SweepResult
+from logger import get_logger
+
+log = get_logger("qbo_data")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CREDENTIALS_PATH = BASE_DIR / "knowledge-base" / "access" / "QBO_CREDENTIALS.json"
@@ -66,6 +69,7 @@ def _parse_sweep_score(text: str) -> float | None:
     m = re.search(r"\|\s*Realism\s+Score\s*\|\s*\*?\*?(\d+(?:\.\d+)?)/10(?!\d)", text, re.IGNORECASE)
     if m:
         return float(m.group(1))
+    log.debug("Could not parse sweep score from report header: %s", header[:100])
     return None
 
 
@@ -142,7 +146,7 @@ def _parse_station_summary(text: str) -> dict:
     result = {
         "deep_pass": 0,
         "deep_blocked": 0,
-        "deep_total": 12,
+        "deep_total": 25,
         "surface_ok": 0,
         "surface_empty": 0,
         "surface_404": 0,
@@ -193,6 +197,9 @@ def _parse_station_summary(text: str) -> dict:
             result["surface_ok"] = int(surf2.group(1))
             result["surface_empty"] = int(surf2.group(2))
             result["surface_404"] = int(surf2.group(3))
+
+    if result["deep_pass"] == 0 and result["deep_blocked"] == 0:
+        log.debug("Station summary parsed 0 stations from report")
 
     return result
 
@@ -290,8 +297,8 @@ def _get_email_to_shortcode_map() -> dict[str, str]:
                 for alt in info.get("alt_credentials", []):
                     if alt.get("email"):
                         mapping[alt["email"].lower()] = sc
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning("Failed to load email→shortcode mapping: %s", e)
 
     _email_sc_cache["data"] = mapping
     _email_sc_cache["ts"] = now
@@ -382,8 +389,8 @@ def _load_workspace_accesses() -> dict[str, int]:
             if ws_id and count:
                 totals[ws_id] = totals.get(ws_id, 0) + int(count)
         wb.close()
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning("Failed to load workspace accesses: %s", e)
 
     _access_cache["data"] = totals
     _access_cache["ts"] = now
@@ -559,9 +566,9 @@ def _build_history_index() -> dict[str, list[SweepHistoryEntry]]:
         # Compute display_health (same formula as SweepResult.display_health)
         health = None
         if realism is not None:
-            health = min(realism + 20, 100)
+            health = realism
         elif score is not None:
-            health = min(int(score * 10) + 20, 100)
+            health = int(score * 10)
 
         entry = SweepHistoryEntry(
             date=date,

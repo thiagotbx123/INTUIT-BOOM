@@ -21,21 +21,21 @@ class SweepResult(BaseModel):
     entities_swept: int | None = None
     deep_pass: int = 0
     deep_blocked: int = 0
-    deep_total: int = 12
+    deep_total: int = 25  # Must match len(DEEP_STATIONS) in sweep_checks.py
     surface_ok: int = 0
     surface_empty: int = 0
     surface_404: int = 0
 
     @property
     def display_health(self) -> int | None:
-        """Unified /100 score for display. Applies +20 visual boost (cap 100).
+        """Unified /100 score for display (no boost — raw score).
 
         Priority: realism_score (native /100) > score (converted /10 → /100).
         """
         if self.realism_score is not None:
-            return min(self.realism_score + 20, 100)
+            return self.realism_score
         if self.score is not None:
-            return min(int(self.score * 10) + 20, 100)
+            return int(self.score * 10)
         return None
 
 
@@ -108,5 +108,5 @@ class Account(BaseModel):
             if self.sweep.overall_status == "FAIL":
                 return "warn"
             if self.sweep.display_health is not None:
-                return "good" if self.sweep.display_health >= 70 else "warn"
+                return "good" if self.sweep.display_health >= 60 else "warn"
         return "pending"

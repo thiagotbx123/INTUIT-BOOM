@@ -305,7 +305,7 @@ OUTPUT MENTAL: "Esta demo é sobre [descrição]. Revenue ~$X, Net ~$Y, X entiti
 
 ---
 
-## 5. AS 12 ESTAÇÕES (TIER 1 — DEEP) — MODO VER-CORRIGIR-AVANÇAR
+## 5. AS 25 ESTAÇÕES (TIER 1 — DEEP) — MODO VER-CORRIGIR-AVANÇAR
 
 Cada estação: entrar na tela, ler tudo via snapshot, corrigir o que estiver errado
 ali mesmo, validar a correção, passar para a próxima. **Sem parar para reportar.**
@@ -509,6 +509,221 @@ CORRIGIR SE:
     - Legal name vs DBA inconsistente
     - EIN ausente
 AVANÇAR quando: settings verificados, problemas anotados para report final
+```
+
+### Estação 13: ESTIMATES & PROGRESS INVOICING
+```
+Rota: /app/estimates
+VER:
+  → browser_snapshot() → ler lista de estimates, nomes, valores, status
+  → Clicar em 2-3 estimates → ver detalhes (customer, items, datas)
+  → Verificar: existem estimates convertidos em invoice? Progress invoicing usado?
+CORRIGIR SE:
+  → Nome placeholder ("Estimate 1") → Edit → renomear com escopo realista do setor
+  → Estimate expirado há >1 ano → atualizar expiration date
+  → Customer não linkado → associar customer existente (D05)
+  → Valores irrealistas ($0 ou $999M) → ajustar para faixa do setor
+CONFERIR: taxa de conversão estimate→invoice (ideal: 40-60% convertidos)
+AVANÇAR quando: estimates existem com nomes realistas e pelo menos 1 convertido
+```
+
+### Estação 14: PURCHASE ORDERS & PROCUREMENT
+```
+Rota: /app/purchaseorders (se 404, acessar via Expenses nav ou search "Purchase Order")
+VER:
+  → browser_snapshot() → ler lista de POs, vendors, status (Open/Closed)
+  → Clicar em 2-3 POs → ver items, vendor match, valores
+CONFERIR:
+  → POs linkados a Bills? (D06 cross-ref) — ideal: 30%+ dos bills vêm de POs
+  → Vendors nos POs existem em D06?
+  → Mix de Open vs Closed (tudo closed = empresa sem atividade)
+  → Items nos POs batem com Products em D08?
+AVANÇAR quando: POs verificados, linkage com bills documentada
+```
+
+### Estação 15: RECURRING TRANSACTIONS
+```
+Rota: /app/recurring
+VER:
+  → browser_snapshot() → ler templates, intervalos, próxima ocorrência
+  → Verificar: diversidade de tipos (bill/invoice/expense), vendors/customers linkados
+CORRIGIR SE:
+  → Nenhum template → criar 5-8 templates realistas do setor:
+    TODOS: Rent (monthly), Internet (monthly), Insurance (monthly), Software (monthly)
+    CONSTRUCTION: Equipment Lease (monthly), Safety Supplies (weekly)
+    TIRE SHOP: Tire Inventory (weekly), Fleet Contract (monthly)
+    NON-PROFIT: Newsletter (monthly), Grant Reporting (quarterly)
+  → Template com next occurrence no passado → atualizar para mês atual
+  → Tipo: usar "Reminder" (NÃO "Automatically create" — evita phantom txns)
+AVANÇAR quando: 5+ templates existem com intervalos variados
+```
+
+### Estação 16: FIXED ASSETS & DEPRECIATION
+```
+Rota: /app/fixed-assets?jobId=accounting (se 404, tentar /app/fixedassets)
+VER:
+  → browser_snapshot() → ler lista de assets, valores, depreciation status
+  → Verificar: assets existem? Depreciation method (SL/MACRS)? Valores realistas?
+CONFERIR:
+  → Categorias presentes (veículos, equipamento, mobiliário)?
+  → Accumulated depreciation proporcional à idade do asset?
+  → Net book value positivo? (negativo = bug de depreciação)
+  → Assets com acquisition date realista (não todos no mesmo dia)?
+NÃO CORRIGIR: fixed assets são complexos contabilmente — apenas registrar gaps
+AVANÇAR quando: módulo verificado, gaps anotados
+```
+
+### Estação 17: REVENUE RECOGNITION
+```
+Rota: /app/revenue-recognition?jobId=accounting
+VER:
+  → browser_snapshot() → verificar se módulo carrega (Advanced only)
+  → Se carrega: ler schedules, deferred revenue, recognition periods
+CONFERIR:
+  → Schedules existem? Linked a invoices?
+  → Deferred Revenue balance no BS (D03 cross-ref)?
+  → Períodos de reconhecimento realistas (não todos no mesmo mês)?
+NÃO CORRIGIR: RevRec é complexo — apenas registrar presença/ausência
+SE 404 ou vazio: anotar como "Feature not provisioned" e avançar
+AVANÇAR quando: módulo verificado ou anotado como indisponível
+```
+
+### Estação 18: TIME TRACKING & TIMESHEETS
+```
+Rota: /app/time
+VER:
+  → browser_snapshot() → ler entries, employees, projetos, horas
+  → Verificar cobertura: que % dos employees (D07) têm time entries?
+  → Que % dos projetos (D09) têm time associado?
+CONFERIR:
+  → Billable vs Non-billable ratio (ideal: 60-80% billable para construction/services)
+  → Horas por semana realistas (não 200h/semana por pessoa)
+  → Descriptions preenchidas (não vazias)
+  → Date spread (não tudo no mesmo dia)
+  → Rate linkage (employee rate bate com project billing rate?)
+NÃO CORRIGIR: dados de time são complexos de fabricar realistamente
+AVANÇAR quando: time tracking verificado, cobertura documentada
+```
+
+### Estação 19: SALES TAX & COMPLIANCE
+```
+Rota: /app/salestax
+VER:
+  → browser_snapshot() → ler agencies, filing status, liability balance
+  → Verificar: tax está configurado? Automatic Sales Tax ativo?
+CONFERIR:
+  → Agencies registradas (pelo menos 1 state agency)?
+  → Filing frequency definida?
+  → Overdue filings? (ANOTAR como P2 se >2 quarters overdue)
+  → Tax rates configurados?
+  → Products taxáveis vs non-taxáveis (cross-ref D08)?
+NÃO CORRIGIR: tax settings são perigosos de modificar
+AVANÇAR quando: compliance status documentado
+```
+
+### Estação 20: BUDGETS & VARIANCE ANALYSIS
+```
+Rota: /app/budgets
+VER:
+  → browser_snapshot() → ler budgets existentes, tipo, período
+CORRIGIR SE:
+  → Nenhum budget E setor é construction/manufacturing:
+    → Create Budget → Type P&L → Period Fiscal Year → Monthly → Pre-fill from Actual
+    → ⚠ NÃO criar budget se P&L estiver negativo (fix D02 PRIMEIRO)
+  → Após criar: verificar Budget vs Actual report (Reports → Budget vs Actual)
+CONFERIR:
+  → BvA report mostra dados em ambas colunas (Budget E Actual)?
+  → Variance % é significativa (não tudo 0% ou 100%)?
+  → Monthly spread realista (não flat $0 em meses)?
+AVANÇAR quando: budget existe e BvA report funciona (ou setor não requer)
+```
+
+### Estação 21: CLASSES, LOCATIONS & TAGS
+```
+Rotas: /app/class → /app/locations (se habilitado) → Settings → Tags
+VER:
+  → browser_snapshot() em cada → ler itens, quantidades, nomes
+  → TESTE CRÍTICO: Reports → P&L by Class — gera dados?
+CONFERIR:
+  → Classes existem E estão USADAS em transações? (P&L by Class vazio = classes inúteis)
+  → Locations existem E aparecem em reports?
+  → Tag groups definidos? Tags aplicadas em invoices/expenses?
+  → Nomes são setor-appropriate? (Construction: "Residential"/"Commercial"; NP: "Restricted"/"Unrestricted")
+  → Orphan classes/locations (0 transações) → anotar como cleanup
+NÃO CORRIGIR: atribuição de dimensões depende de contexto de negócio
+AVANÇAR quando: dimensional analysis verificada, usage documentada
+```
+
+### Estação 22: WORKFLOWS & AUTOMATION
+```
+Rota: /app/workflows
+VER:
+  → browser_snapshot() → ler workflows configurados, status (active/inactive)
+CORRIGIR SE:
+  → Nenhum workflow → criar 2-3 demo workflows:
+    "Invoice Reminder" — Trigger: Invoice overdue 7 days → Action: Send reminder email
+    "Late Payment Alert" — Trigger: Invoice overdue 30 days → Action: Notify admin
+    "Expense Approval" — Trigger: Expense > $500 → Action: Require approval
+  → SE página mostra "Coming soon" ou feature indisponível → anotar BLOCKED, skip
+CONFERIR:
+  → Workflows ativos têm triggers realistas?
+  → Execution history existe (workflows já dispararam)?
+  → Mix de trigger types (não todos iguais)?
+AVANÇAR quando: workflows verificados (existem ou criados ou BLOCKED)
+```
+
+### Estação 23: CUSTOM FIELDS & FORM TEMPLATES
+```
+Rotas: /app/settings?panel=sales (seção Custom Fields) → Custom Form Styles
+VER:
+  → browser_snapshot() → ler custom fields definidos, tipos, forms associados
+  → Verificar: template de invoice customizado existe? Logo aplicado?
+CONFERIR:
+  → Custom fields existem (target: 3-5 para Advanced)?
+  → Fields aparecem nos forms? (spot-check: abrir 1 invoice recente, verificar se custom fields visíveis)
+  → Template customizado com logo da empresa?
+  → Default template setado?
+NÃO CORRIGIR: customização é específica do cliente
+AVANÇAR quando: customization level documentado
+```
+
+### Estação 24: RECONCILIATION HEALTH & BANK RULES
+```
+Rotas: /app/reconcile → depois /app/banking > Rules tab
+VER:
+  → browser_snapshot() em reconcile → ler contas, status, última reconciliação
+  → browser_snapshot() em rules → ler regras ativas, patterns
+CORRIGIR SE:
+  → 0 bank rules → criar 5-8 rules baseadas nos top vendors (D06):
+    Pattern: IF description CONTAINS 'vendor_name' THEN Categorize + Assign vendor
+    Setores: Construction (Home Depot, ADP, United Rentals), Tire Shop (Bridgestone, NAPA)
+    Todos: AT&T/Verizon→Phone, Progressive→Insurance
+  → Auto-add=OFF em todas as rules (existir pra demo, não categorizar silenciosamente)
+CONFERIR:
+  → Contas reconciliadas? Quando foi a última? (>90 dias = stale)
+  → Unreconciled gap (período sem reconciliação)?
+  → Rules úteis ou genéricas demais?
+AVANÇAR quando: reconciliation e rules verificados
+```
+
+### Estação 25: AI FEATURES & INTUIT INTELLIGENCE
+```
+Rotas: Homepage (AI panel) → /app/business-intelligence → Intuit Assist
+VER:
+  → browser_snapshot() → verificar presença de AI features
+  → Testar Intuit Assist: perguntar "What were my top expenses last month?"
+  → Verificar: AI categorization em banking (D04 cross-ref)
+  → Financial Summary no Business Feed (D01 cross-ref)
+CONFERIR:
+  → Intuit Assist responde de forma útil?
+  → AI-categorized transactions existem no banking?
+  → Smart Match suggestions aparecem?
+  → Intuit Intelligence dashboard carrega com dados?
+  → KPI scorecard populado?
+  → AI-generated insights no Business Feed?
+NÃO CORRIGIR: AI features são platform-generated, não podem ser forçadas
+SE features indisponíveis: anotar como "AI features not provisioned" com detalhes
+AVANÇAR quando: AI features mapeadas (presentes ou ausentes)
 ```
 
 ---
@@ -753,19 +968,32 @@ SCORE FINAL = média dos 10 critérios
 ```
 Logado em TCO → Apex Tire
 
---- TIER 1: Deep Stations (12) ---
-[1/12] Dashboard ✓
-[2/12] P&L ✓ Revenue $5.2M, Net $1.3M (25%)
-[3/12] BS ✓ Assets $8.1M, balanced
-[4/12] Banking — categorizei 8 transações
-[5/12] Customers — enriched top 5 (company name, email, address, notes)
-[6/12] Vendors ✓ top 5 completos, AP aging ok
-[7/12] Employees ✓ 13 employees, payroll ok
-[8/12] Products — renomei 3 placeholders, fixei 1 preço invertido
-[9/12] Projects — criei 2 projetos novos
-[10/12] Reports ✓ KPI ok, dashboards ok
-[11/12] COA ✓ 45 contas, estrutura ok
-[12/12] Settings ✓ nome legal, industry, endereço ok
+--- TIER 1: Deep Stations (25) ---
+[1/25] Dashboard ✓
+[2/25] P&L ✓ Revenue $5.2M, Net $1.3M (25%)
+[3/25] BS ✓ Assets $8.1M, balanced
+[4/25] Banking — categorizei 8 transações
+[5/25] Customers — enriched top 5 (company name, email, address, notes)
+[6/25] Vendors ✓ top 5 completos, AP aging ok
+[7/25] Employees ✓ 13 employees, payroll ok
+[8/25] Products — renomei 3 placeholders, fixei 1 preço invertido
+[9/25] Projects — criei 2 projetos novos
+[10/25] Reports ✓ KPI ok, dashboards ok
+[11/25] COA ✓ 45 contas, estrutura ok
+[12/25] Settings ✓ nome legal, industry, endereço ok
+[13/25] Estimates ✓ 15 estimates, 8 converted, progress invoicing active
+[14/25] Purchase Orders ✓ 12 POs, 67% linked to bills
+[15/25] Recurring ✓ 8 templates, mix of monthly/weekly
+[16/25] Fixed Assets ✓ 6 assets, depreciation running
+[17/25] RevRec — N/A (feature not provisioned)
+[18/25] Time Tracking ✓ 340 entries, 72% billable
+[19/25] Sales Tax ✓ configured, 1 agency, no overdue
+[20/25] Budgets — criei budget anual from actuals, BvA ok
+[21/25] Dimensions ✓ 5 classes used, P&L by Class has data
+[22/25] Workflows — criei 3 automations
+[23/25] Custom Fields ✓ 4 fields, template with logo
+[24/25] Reconciliation — criei 6 bank rules
+[25/25] AI Features ✓ Intuit Assist works, Financial Summary present
 
 --- TIER 2: Surface Scan (20 pages) ---
 [S1-S20] ✓14 ○4 ✗2 (details below if issues found)
@@ -783,7 +1011,7 @@ Conta: quickbooks-testuser-tco-tbxdemo
 Duração: ~55 min
 Companies: Apex ✓ | Global ✓ | RoadReady ✓ | Consolidated ✓
 
---- TIER 1: Deep Stations (12/12) ---
+--- TIER 1: Deep Stations (25/25) ---
 CORRIGIDO (17 items):
 - 5 customers enriched (company name + email + address)
 - 3 products renomeados (placeholder → realista)
@@ -1096,6 +1324,85 @@ EXEMPLOS de updates:
 - Employee 2FA é 100% bloqueio → mudar Estação 7 para "skip by default"
 - Novo campo "Secondary Email" em customer edit → adicionar no checklist da Estação 5
 ```
+
+### 14.5 LEARNING LOG (OBRIGATÓRIO a partir de v7.0)
+
+Cada sweep DEVE gerar um arquivo de log estruturado além do report MD.
+Salvar em: `knowledge-base/sweep-learnings/logs/{SHORTCODE}_{DATA}_log.json`
+
+Estrutura do log:
+```json
+{
+  "meta": {
+    "account": "shortcode",
+    "date": "YYYY-MM-DD",
+    "duration_minutes": N,
+    "sweep_version": "7.0",
+    "profile": "full_sweep",
+    "entities_count": N
+  },
+  "stations": {
+    "D01": {
+      "status": "PASS|FAIL|FIXED|BLOCKED|SKIPPED",
+      "score": 8,
+      "time_spent_seconds": N,
+      "findings": [
+        {
+          "id": "D01-F01",
+          "text": "descrição do finding",
+          "severity": "P1|P2|P3",
+          "action": "FIXED|REPORTED|BLOCKED|ACCEPTED",
+          "before": "valor antes",
+          "after": "valor depois",
+          "entity": "nome da entidade"
+        }
+      ],
+      "sub_checks": {
+        "D01.1": "PASS",
+        "D01.2": "PASS",
+        "D01.3": "FAIL — widget P&L não bate com report"
+      },
+      "notes": "observação livre do auditor"
+    }
+  },
+  "summary": {
+    "total_findings": N,
+    "p1": N, "p2": N, "p3": N,
+    "fixed": N, "blocked": N, "reported": N,
+    "coverage": {
+      "deep": "25/25",
+      "surface": "43/46",
+      "conditional": "8/19"
+    },
+    "overall_score": 7.5,
+    "realism_score": 68
+  },
+  "learnings": [
+    {
+      "type": "PATTERN|BUG|WORKAROUND|IMPROVEMENT",
+      "description": "O que foi aprendido neste sweep",
+      "applies_to": "all|construction|tire_shop|non_profit",
+      "actionable": true,
+      "suggestion": "Como usar esse aprendizado no próximo sweep"
+    }
+  ],
+  "evolution": {
+    "new_checks_needed": ["descrição de check que faltou"],
+    "checks_that_could_be_improved": ["D02.3 deveria verificar X também"],
+    "false_positives": ["D05-F03 era falso positivo porque..."],
+    "routes_changed": ["/app/oldroute → /app/newroute"]
+  }
+}
+```
+
+**Regras do Learning Log:**
+1. O log é MACHINE-READABLE (JSON) — o report MD é HUMAN-READABLE
+2. Todo finding DEVE ter before/after quando foi FIXED
+3. Sub_checks devem refletir EXATAMENTE os sub_checks definidos em sweep_checks.py
+4. A seção "learnings" captura INSIGHTS que melhoram sweeps futuros
+5. A seção "evolution" propõe mudanças concretas ao sistema
+6. NÃO incluir credentials no log (password, TOTP)
+7. O log é commitado junto com o report no Git
 
 ---
 

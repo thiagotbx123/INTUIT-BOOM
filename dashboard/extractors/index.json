@@ -1,0 +1,12 @@
+{
+  "E01": {"file": "e01_dashboard.js", "name": "Dashboard (D01)", "description": "Company name, P&L widget nums, 404/placeholder detection"},
+  "E02": {"file": "e02_pnl.js", "name": "P&L / Financial Report (D02)", "description": "Total Income, Expenses, Net Income, COGS, negative detection"},
+  "E03": {"file": "e03_entity_list.js", "name": "Entity List", "description": "Customers/Vendors/Employees/Products count, first 8 rows, placeholder detection"},
+  "E04": {"file": "e04_surface_scan.js", "name": "Surface Scan Generic", "description": "Generic page scan: line count, 404 detection, placeholder detection, first 5 lines"},
+  "E05": {"file": "e05_entity_switch.js", "name": "Entity Switch Verify", "description": "Verify entity after switch: URL, company name, loaded state"},
+  "E06": {"file": "e06_bs_sidebar.js", "name": "Balance Sheet Sidebar (D03 IES Workaround)", "description": "Find Balance Sheet link and report links via sidebar navigation"},
+  "E07": {"file": "e07_je_form.js", "name": "Journal Entry Form", "description": "JE form field values and save button visibility before submission"},
+  "E08": {"file": "e08_banking.js", "name": "Banking Categorization (D04)", "description": "Pending banking transactions with categories, amounts, and Post button status"},
+  "E09": {"file": "e09_bs_universal.js", "name": "Balance Sheet Universal (D03)", "description": "All Total rows from BS table, key account fallbacks, negatives, period"},
+  "E10": {"file": "e10_surface_batch.js", "name": "Surface Scan Batch", "description": "Quick page load check: OK/X/EMPTY/WARN status, line count, title, snippet"}
+}
