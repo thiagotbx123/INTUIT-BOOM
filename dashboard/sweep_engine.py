@@ -270,6 +270,15 @@ Realism Score: YY/100
 Sem esses campos o dashboard NAO parseia o score e aparece "--" na UI.
 NUNCA usar "Realism Score" sozinho no header — SEMPRE incluir "Overall Score: X/10".
 
+**REGRA #8 — PROFUNDIDADE OBRIGATORIA (DRILL INTO GOD)**
+O CHAT mostra 1 linha por station (progresso rapido durante execucao).
+O REPORT MD mostra o DEPTH PROTOCOL completo (secao 8.5 abaixo).
+Um one-liner "[D05] ✓ 70 customers" NO REPORT e FRAUDE — isso so serve pro chat.
+CHAT = indicador de progresso. REPORT = analise profunda com metricas, records, cross-refs.
+Para cada D station no REPORT: seguir o template e MINIMOS da tabela na secao 8.5.
+Se o station tem dados: MINIMO 8 linhas com metricas, top records nomeados, e cross-reference.
+Se o station e N/A ou vazio: 1 linha com razao e suficiente.
+
 ---
 
 ## 1. LOGIN
@@ -376,51 +385,179 @@ NUNCA: company settings, employee edits com 2FA, feature flags, payroll, deletes
 
 {"HABILITADO — pontuar 10 criterios de 1-10 ao final." if profile_data.get("realism_scoring", True) else "DESABILITADO"}
 
+## 8.5 DEPTH PROTOCOL — FORMATO OBRIGATORIO DO REPORT
+
+O REPORT MD (arquivo salvo) DEVE seguir este protocolo. One-liners sao para o CHAT, nao para o report.
+
+### TEMPLATE POR DEEP STATION (copiar para cada D):
+```
+### DXX — [Name] — Score: X/10
+
+**Metrics:**
+| Metric | Value |
+|--------|-------|
+| [primary count] | [number] |
+| [primary dollar] | [$amount] |
+| [sector KPI] | [value] |
+
+**Top Records (drill-in):**
+1. **[Name]** — [metric], fields: [complete/gaps], [action if any]
+2. **[Name]** — [metric], fields: [complete/gaps]
+3. **[Name]** — [metric], fields: [complete/gaps]
+
+**Cross-Ref:** [DXX vs DYY]: [match/mismatch + numbers]
+**Findings:** [P1/P2 with names and amounts, or CLEAN]
+**Fixes:** [action + before→after verified, or NONE]
+```
+
+### MINIMOS POR STATION (OBRIGATORIO):
+
+| Station | Min Records Nomeados | Min Metricas | Cross-Ref | KPI Obrigatorio |
+|---------|---------------------|-------------|-----------|-----------------|
+| D01 Dashboard | 0 (widgets) | 4 (Income,Expense,Net,Bank) | D02 | Data recency (dias) |
+| D02 P&L | 3 (top revenue lines) | 5 (Rev,COGS,Gross,Net,Margin%) | D01,D03,D08 | Margin % |
+| D03 BS | 3 (top balance accounts) | 4 (Assets,Liab,Equity,AR) | D02,D04 | A=L+E check |
+| D04 Banking | 3 (bank accounts) | 4 (QBbal,Bankbal,Pending,Cat%) | D03 | Categorized % |
+| D05 Customers | 5 (top by AR, com nome) | 5 (Count,AR,Top5,Overdue,DSO) | D03 | DSO (dias) |
+| D06 Vendors | 5 (top by AP, com nome) | 5 (Count,AP,Aging,Overdue%,Conc%) | D02,D03 | Concentration % |
+| D07 Employees | 3 (nomes + cargo) | 3 (Count,AvgSalary,OverdueFilings) | D02 | Payroll/Rev % |
+| D08 Products | 5 (top por volume) | 4 (Count,AvgPrice,Margin%,DescFill%) | D02 | Avg margin % |
+| D09 Projects | 3 (com Income/Cost/Margin) | 4 (Count,TotalValue,AvgMargin,Status) | D02,D05 | Budget vs Actual |
+| D10 Reports | 0 (lista) | 3 (ReportsAvailable,Core4,KPI) | D02,D03 | P&L by Class? |
+| D11 COA | 3 (sample accounts) | 3 (Total,HierarchyOK?,Orphans) | D02,D03 | Classification % |
+| D12 Settings | 0 (config) | 5 (Industry,Address,Phone,Legal,EIN) | D05,D06 | Completeness % |
+| D13 Estimates | 3 (com valor + status) | 4 (Count,Conversion%,AvgAmt,Expiry) | D05 | Conversion % |
+| D14 POs | 2 (com vendor + valor) | 3 (Count,POBillLink%,StatusDist) | D06,D08 | Linkage % |
+| D15 Recurring | 2 (com tipo + interval) | 3 (Count,TypeDiversity,NextDate) | D05,D06 | Active % |
+| D16 Fixed Assets | 2 (com valor + method) | 3 (Count,TotalNBV,DeprecRunning?) | D03 | NBV vs BS |
+| D17 RevRec | 1 (schedule) | 2 (Count,DeferredBal) | D02,D03 | Recognized % |
+| D18 Time | 3 (entries com employee) | 4 (Count,EmpCoverage%,Billable%,Hrs) | D07,D09 | Billable % |
+| D19 Tax | 0 (config) | 3 (Agencies,FilingFreq,Overdue) | D05,D08 | Taxable item % |
+| D20 Budgets | 1 (budget detail) | 3 (Exists?,BvARange,Period) | D02 | BvA populated? |
+| D21 Dimensions | 3 (classes com txn count) | 3 (ClassCount,TxnCoverage%,Orphan%) | D02 | P&L by Class? |
+| D22 Workflows | 2 (com trigger + status) | 3 (Count,Active%,ExecHistory?) | D05 | Execution count |
+| D23 Custom Fields | 2 (com tipo + form) | 3 (Count,TypeVariety,Population%) | D05 | Population % |
+| D24 Reconciliation | 2 (rules com pattern) | 3 (RuleCount,LastReconcile,Coverage%) | D04,D06 | Reconciled? |
+| D25 AI | 0 (features) | 3 (Assist?,AICategorization?,Summary?) | D01,D04 | Insight count |
+
+### PROFUNDIDADE POR TIER DE ENTITY:
+- **P0 Parent**: 15-25 linhas por D station (FULL depth — metricas + records nomeados + cross-ref + findings)
+- **P0 Children (top 2)**: 8-12 linhas por D station (D01-D12 completo, D13-D25 se relevante)
+- **P1 Children**: 3-5 linhas por station (D01+D02+D05+D06 apenas — rapido mas com metricas)
+- **Consolidated**: 8-12 linhas (D01+D02+D10+D11 + C01-C04 cross-entity)
+- **Se N/A ou vazio**: 1 linha com razao ("D17 — RevRec — N/A: modulo sem dados/nao provisionado")
+
+---
+
 ## 9. OUTPUT
 
+### 9.1 CHAT (durante execucao — progresso rapido)
 ```
-Logado em {acct.label} → [nome empresa]
-CONTEXTO: [tipo] ~$[X]M revenue, {len(acct.companies)} entities, {acct.dataset}
-
---- ENTITY 1: [nome] (parent) — DEEP D01-D25 ---
-[D01] Dashboard ✓ Income $X | Bank $Y
-[D02] P&L ✓ Revenue $X, Net $Y, Margin Z%
-[D03] BS ✓ Assets $X, Liabilities $Y, balanced
-...cada D individual, NUNCA agrupar...
-[D13] Estimates ✓ 15 estimates, 40% converted
-[D14] POs ✓ 8 POs, 60% linked to bills
-...
-[D25] AI ✓ Intuit Assist responsive, 3 AI insights
---- SURFACE ({len(surface)} pages) ---
-[S01-S10] ✓✓✓✓✓○✓✓✓✓
-[S11-S20] ✓✓✗✓✓✓✓✓✓○
-...todas as 46 paginas...
---- CONDITIONAL ---
-[C01-C04] ✓✓✓✓ (multi-entity)
-...
---- ENTITY 2: [nome] (child P0) — DEEP D01-D25 ---
-...mesmo nivel de detalhe...
---- ENTITY 3: [nome] (child P0) — DEEP D01-D25 ---
-...
---- CONSOLIDATED VIEW ---
-[D01][D02][D10][D11] + [C01-C04]
---- P1 ENTITIES (rapido D01+D02+D05+D06) ---
-[Ironcraft] D01 ✓ | D02 CORRIGIDO JE $5K | D05 ✓ | D06 ✓
-[Stonecraft] D01 ✓ | D02 ✓ Net +$8K | D05 ✓ | D06 ✓
-...cada P1 em SUA linha...
+[D01] ✓ Income $375K | Net $153K | Bank $82M
+[D02] CORRIGIDO: JE $75K → Net agora +$20K (margin 5.4%)
+[D05] ✓ 70 customers | Top: Ali Khan $289K | DSO 45d
 ```
 
-**FORMATO DO HEADER DO REPORT (OBRIGATORIO para o dashboard parsear):**
+### 9.2 REPORT MD (arquivo salvo — DEPTH PROTOCOL COMPLETO)
+
+**HEADER OBRIGATORIO (dashboard parser depende destes campos EXATAMENTE assim):**
 ```
 # SWEEP REPORT — [LABEL]
-## Date: YYYY-MM-DD
-## Overall Score: X.X/10
-## Realism Score: YY/100
-## Status: COMPLETED
+**Date:** YYYY-MM-DD
+**Overall Score:** X.X/10
+**Realism Score:** YY/100
+**Status:** PASS|FAIL
+**Fixes Applied:** N
+**Entities:** N
+**Profile:** [profile name]
+**Account:** [email]
+**Dataset:** [dataset]
 ```
-⚠ "Overall Score" DEVE estar EXATAMENTE nesse formato ou o dashboard mostra "--"
+⚠ "**Overall Score:**" DEVE estar EXATAMENTE nesse formato ou o dashboard mostra "--"
 
-Report: `{dashboard_path}/../knowledge-base/sweep-learnings/{{shortcode}}_YYYY-MM-DD.md`
+**EXEMPLO D01 (NIVEL ESPERADO — parent P0):**
+```
+### D01 — Dashboard & First Impression — Score: 8/10
+
+**Metrics:**
+| Metric | Value |
+|--------|-------|
+| Income Widget | $375K |
+| Expense Widget | $222K |
+| Net Income | $153K (margin 40.8%) |
+| Bank Balance | $82.4M (AR inflation from prior cycle) |
+| Data Recency | Current month ✓ |
+| AI Agent Presence | Finance AI active, 3 monthly summaries |
+
+**Widget Drill-In:**
+- P&L widget → clicked, drills to full P&L report ✓, numbers match
+- Invoice widget → 12 unpaid ($186K), 5 overdue ($53K)
+- Business Feed → 3 AI tiles (Jan/Feb/Mar summaries), newest 3 days old ✓
+
+**Cross-Ref:** D02 P&L report shows same $153K Net ✓
+**Findings:** CLEAN
+**Fixes:** NONE
+```
+
+**EXEMPLO D05 (NIVEL ESPERADO — parent P0):**
+```
+### D05 — Customers & AR — Score: 7/10
+
+**Metrics:**
+| Metric | Value |
+|--------|-------|
+| Total Customers | 70 |
+| AR Total | $4.38M |
+| Overdue Invoices | 12 ($186K) |
+| DSO | 45 days |
+| Top Concentration | Ali Khan = 6.6% of AR |
+
+**Top 5 Customers (by AR):**
+1. **Ali Khan / Beacon Investments** — $289K AR, email ✓, address ✓, phone ✗, notes ✗ → ENRICHED (added phone + notes)
+2. **Sophia Chang / Chang Design** — $177K AR, all fields ✓
+3. **National Guard Bureau** — $142K AR, email ✗ (govt entity), address ✓
+4. **Metro Dev Corp** — $98K AR, all fields ✓
+5. **Riverside Holdings** — $76K AR, notes ✗ → ENRICHED (added notes)
+
+**Invoice Sample (1 random):**
+- INV-2026-0412: Ali Khan, $28,500, 3 line items (Framing $15K, Electrical $8.5K, Materials $5K), Paid ✓, payment linked ✓
+
+**Cross-Ref:** AR $4.38M vs BS AR line (D03) = $4.38M ✓ match
+**Content Safety:** CS3: "12345 Auction" → FIXED: renamed to "Harbor Point Estates"
+**Findings:**
+- P2: 3/70 customers missing phone (4%)
+- P2: 1 placeholder name fixed (12345 Auction)
+**Fixes:** Enriched Ali Khan (phone+notes), Riverside (notes), renamed 12345 Auction
+```
+
+**MESMO NIVEL DE PROFUNDIDADE para D02-D25 (seguir template + minimos da tabela 8.5)**
+
+### TABELA-RESUMO POR ENTITY (OBRIGATORIA — parser do dashboard precisa):
+
+Ao FINAL de cada entity, incluir tabela compacta:
+```
+| Station | Status | Key Metric |
+|---------|--------|------------|
+| D01 | ✓ | Net $153K |
+| D02 | ✓ | Margin 54% |
+| D03 | ✓ | A=L+E balanced |
+| D04 | ✓ | 85% categorized |
+| D05 | ✓ | 70 customers, DSO 45d |
+| D06 | ⚠ | AP $1M, concentration 22% |
+...D07-D25...
+```
+Esta tabela e a que o dashboard le para contabilizar stations PASS/FAIL.
+
+### SECOES OBRIGATORIAS DO REPORT (apos todas entities):
+
+1. **## P1 FINDINGS** — Lista priorizada (P1/P2/P3) com entity, station, nome, valor, acao
+2. **## CONTENT SAFETY** — Tabela CS1-CS9: violations found, fixed, remaining
+3. **## FIXES APPLIED** — Tabela: Station | Entity | Before | After | Verified?
+4. **## CROSS-ENTITY COMPARISON** (se multi-entity) — Matriz com metricas por entity
+5. **## REALISM SCORING** — 10 criterios com score e evidencia
+6. **## SESSION METADATA** — Data, duracao, versao, stations auditados, entities processados
+
+Report path: `{dashboard_path}/../knowledge-base/sweep-learnings/{{shortcode}}_YYYY-MM-DD.md`
 Ao terminar: LATEST_SWEEP.json status → "completed" + overall_score + realism_score.
 
 ## 10. PROGRESS TRACKING (OBRIGATORIO)
