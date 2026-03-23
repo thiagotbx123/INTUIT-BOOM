@@ -207,28 +207,68 @@ Se fixes_applied contem um record → NAO editar de novo.
 VER → DRILL-IN (top 3-5 records) → CORRIGIR → ENRIQUECER → AVANCAR
 100% autonomo. Sem screenshots. Sem relatorio intermediario. 1 linha por station no chat.
 
+**REGRA #0 — AUTONOMIA TOTAL (MAIS IMPORTANTE QUE TODAS AS OUTRAS)**
+Este sweep e 100% AUTONOMO do inicio ao fim.
+- NUNCA perguntar "Want me to continue?", "Shall I proceed?", "Do you want me to..."
+- NUNCA parar entre entities para pedir confirmacao ou reportar progresso parcial
+- NUNCA inventar "time constraint" como desculpa para pular checks
+- NUNCA agrupar stations em bloco ("D16-D25 ✓ accessible") — CADA station INDIVIDUAL
+- TODAS as entities (P0 + P1 + Consolidated) DEVEM ser processadas em sequencia
+- O sweep SO PARA quando: (1) TODAS entities processadas, (2) login falhou 3x, ou (3) browser crashou
+- Se ficou em duvida: DOCUMENTAR e CONTINUAR. Nunca pausar.
+- Se um fix falhou: RETENTAR 1x. Se falhar de novo: documentar e avancar (REGRA #5).
+
 **REGRA #2 — TOKEN MANAGEMENT**
 - NUNCA retornar innerText > 500 chars
 - NUNCA ler output de browser_navigate (13K+ tokens)
 - Apos navigate: IMEDIATAMENTE browser_evaluate com extrator JS
 - Se estourar: refazer com extrator menor. NAO ler arquivo salvo.
 
-**REGRA #3 — ANTI-SKIP**
-Cada Deep Station DEVE ter report: `[D01] ✓ Net $292K | Income $256K`
-Se corrigiu: `[D02] CORRIGIDO: JE $200K, Net agora +$285K`
-Se bloqueado: `[D07] BLOQUEADO: 2FA exigido`
+**REGRA #3 — ANTI-SKIP (TOLERANCIA ZERO)**
+Cada Deep Station DEVE ter report INDIVIDUAL com dados reais:
+  `[D01] ✓ Net $292K | Income $256K`
+  `[D02] CORRIGIDO: JE $200K, Net agora +$285K`
+  `[D07] BLOQUEADO: 2FA exigido`
+  `[D16] ✓ 6 fixed assets, depreciation SL, net book $430K`
+PROIBIDO agrupar stations: `[D16-D25] ✓` e FRAUDE. Cada D tem que ter SUA linha.
+Se a station nao tem dados (ex: RevRec vazio): `[D17] N/A — modulo sem dados`
+Se 404: `[D16] 404 — tentei /app/fixed-assets?jobId=accounting, fallback sidebar`
 
-**REGRA #4 — COBERTURA POR ENTITY**
-- Parent: D01-D12 completo + Surface + Conditional
-- Child: MINIMO D01+D02+D05+D06 individual
-- Consolidated: D01+D02+D10+D11 + C01-C04
+**REGRA #4 — COBERTURA POR ENTITY (PROCESSAR TODAS SEM PARAR)**
+MINIMO OBRIGATORIO:
+- P0 (Parent): D01-D25 TODOS + Surface TODAS 46 + Conditional aplicaveis
+- P0 (Top 2 children): D01-D25 TODOS + Surface
+- P1 (Demais children): D01+D02+D05+D06 (rapido mas INDIVIDUAL)
+- Consolidated (se existir): D01+D02+D10+D11 + C01-C04
+ORDEM: Parent → Child 1 → Child 2 → Consolidated → P1 children (rapido)
+IMPORTANTE: NAO existe "time constraint". Execute TUDO.
+Se o context window estiver grande: use /compact e continue. NAO pare.
 
 **REGRA #5 — ANTI-LOOP**
 Se falhar 2x no mesmo item → documentar e avancar. NAO entrar em loop.
+Se um fix falhou 1x → RETENTAR 1x com abordagem diferente. Se falhar de novo → documentar.
 
 **REGRA #5B — SESSION KEEPALIVE**
 A cada 15min: navigate homepage + extrator E01 para confirmar sessao.
 Se redirecionar para accounts.intuit.com → re-login (max 3 tentativas).
+
+**REGRA #6 — CORRECAO OBRIGATORIA (FIX, NAO APENAS REPORT)**
+Findings de CS2 (placeholder) e CS3 (test names): CORRIGIR IMEDIATAMENTE, nao apenas anotar.
+- Vendor "test jones" → Edit → renomear para nome realista do setor → Save
+- Project "Test Delete" → Edit → renomear para nome de projeto real → Save
+- Estimate "#1" → Edit → dar titulo descritivo → Save
+Se ENCONTROU um problema fixavel (tier fix_immediately): CORRIJA antes de avancar.
+Sweep que DETECTA mas NAO CORRIGE e inutil — qualquer um pode ler uma tela.
+O VALOR do sweep e CORRIGIR, nao listar.
+
+**REGRA #7 — QUALIDADE DO REPORT**
+O report final (MD) DEVE ter no header EXATAMENTE:
+```
+Overall Score: X.X/10
+Realism Score: YY/100
+```
+Sem esses campos o dashboard NAO parseia o score e aparece "--" na UI.
+NUNCA usar "Realism Score" sozinho no header — SEMPRE incluir "Overall Score: X/10".
 
 ---
 
@@ -259,7 +299,13 @@ Se redirecionar para accounts.intuit.com → re-login (max 3 tentativas).
 |------|-----|------|------------|
 {chr(10).join(companies_lines)}
 
-Ordem: P0 primeiro (Deep+Surface+Conditional), depois P1 (D01+D02 rapido).
+**ORDEM OBRIGATORIA (SEM PULAR NENHUMA ETAPA):**
+1. P0 Parent: D01-D25 completo + Surface 46 pages + Conditional
+2. P0 Child 1: D01-D25 completo + Surface
+3. P0 Child 2: D01-D25 completo + Surface
+4. Consolidated View (se existir): D01+D02+D10+D11 + C01-C04
+5. P1 Children (rapido): D01+D02+D05+D06 para CADA um individualmente
+NAO existe "time constraint". Execute TUDO. Se context grande: /compact e continue.
 {switch_block}
 
 ## FASE ZERO — CONTEXTO DO NEGOCIO
@@ -316,7 +362,9 @@ Agrupar em lotes: `[S01-S06] ✓✓✓○✗✓`
 {chr(10).join(safety_lines)}
 
 CS1 (profanity) ou CS4 (PII): PARAR e corrigir IMEDIATAMENTE.
-CS2 (placeholder): corrigir inline com nome realista.
+CS2 (placeholder): CORRIGIR INLINE — Edit → nome realista → Save. NAO apenas anotar.
+CS3 (test names): CORRIGIR INLINE — "test jones" → "Johnson & Associates". NAO deixar pra report.
+DETECTAR sem CORRIGIR e INACEITAVEL. O valor do sweep e a correcao, nao a lista de problemas.
 
 ## 7. FIX RULES
 
@@ -334,16 +382,45 @@ NUNCA: company settings, employee edits com 2FA, feature flags, payroll, deletes
 Logado em {acct.label} → [nome empresa]
 CONTEXTO: [tipo] ~$[X]M revenue, {len(acct.companies)} entities, {acct.dataset}
 
---- ENTITY 1: [nome] (parent) ---
+--- ENTITY 1: [nome] (parent) — DEEP D01-D25 ---
 [D01] Dashboard ✓ Income $X | Bank $Y
 [D02] P&L ✓ Revenue $X, Net $Y, Margin Z%
+[D03] BS ✓ Assets $X, Liabilities $Y, balanced
+...cada D individual, NUNCA agrupar...
+[D13] Estimates ✓ 15 estimates, 40% converted
+[D14] POs ✓ 8 POs, 60% linked to bills
 ...
+[D25] AI ✓ Intuit Assist responsive, 3 AI insights
 --- SURFACE ({len(surface)} pages) ---
-[S01-S06] ✓✓✓○✗✓
+[S01-S10] ✓✓✓✓✓○✓✓✓✓
+[S11-S20] ✓✓✗✓✓✓✓✓✓○
+...todas as 46 paginas...
+--- CONDITIONAL ---
+[C01-C04] ✓✓✓✓ (multi-entity)
 ...
+--- ENTITY 2: [nome] (child P0) — DEEP D01-D25 ---
+...mesmo nivel de detalhe...
+--- ENTITY 3: [nome] (child P0) — DEEP D01-D25 ---
+...
+--- CONSOLIDATED VIEW ---
+[D01][D02][D10][D11] + [C01-C04]
+--- P1 ENTITIES (rapido D01+D02+D05+D06) ---
+[Ironcraft] D01 ✓ | D02 CORRIGIDO JE $5K | D05 ✓ | D06 ✓
+[Stonecraft] D01 ✓ | D02 ✓ Net +$8K | D05 ✓ | D06 ✓
+...cada P1 em SUA linha...
 ```
 
-Report: `C:/Users/adm_r/Clients/intuit-boom/knowledge-base/sweep-learnings/{{shortcode}}_YYYY-MM-DD.md`
+**FORMATO DO HEADER DO REPORT (OBRIGATORIO para o dashboard parsear):**
+```
+# SWEEP REPORT — [LABEL]
+## Date: YYYY-MM-DD
+## Overall Score: X.X/10
+## Realism Score: YY/100
+## Status: COMPLETED
+```
+⚠ "Overall Score" DEVE estar EXATAMENTE nesse formato ou o dashboard mostra "--"
+
+Report: `{dashboard_path}/../knowledge-base/sweep-learnings/{{shortcode}}_YYYY-MM-DD.md`
 Ao terminar: LATEST_SWEEP.json status → "completed" + overall_score + realism_score.
 
 ## 10. PROGRESS TRACKING (OBRIGATORIO)
