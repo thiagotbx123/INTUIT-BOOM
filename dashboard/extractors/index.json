@@ -8,5 +8,6 @@
   "E07": {"file": "e07_je_form.js", "name": "Journal Entry Form", "description": "JE form field values and save button visibility before submission"},
   "E08": {"file": "e08_banking.js", "name": "Banking Categorization (D04)", "description": "Pending banking transactions with categories, amounts, and Post button status"},
   "E09": {"file": "e09_bs_universal.js", "name": "Balance Sheet Universal (D03)", "description": "All Total rows from BS table, key account fallbacks, negatives, period"},
-  "E10": {"file": "e10_surface_batch.js", "name": "Surface Scan Batch", "description": "Quick page load check: OK/X/EMPTY/WARN status, line count, title, snippet"}
+  "E10": {"file": "e10_surface_batch.js", "name": "Surface Scan Batch", "description": "Quick page load check: OK/X/EMPTY/WARN status, line count, title, snippet"},
+  "E11": {"file": "e11_dashboard_pnl_widget.js", "name": "Dashboard P&L Widget (D01)", "description": "P&L widget extraction: net profit, income, expenses, period filter, negative detection. Use AFTER E01 on homepage."}
 }
