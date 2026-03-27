@@ -180,7 +180,7 @@ async def config_panel(request: Request, profile: str = "", account: str = ""):
     if not profile and acct_cfg.get("profile") and acct_cfg["profile"] in profiles:
         active_profile = acct_cfg["profile"]
     else:
-        active_profile = profile if profile and profile in profiles else "full_sweep"
+        active_profile = profile if profile and profile in profiles else "god_complete"
     p = profiles[active_profile]
 
     return templates.TemplateResponse(
@@ -234,7 +234,7 @@ async def api_save_account(request: Request):
 
 
 @app.post("/api/config/activate-sweep", response_class=HTMLResponse)
-async def api_activate_sweep(request: Request, profile: str = "full_sweep", account: str = "", force: str = ""):
+async def api_activate_sweep(request: Request, profile: str = "god_complete", account: str = "", force: str = ""):
     """Save sweep config to pending file. Claude Code reads it on 'roda'."""
     import datetime
     import json as json_mod
@@ -275,7 +275,7 @@ async def api_activate_sweep(request: Request, profile: str = "full_sweep", acco
             pass  # corrupted file, proceed normally
 
     profiles = load_profiles()
-    p = profiles.get(profile, profiles["full_sweep"])
+    p = profiles.get(profile, profiles["god_complete"])
 
     sweep_order = {
         "activated_at": datetime.datetime.now().isoformat(),
@@ -425,8 +425,8 @@ async def api_resume_sweep():
         return HTMLResponse("<div class='error'>Account not found</div>", status_code=404)
 
     profiles = load_profiles()
-    profile_key = data.get("profile", "full_sweep")
-    p = profiles.get(profile_key, profiles["full_sweep"])
+    profile_key = data.get("profile", "god_complete")
+    p = profiles.get(profile_key, profiles["god_complete"])
 
     # Extract progress
     progress = data.get("progress", {})

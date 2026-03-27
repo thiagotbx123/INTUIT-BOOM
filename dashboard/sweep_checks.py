@@ -2213,10 +2213,10 @@ def get_all_checks():
 
 
 def get_default_profile():
-    """Return the default full sweep profile."""
+    """Return the God Complete v8.0 profile — the ONLY profile."""
     return {
-        "name": "Full Sweep v7.0 Deep Expansion",
-        "description": "25 Deep (~195 sub_checks) + 46 Surface + 19 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation = 112 items",
+        "name": "God Complete v8.0",
+        "description": "UNICO profile. Todas 161+ checks habilitadas. Sem excecao.",
         "checks": {c["id"]: True for c in get_all_checks()},
         "fix_tiers": {"fix_immediately": True, "fix_and_report": True, "never_fix": False},
         "content_safety": {c["id"]: True for c in CONTENT_SAFETY},

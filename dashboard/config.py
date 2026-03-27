@@ -44,80 +44,44 @@ def _save_json(path: Path, data):
 
 
 def load_profiles() -> dict:
-    """Load saved sweep profiles."""
+    """Load sweep profiles — God Complete v8.0 is the ONLY profile.
+
+    No more full_sweep/quick_sweep/surface_only. One profile, all checks enabled.
+    """
     profiles = _load_json(PROFILES_FILE, {})
-    # Always ensure default exists and is up-to-date
-    current_default = get_default_profile()
-    if (
-        "full_sweep" not in profiles
-        or profiles["full_sweep"].get("name") != current_default["name"]
-        or profiles["full_sweep"].get("description") != current_default["description"]
-    ):
-        profiles["full_sweep"] = current_default
-        _save_json(PROFILES_FILE, profiles)
-    # Regenerate built-in profiles if check counts changed (detect stale profiles)
-    _expected_surface_count = len(SURFACE_SCAN)
-    _qs_stale = (
-        "quick_sweep" in profiles
-        and len([k for k in profiles["quick_sweep"].get("checks", {}) if k.startswith("S")]) < _expected_surface_count
-    )
-    if "quick_sweep" not in profiles or _qs_stale:
-        profiles["quick_sweep"] = {
-            "name": "Quick Sweep",
-            "description": "Core financial health only (D01-D06 + Surface)",
-            "checks": {
-                **{s["id"]: int(s["id"][1:]) <= 6 for s in DEEP_STATIONS},
-                **{s["id"]: True for s in SURFACE_SCAN},
-                **{s["id"]: False for s in CONDITIONAL_CHECKS},
-            },
-            "fix_tiers": {"fix_immediately": True, "fix_and_report": False, "never_fix": False},
-            "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
-            "realism_scoring": False,
-        }
-    _so_stale = (
-        "surface_only" in profiles
-        and len([k for k in profiles["surface_only"].get("checks", {}) if k.startswith("S")]) < _expected_surface_count
-    )
-    if "surface_only" not in profiles or _so_stale:
-        profiles["surface_only"] = {
-            "name": "Surface Only",
-            "description": "Surface pages — no corrections, fast scan",
-            "checks": {
-                **{s["id"]: False for s in DEEP_STATIONS},
-                **{s["id"]: True for s in SURFACE_SCAN},
-                **{s["id"]: False for s in CONDITIONAL_CHECKS},
-            },
-            "fix_tiers": {"fix_immediately": False, "fix_and_report": False, "never_fix": False},
-            "content_safety": {c["id"]: True for c in CONTENT_SAFETY},
-            "realism_scoring": False,
-        }
-    # Reconcile all profiles — add any new checks/content_safety that code defines but JSON doesn't have
+
+    # Ensure god_complete exists with ALL checks enabled
     all_check_ids = {c["id"] for c in get_all_checks()}
     all_cs_ids = {c["id"] for c in CONTENT_SAFETY}
     all_rv_ids = {r["id"] for r in REVALIDATION_RULES}
-    dirty = False
-    for key, prof in profiles.items():
-        # Add missing check IDs (default True for full_sweep, False for others)
-        for cid in all_check_ids:
-            if cid not in prof.get("checks", {}):
-                prof.setdefault("checks", {})[cid] = key == "full_sweep"
-                dirty = True
-        # Add missing content safety IDs (default True for all profiles)
-        for csid in all_cs_ids:
-            if csid not in prof.get("content_safety", {}):
-                prof.setdefault("content_safety", {})[csid] = True
-                dirty = True
-        # Add revalidation if missing
-        if "revalidation" not in prof:
-            prof["revalidation"] = {rid: True for rid in all_rv_ids}
-            dirty = True
-        else:
-            for rid in all_rv_ids:
-                if rid not in prof["revalidation"]:
-                    prof["revalidation"][rid] = True
-                    dirty = True
-    if dirty:
+
+    needs_regen = "god_complete" not in profiles
+    if not needs_regen:
+        # Check if any new checks are missing
+        existing = set(profiles["god_complete"].get("checks", {}).keys())
+        needs_regen = not all_check_ids.issubset(existing)
+
+    if needs_regen:
+        profiles = {
+            "god_complete": {
+                "name": "God Complete v8.0",
+                "description": "UNICO profile. Todas 161+ checks habilitadas. Sem excecao.",
+                "checks": {cid: True for cid in sorted(all_check_ids)},
+                "fix_tiers": {"fix_immediately": True, "fix_and_report": True, "never_fix": False},
+                "content_safety": {csid: True for csid in sorted(all_cs_ids)},
+                "revalidation": {rid: True for rid in sorted(all_rv_ids)},
+                "realism_scoring": True,
+            }
+        }
         _save_json(PROFILES_FILE, profiles)
+
+    # Remove legacy profiles if they crept back in
+    legacy = [k for k in profiles if k != "god_complete"]
+    if legacy:
+        for k in legacy:
+            del profiles[k]
+        _save_json(PROFILES_FILE, profiles)
+
     return profiles
 
 
@@ -129,8 +93,8 @@ def save_profile(key: str, profile: dict):
 
 
 def delete_profile(key: str):
-    """Delete a sweep profile (except defaults)."""
-    if key in ("full_sweep", "quick_sweep", "surface_only"):
+    """Delete a sweep profile (god_complete cannot be deleted)."""
+    if key == "god_complete":
         return False
     profiles = load_profiles()
     profiles.pop(key, None)
@@ -159,7 +123,7 @@ def get_account_config(shortcode: str) -> dict:
     return configs.get(
         shortcode,
         {
-            "profile": "full_sweep",
+            "profile": "god_complete",
             "overrides": {},
             "notes": "",
             "hidden": False,
@@ -173,7 +137,7 @@ def get_account_config(shortcode: str) -> dict:
 def generate_sweep_command(shortcode: str, account_label: str, account_email: str) -> str:
     """Generate the full sweep command based on account config."""
     cfg = get_account_config(shortcode)
-    profile_key = cfg.get("profile", "full_sweep")
+    profile_key = cfg.get("profile", "god_complete")
     profiles = load_profiles()
     profile = profiles.get(profile_key, get_default_profile())
 
