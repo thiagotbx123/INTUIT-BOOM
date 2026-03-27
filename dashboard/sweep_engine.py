@@ -194,7 +194,9 @@ def generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, 
 
     # Entity switch block
     if is_multi:
-        switch_block = """**Troca de entity**: `browser_navigate("https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={CID}")` → wait 5s → EXTRATOR E05
+        switch_block = """**Troca de entity**:
+Agent Browser: `agent-browser open "https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={CID}" && agent-browser wait 8000 && agent-browser get title`
+Playwright: `browser_navigate("https://qbo.intuit.com/app/multiEntitySwitchCompany?companyId={CID}")` → wait 5s → EXTRATOR E05
 Fallback: header dropdown click. Consolidated: `?switchToConsolidated=true`"""
     else:
         switch_block = "**Entity unica** — sem necessidade de troca."
@@ -258,9 +260,11 @@ Este sweep e 100% AUTONOMO do inicio ao fim.
 
 **REGRA #2 — TOKEN MANAGEMENT**
 - NUNCA retornar innerText > 500 chars
-- NUNCA ler output de browser_navigate (13K+ tokens)
-- Apos navigate: IMEDIATAMENTE browser_evaluate com extrator JS
+- Agent Browser: usar `snapshot -i -c` (interactive + compact) — ~15 linhas vs 200+
+- Agent Browser: usar `get text @ref` pra extrair texto especifico sem carregar pagina inteira
+- Playwright (fallback): NUNCA ler output de browser_navigate (13K+ tokens). Apos navigate: IMEDIATAMENTE browser_evaluate com extrator JS
 - Se estourar: refazer com extrator menor. NAO ler arquivo salvo.
+- Batch commands reduzem tool calls: `agent-browser open URL && agent-browser wait 3000 && agent-browser snapshot -i -c` = 1 call
 
 **REGRA #3 — ANTI-SKIP (TOLERANCIA ZERO)**
 Cada Deep Station DEVE ter report INDIVIDUAL com dados reais:
@@ -287,7 +291,9 @@ Se falhar 2x no mesmo item → documentar e avancar. NAO entrar em loop.
 Se um fix falhou 1x → RETENTAR 1x com abordagem diferente. Se falhar de novo → documentar.
 
 **REGRA #5B — SESSION KEEPALIVE**
-A cada 15min: navigate homepage + extrator E01 para confirmar sessao.
+Agent Browser: sessao persiste via --profile. Keepalive automatico.
+Verificacao a cada 15min: `agent-browser get url` → se contem "accounts.intuit.com" → re-login.
+Playwright (fallback): navigate homepage + extrator E01 para confirmar sessao.
 Se redirecionar para accounts.intuit.com → re-login (max 3 tentativas).
 
 **REGRA #6 — CORRECAO OBRIGATORIA (FIX, NAO APENAS REPORT)**
@@ -329,16 +335,32 @@ Se o station e N/A ou vazio: 1 linha com razao e suficiente.
 | TOTP Secret | `{acct.totp_secret}` |
 | Dataset | {acct.dataset} |
 
-**Procedimento:**
-0. `browser_navigate("https://accounts.intuit.com/app/sign-in")` → limpar cookies (JS)
+**Procedimento (Agent Browser — PREFERIDO):**
+0. `agent-browser --profile ~/.agent-browser/profiles/qbo open "https://accounts.intuit.com/app/sign-in"` (session persistence — pode pular login se sessao salva)
+1. `agent-browser snapshot -i -c` → ver form (compacto, ~15 linhas vs 200+ do Playwright)
+2. Se login form aparece: `agent-browser fill @email "{acct.email}" && agent-browser click @signIn`
+3. Se password pedida: `agent-browser fill @password "{acct.password}" && agent-browser click @submit`
+4. TOTP (se pedido): `python -c "import pyotp,time; t=pyotp.TOTP('{acct.totp_secret}'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"` → `agent-browser fill @code RESULTADO && agent-browser click @verify`
+5. Skip prompts: `agent-browser click @skip` ou `agent-browser click @notNow` se passkey/2FA prompt aparece
+6. Company selector: `agent-browser snapshot -i -c` → `agent-browser click @ENTITY_NAME`
+7. Confirmar homepage: `agent-browser get title` → deve conter "Intuit Enterprise Suite"
+
+**Vantagens Agent Browser:**
+- Snapshots 10x menores (semantic refs, compact mode)
+- Batch commands: `agent-browser open URL && agent-browser wait 5000 && agent-browser snapshot -i -c` (1 Bash call)
+- Session persistence via --profile (login salvo entre sweeps)
+- `agent-browser get text @element` extrai texto sem JS extractor
+
+**Fallback (Playwright MCP — se Agent Browser falhar):**
+0. `browser_navigate("https://accounts.intuit.com/app/sign-in")`
 1. `browser_snapshot` → ver form
 2. `browser_type` email → next → password → sign in
-3. TOTP: `python -c "import pyotp,time; t=pyotp.TOTP('{acct.totp_secret}'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"`
+3. TOTP: mesmo python command acima
 4. `browser_type` codigo → submit
-5. Skip prompts (passkey, 2FA) se aparecer
+5. Skip prompts (passkey, 2FA)
 6. `browser_evaluate` com E01 para confirmar QBO homepage
 
-**Use APENAS Playwright (browser_*). NAO use QuickBooks MCP API.**
+**Regra de tool:** TENTAR Agent Browser primeiro (via Bash tool). Se falhar 2x consecutivas, TROCAR pra Playwright MCP (browser_* tools) pro resto do sweep. NAO misturar as duas no mesmo step.
 
 ## 2. ENTITIES ({len(acct.companies)})
 
@@ -381,12 +403,53 @@ Reports: SEMPRE via /app/standardreports > clicar link
 404 CONFIRMADOS: paymentlinks, subscriptions, customformstyles, cashflow, expenseclaims
 ```
 
-### FIX PROTOCOLS (referencia rapida)
+### AGENT BROWSER CHEATSHEET (referencia rapida)
+```
+# Navegar e snapshot (1 call)
+agent-browser open "https://qbo.intuit.com/app/customers" && agent-browser wait 5000 && agent-browser snapshot -i -c
 
-**JE para P&L negativo**: /app/journal → DR AR $200K / CR Revenue $200K → memo realista → Save → re-check P&L. Data: 1o do mes atual.
-**Categorizar Bank Txns**: /app/banking → E08 → click DESCRIPTION cell (NAO vendor!) → Post → "Post anyway" → E08 novamente. ~4 calls/txn.
-**Renomear placeholder**: click record → Edit → novo nome realista → Save.
-**Pagar bills antigos (AP fix)**: /app/bills → sort oldest → Mark as paid (data = 3-7 dias apos due date, checking account). NAO pagar todos — manter 20-40% abertos.
+# Extrair texto de elemento
+agent-browser get text @e5
+
+# Clicar por ref ou por texto
+agent-browser click @e3
+agent-browser find text "Run payroll" click
+
+# Preencher campo
+agent-browser fill @e1 "valor"
+
+# Screenshot
+agent-browser screenshot pagina.png
+
+# Verificar URL/titulo (keepalive)
+agent-browser get url && agent-browser get title
+
+# Rodar JS extractor (mesmo que browser_evaluate)
+agent-browser eval "(() => {{ ... }})()"
+
+# Batch (multiplos commands em 1 call)
+agent-browser open URL && agent-browser wait 5000 && agent-browser snapshot -i -c -d 3
+```
+
+### FIX PROTOCOLS (17 protocolos — referencia rapida)
+
+**FIX-01 JE para P&L negativo**: /app/journal → DR AR $amount / CR Revenue $amount → memo realista → Save → re-check P&L. Data: 1o do mes atual. ABORT se: A=L+E nao balanceia, ou margin ficou >50%.
+**FIX-02 Categorizar Bank Txns**: /app/banking → E08 → click DESCRIPTION cell (NAO vendor!) → Post → "Post anyway" → E08 novamente. ~4 calls/txn. ABORT se: P&L ficou negativo apos categorizar.
+**FIX-03 Renomear placeholder**: click record → Edit → novo nome realista do setor → Save. Verificar: lista + search + reports linked.
+**FIX-04 Pagar bills antigos (AP fix)**: /app/bills → sort oldest → Mark as paid (data = 3-7 dias apos due date, checking). NAO pagar todos — manter 20-40% abertos. ABORT se: bank balance negativo.
+**FIX-05 Enrichment (contact info)**: click record → Edit → add phone (555) XXX-XXXX + email + notes → Save. Verificar: fields persisted.
+**FIX-06 Renomear projeto**: /app/projects → click placeholder → Edit name → realistic construction name → Save.
+**FIX-07 Renomear estimate**: /app/estimates → click generic → Edit titulo → descritivo com scope → Save.
+**FIX-08 Criar bank rules**: /app/banking → Rules tab → Create rule (vendor keyword → category) × 2-3.
+**FIX-09 Criar budget**: /app/budgets → Create → base on P&L actuals → adjust 5-10% up → Save.
+**FIX-10 Criar workflow**: /app/workflows → Create → invoice approval or payment reminder → activate.
+**FIX-11 Editar invoice descriptions**: Open invoice → Edit line items → add descriptive text → Save.
+**FIX-12 Adicionar product descriptions**: /app/items → click sem desc → Edit → add description → Save.
+**FIX-13 Adicionar employee titulo**: /app/employees → click → Edit → add title (CUIDADO: 2FA pode bloquear).
+**FIX-14 Fix negative bank balance**: /app/journal → DR Bank / CR Owner Investment → Save. ABORT se: BS desbalanceia.
+**FIX-15 Adicionar project budget**: Open project → Edit → Budget section → set value → Save.
+**FIX-16 Fix date inconsistency**: DB query → UPDATE dates → verify in UI. (Requer DB access)
+**FIX-17 Distribuir revenue**: Rebalancear invoice dates across months. ABORT se: payment dates quebram.
 
 ---
 
