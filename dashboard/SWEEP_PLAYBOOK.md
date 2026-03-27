@@ -822,6 +822,11 @@ Checklist:
 
 **Se voce parar aqui, o sweep esta 33% completo (15 de 46 telas). Continue.**
 
+**⛔ PROIBIDO AVANCAR PARA CHILD ENTITIES ANTES DE COMPLETAR T16-T46 NO PARENT.**
+**⛔ PROIBIDO GERAR REPORT ANTES DE COMPLETAR T16-T46 NO PARENT.**
+**⛔ A ORDEM E: Parent T01→T46 COMPLETO, depois Child 1 T01-T15, depois Child 2 T01-T15, depois P1, depois Cross-Entity, depois Report.**
+**Se voce pulou T16-T46 no parent: VOLTAR AGORA e completar antes de qualquer outra acao.**
+
 ---
 
 ## TELA 16: PAYROLL HUB (/app/payroll?jobId=payroll)
