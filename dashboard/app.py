@@ -283,8 +283,8 @@ async def api_activate_sweep(request: Request, profile: str = "god_complete", ac
             "shortcode": acct.shortcode,
             "email": acct.email,
             "label": acct.label,
-            "password": acct.password,
-            "totp_secret": acct.totp_secret,
+            "password": "***REDACTED***",
+            "totp_secret": "***REDACTED***",
             "dataset": acct.dataset,
             "companies": [c.model_dump() for c in acct.companies],
         },
@@ -334,7 +334,7 @@ async def api_activate_sweep(request: Request, profile: str = "god_complete", ac
         f"@echo off\n"
         f"title {sweep_title}\n"
         f"cd /d {BASE.parent}\n"
-        f'claude "Pending sweep detected. Read dashboard/pending/SWEEP_ORDER.md and execute it. Use ONLY the credentials in SWEEP_ORDER.md. Do NOT read PROMPT_CLAUDE_QBO_MASTER.md or TESTBOX_ACCOUNTS.md."'
+        f'claude "Read dashboard/SWEEP_PLAYBOOK.md and dashboard/pending/SWEEP_ACTIVATION.md. Execute the playbook screen by screen for every entity. Use credentials from SWEEP_ACTIVATION.md. Do NOT read PROMPT_CLAUDE_QBO_MASTER.md or TESTBOX_ACCOUNTS.md."'
         f" --dangerously-skip-permissions\n"
         f"echo.\n"
         f"echo === SWEEP FINALIZADO ===\n"
@@ -459,7 +459,7 @@ async def api_resume_sweep():
         f"@echo off\n"
         f"title {sweep_title}\n"
         f"cd /d {BASE.parent}\n"
-        f'claude "Retomar sweep interrompido. Read dashboard/pending/SWEEP_ORDER.md and execute from where it left off. Use ONLY the credentials in SWEEP_ORDER.md."'
+        f'claude "Resume interrupted sweep. Read dashboard/SWEEP_PLAYBOOK.md and dashboard/pending/SWEEP_ACTIVATION.md. Continue from where it left off. Use credentials from SWEEP_ACTIVATION.md."'
         f" --dangerously-skip-permissions\n"
         f"echo.\n"
         f"echo === SWEEP FINALIZADO ===\n"
