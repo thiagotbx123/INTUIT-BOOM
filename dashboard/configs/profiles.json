@@ -382,5 +382,251 @@
       "RV02": true,
       "RV05": true
     }
+  },
+  "god_full": {
+    "name": "God Mode — Full (v7.0)",
+    "description": "EVERYTHING: 25 Deep + 46 Surface + 19 Conditional + 7 Cross-Entity + 9 Content Safety + 6 Revalidation + 14 Temporal + 12 Data Chains + 11 E2E Workflows + 12 Demo Readiness = ~161 stations",
+    "checks": {
+      "D01": true, "D02": true, "D03": true, "D04": true, "D05": true,
+      "D06": true, "D07": true, "D08": true, "D09": true, "D10": true,
+      "D11": true, "D12": true, "D13": true, "D14": true, "D15": true,
+      "D16": true, "D17": true, "D18": true, "D19": true, "D20": true,
+      "D21": true, "D22": true, "D23": true, "D24": true, "D25": true,
+      "S01": true, "S02": true, "S03": true, "S04": true, "S05": true,
+      "S06": true, "S07": true, "S08": true, "S09": true, "S10": true,
+      "S11": true, "S12": true, "S13": true, "S14": true, "S15": true,
+      "S16": true, "S17": true, "S18": true, "S19": true, "S20": true,
+      "S21": true, "S22": true, "S23": true, "S24": true, "S25": true,
+      "S26": true, "S27": true, "S28": true, "S29": true, "S30": true,
+      "S31": true, "S32": true, "S33": true, "S34": true, "S35": true,
+      "S36": true, "S37": true, "S38": true, "S39": true, "S40": true,
+      "S41": true, "S42": true, "S43": true, "S44": true, "S45": true, "S46": true,
+      "C01": true, "C02": true, "C03": true, "C04": true, "C05": true,
+      "C06": true, "C07": true, "C08": true, "C09": true, "C10": true,
+      "C11": true, "C12": true, "C13": true, "C14": true, "C15": true,
+      "C16": true, "C17": true, "C18": true, "C19": true,
+      "X01": true, "X02": true, "X03": true, "X04": true, "X05": true, "X06": true, "X07": true,
+      "TC01": true, "TC02": true, "TC03": true, "TC04": true, "TC05": true,
+      "TC06": true, "TC07": true, "TC08": true, "TC09": true, "TC10": true,
+      "TC11": true, "TC12": true, "TC13": true, "TC14": true,
+      "CHAIN01": true, "CHAIN02": true, "CHAIN03": true, "CHAIN04": true, "CHAIN05": true,
+      "CHAIN06": true, "CHAIN07": true, "CHAIN08": true, "CHAIN09": true, "CHAIN10": true,
+      "CHAIN11": true, "CHAIN12": true,
+      "WF01": true, "WF02": true, "WF03": true, "WF04": true, "WF05": true,
+      "WF06": true, "WF07": true, "WF08": true, "WF09": true, "WF10": true, "WF11": true,
+      "DR01": true, "DR02": true, "DR03": true, "DR04": true, "DR05": true,
+      "DR06": true, "DR07": true, "DR08": true, "DR09": true, "DR10": true,
+      "DR11": true, "DR12": true
+    },
+    "fix_tiers": {
+      "fix_immediately": true,
+      "fix_and_report": true,
+      "never_fix": false
+    },
+    "content_safety": {
+      "CS1": true, "CS2": true, "CS3": true, "CS4": true, "CS5": true,
+      "CS6": true, "CS7": true, "CS8": true, "CS9": true
+    },
+    "revalidation": {
+      "RV01": true, "RV02": true, "RV03": true, "RV04": true, "RV05": true, "RV06": true
+    },
+    "realism_scoring": true
+  },
+  "god_core": {
+    "name": "God Mode — Core",
+    "description": "Deep + Surface + Top 5 Chains + Temporal DB checks + Business Realism + Content Safety. No CREATE tests, no E2E Workflows.",
+    "checks": {
+      "D01": true, "D02": true, "D03": true, "D04": true, "D05": true,
+      "D06": true, "D07": true, "D08": true, "D09": true, "D10": true,
+      "D11": true, "D12": true, "D13": true, "D14": true, "D15": true,
+      "D16": true, "D17": true, "D18": true, "D19": true, "D20": true,
+      "D21": true, "D22": true, "D23": true, "D24": true, "D25": true,
+      "S01": true, "S02": true, "S03": true, "S04": true, "S05": true,
+      "S06": true, "S07": true, "S08": true, "S09": true, "S10": true,
+      "S11": true, "S12": true, "S13": true, "S14": true, "S15": true,
+      "S16": true, "S17": true, "S18": true, "S19": true, "S20": true,
+      "S21": true, "S22": true, "S23": true, "S24": true, "S25": true,
+      "S26": true, "S27": true, "S28": true, "S29": true, "S30": true,
+      "S31": true, "S32": true, "S33": true, "S34": true, "S35": true,
+      "S36": true, "S37": true, "S38": true, "S39": true, "S40": true,
+      "S41": true, "S42": true, "S43": true, "S44": true, "S45": true, "S46": true,
+      "C01": true, "C02": true, "C03": true, "C04": true, "C05": true,
+      "C06": true, "C07": true, "C08": true, "C09": true, "C10": true,
+      "C11": true, "C12": true, "C13": true, "C14": true, "C15": true,
+      "C16": true, "C17": true, "C18": true, "C19": true,
+      "X01": true, "X02": true, "X03": true, "X04": true, "X05": true, "X06": true, "X07": true,
+      "TC01": true, "TC02": true, "TC03": true, "TC04": true, "TC05": true,
+      "TC06": true, "TC07": true, "TC08": true, "TC09": true, "TC10": true,
+      "TC11": true, "TC12": true, "TC13": true, "TC14": true,
+      "CHAIN01": true, "CHAIN02": true, "CHAIN03": true, "CHAIN04": true, "CHAIN05": true,
+      "CHAIN06": false, "CHAIN07": false, "CHAIN08": true, "CHAIN09": false, "CHAIN10": false,
+      "CHAIN11": true, "CHAIN12": true,
+      "WF01": false, "WF02": false, "WF03": false, "WF04": false, "WF05": false,
+      "WF06": false, "WF07": false, "WF08": false, "WF09": false, "WF10": false, "WF11": false,
+      "DR01": false, "DR02": false, "DR03": false, "DR04": false, "DR05": false,
+      "DR06": false, "DR07": false, "DR08": false, "DR09": false, "DR10": false,
+      "DR11": false, "DR12": false
+    },
+    "fix_tiers": {
+      "fix_immediately": true,
+      "fix_and_report": true,
+      "never_fix": false
+    },
+    "content_safety": {
+      "CS1": true, "CS2": true, "CS3": true, "CS4": true, "CS5": true,
+      "CS6": true, "CS7": true, "CS8": true, "CS9": true
+    },
+    "revalidation": {
+      "RV01": true, "RV02": true, "RV03": true, "RV04": true, "RV05": true, "RV06": true
+    },
+    "realism_scoring": true
+  },
+  "god_quick": {
+    "name": "God Mode — Quick",
+    "description": "Core financials (D01-D06) + Surface + Content Safety + Top Realism benchmarks + Top 4 Temporal checks. ~50 checks, 45min-1h.",
+    "checks": {
+      "D01": true, "D02": true, "D03": true, "D04": true, "D05": true, "D06": true,
+      "D07": false, "D08": false, "D09": false, "D10": false, "D11": false,
+      "D12": false, "D13": false, "D14": false, "D15": false, "D16": false,
+      "D17": false, "D18": false, "D19": false, "D20": false, "D21": false,
+      "D22": false, "D23": false, "D24": false, "D25": false,
+      "S01": true, "S02": true, "S03": true, "S04": true, "S05": true,
+      "S06": true, "S07": true, "S08": true, "S09": true, "S10": true,
+      "S11": true, "S12": true, "S13": true, "S14": true, "S15": true,
+      "S16": true, "S17": true, "S18": true, "S19": true, "S20": true,
+      "S21": true, "S22": true, "S23": true, "S24": true, "S25": true,
+      "S26": true, "S27": true, "S28": true, "S29": true, "S30": true,
+      "S31": true, "S32": true, "S33": true, "S34": true, "S35": true,
+      "S36": true, "S37": true, "S38": true, "S39": true, "S40": true,
+      "S41": true, "S42": true, "S43": true, "S44": true, "S45": true, "S46": true,
+      "C01": false, "C02": false, "C03": false, "C04": false, "C05": false,
+      "C06": false, "C07": false, "C08": false, "C09": false, "C10": false,
+      "C11": false, "C12": false, "C13": false, "C14": false, "C15": false,
+      "C16": false, "C17": false, "C18": false, "C19": false,
+      "X01": false, "X02": false, "X03": false, "X04": false, "X05": false, "X06": false, "X07": false,
+      "TC01": true, "TC02": true, "TC03": true, "TC10": true,
+      "TC04": false, "TC05": false, "TC06": false, "TC07": false, "TC08": false,
+      "TC09": false, "TC11": false, "TC12": false, "TC13": false, "TC14": false,
+      "CHAIN01": false, "CHAIN02": false, "CHAIN03": false, "CHAIN04": false, "CHAIN05": false,
+      "CHAIN06": false, "CHAIN07": false, "CHAIN08": false, "CHAIN09": false, "CHAIN10": false,
+      "CHAIN11": false, "CHAIN12": false,
+      "WF01": false, "WF02": false, "WF03": false, "WF04": false, "WF05": false,
+      "WF06": false, "WF07": false, "WF08": false, "WF09": false, "WF10": false, "WF11": false,
+      "DR01": false, "DR02": false, "DR03": false, "DR04": false, "DR05": false,
+      "DR06": false, "DR07": false, "DR08": false, "DR09": false, "DR10": false,
+      "DR11": false, "DR12": false
+    },
+    "fix_tiers": {
+      "fix_immediately": true,
+      "fix_and_report": false,
+      "never_fix": false
+    },
+    "content_safety": {
+      "CS1": true, "CS2": true, "CS3": true, "CS4": true, "CS5": true,
+      "CS6": true, "CS7": true, "CS8": true, "CS9": true
+    },
+    "revalidation": {
+      "RV01": true, "RV02": true, "RV03": true, "RV04": true, "RV05": true, "RV06": true
+    },
+    "realism_scoring": true
+  },
+  "read_only": {
+    "name": "Read Only — No Fixes",
+    "description": "Full analysis without any modifications. Verifies but does NOT correct. Safe for pre-demo and shared environments.",
+    "checks": {
+      "D01": true, "D02": true, "D03": true, "D04": true, "D05": true,
+      "D06": true, "D07": true, "D08": true, "D09": true, "D10": true,
+      "D11": true, "D12": true, "D13": true, "D14": true, "D15": true,
+      "D16": true, "D17": true, "D18": true, "D19": true, "D20": true,
+      "D21": true, "D22": true, "D23": true, "D24": true, "D25": true,
+      "S01": true, "S02": true, "S03": true, "S04": true, "S05": true,
+      "S06": true, "S07": true, "S08": true, "S09": true, "S10": true,
+      "S11": true, "S12": true, "S13": true, "S14": true, "S15": true,
+      "S16": true, "S17": true, "S18": true, "S19": true, "S20": true,
+      "S21": true, "S22": true, "S23": true, "S24": true, "S25": true,
+      "S26": true, "S27": true, "S28": true, "S29": true, "S30": true,
+      "S31": true, "S32": true, "S33": true, "S34": true, "S35": true,
+      "S36": true, "S37": true, "S38": true, "S39": true, "S40": true,
+      "S41": true, "S42": true, "S43": true, "S44": true, "S45": true, "S46": true,
+      "C01": true, "C02": true, "C03": true, "C04": true, "C05": true,
+      "C06": true, "C07": true, "C08": true, "C09": true, "C10": true,
+      "C11": true, "C12": true, "C13": true, "C14": true, "C15": true,
+      "C16": true, "C17": true, "C18": true, "C19": true,
+      "X01": true, "X02": true, "X03": true, "X04": true, "X05": true, "X06": true, "X07": true,
+      "TC01": true, "TC02": true, "TC03": true, "TC04": true, "TC05": true,
+      "TC06": true, "TC07": true, "TC08": true, "TC09": true, "TC10": true,
+      "TC11": true, "TC12": true, "TC13": true, "TC14": true,
+      "CHAIN01": true, "CHAIN02": true, "CHAIN03": true, "CHAIN04": true, "CHAIN05": true,
+      "CHAIN06": true, "CHAIN07": true, "CHAIN08": true, "CHAIN09": true, "CHAIN10": true,
+      "CHAIN11": true, "CHAIN12": true,
+      "WF01": false, "WF02": false, "WF03": false, "WF04": false, "WF05": false,
+      "WF06": false, "WF07": false, "WF08": false, "WF09": false, "WF10": false, "WF11": false,
+      "DR01": true, "DR02": true, "DR03": true, "DR04": true, "DR05": false,
+      "DR06": true, "DR07": true, "DR08": true, "DR09": true, "DR10": true,
+      "DR11": true, "DR12": true
+    },
+    "fix_tiers": {
+      "fix_immediately": false,
+      "fix_and_report": false,
+      "never_fix": true
+    },
+    "content_safety": {
+      "CS1": true, "CS2": true, "CS3": true, "CS4": true, "CS5": true,
+      "CS6": true, "CS7": true, "CS8": true, "CS9": true
+    },
+    "revalidation": {
+      "RV01": true, "RV02": true, "RV03": true, "RV04": true, "RV05": true, "RV06": true
+    },
+    "realism_scoring": true
+  },
+  "create_test": {
+    "name": "Create Test — Functional Validation",
+    "description": "Tests CREATE/UPDATE actions: new invoice, new customer, E2E workflows. USE ONLY when safe to create data in the environment.",
+    "checks": {
+      "D01": false, "D02": false, "D03": false, "D04": false, "D05": true,
+      "D06": true, "D07": false, "D08": false, "D09": true, "D10": false,
+      "D11": false, "D12": false, "D13": true, "D14": false, "D15": false,
+      "D16": false, "D17": false, "D18": false, "D19": false, "D20": false,
+      "D21": false, "D22": false, "D23": false, "D24": false, "D25": false,
+      "S01": false, "S02": false, "S03": false, "S04": false, "S05": false,
+      "S06": false, "S07": false, "S08": false, "S09": false, "S10": false,
+      "S11": false, "S12": false, "S13": false, "S14": false, "S15": false,
+      "S16": false, "S17": false, "S18": false, "S19": false, "S20": false,
+      "S21": false, "S22": false, "S23": false, "S24": false, "S25": false,
+      "S26": false, "S27": false, "S28": false, "S29": false, "S30": false,
+      "S31": false, "S32": false, "S33": false, "S34": false, "S35": false,
+      "S36": false, "S37": false, "S38": false, "S39": false, "S40": false,
+      "S41": false, "S42": false, "S43": false, "S44": false, "S45": false, "S46": false,
+      "C01": false, "C02": false, "C03": false, "C04": false, "C05": false,
+      "C06": false, "C07": false, "C08": false, "C09": false, "C10": false,
+      "C11": false, "C12": false, "C13": false, "C14": false, "C15": false,
+      "C16": false, "C17": false, "C18": false, "C19": false,
+      "X01": false, "X02": false, "X03": false, "X04": false, "X05": false, "X06": false, "X07": false,
+      "TC01": false, "TC02": false, "TC03": false, "TC04": false, "TC05": false,
+      "TC06": false, "TC07": false, "TC08": false, "TC09": false, "TC10": false,
+      "TC11": false, "TC12": false, "TC13": false, "TC14": false,
+      "CHAIN01": false, "CHAIN02": false, "CHAIN03": false, "CHAIN04": false, "CHAIN05": false,
+      "CHAIN06": false, "CHAIN07": false, "CHAIN08": false, "CHAIN09": false, "CHAIN10": false,
+      "CHAIN11": false, "CHAIN12": false,
+      "WF01": true, "WF02": true, "WF03": false, "WF04": true, "WF05": false,
+      "WF06": true, "WF07": false, "WF08": false, "WF09": true, "WF10": true, "WF11": false,
+      "DR05": true,
+      "DR01": false, "DR02": false, "DR03": false, "DR04": false,
+      "DR06": false, "DR07": false, "DR08": false, "DR09": false, "DR10": false,
+      "DR11": false, "DR12": false
+    },
+    "fix_tiers": {
+      "fix_immediately": true,
+      "fix_and_report": true,
+      "never_fix": false
+    },
+    "content_safety": {
+      "CS1": false, "CS2": false, "CS3": false, "CS4": false, "CS5": false,
+      "CS6": false, "CS7": false, "CS8": false, "CS9": false
+    },
+    "revalidation": {
+      "RV01": false, "RV02": false, "RV03": false, "RV04": false, "RV05": false, "RV06": false
+    },
+    "realism_scoring": false
   }
 }
