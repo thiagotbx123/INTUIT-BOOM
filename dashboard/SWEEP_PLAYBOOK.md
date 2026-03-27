@@ -26,6 +26,7 @@
 13. **Se o contexto estiver grande: usar /compact e CONTINUAR** — nunca parar no meio. Se preciso, dividir em fases (T01-T15 numa sessao, T16-T46 na proxima), mas NUNCA pular telas.
 14. **Gerar report SOMENTE apos T46 completo** — o report final so pode ser escrito depois que TODAS as telas foram verificadas. Report gerado antes de T46 e INCOMPLETO.
 15. **NUNCA usar Agent tool para telas do sweep** — subagents/background agents NAO tem acesso ao browser (Playwright MCP). Toda navegacao, extracao e fix deve ser feita na sessao principal, sequencialmente. Delegar telas para subagents = telas nao executadas.
+16. **P1 findings = tentar corrigir, nao apenas documentar** — Se encontrou "zero contractors" (P1), tente criar 3-5 contractors com nomes realistas do setor. Se encontrou "zero fixed assets", tente registrar 2-3 assets. Se a correcao e possivel via UI em menos de 2 minutos, FACA. So documentar sem tentar corrigir se: (a) requer acesso externo (bank feed, tax filing), (b) requer dados que nao existem (SSN pra contractor), ou (c) e tier NEVER FIX.
 
 ## FERRAMENTAS DISPONIVEIS
 
@@ -2538,12 +2539,73 @@ Para CADA pagina abaixo, navegar e verificar em < 30 segundos:
 }
 ```
 
+### Cross-Entity Output Obrigatorio
+
+Cada check X01-X07 DEVE ter dados comparativos reais, NAO apenas `{"validated": true}`.
+
+```json
+{
+  "screen": "CROSS_ENTITY",
+  "checks": {
+    "X01_consolidated_pnl": {
+      "parent_net_income": X,
+      "sum_children_net_income": Y,
+      "match": true/false,
+      "difference": Z
+    },
+    "X02_legal_names": {
+      "entities_checked": N,
+      "issues_found": [],
+      "status": "PASS|FAIL"
+    },
+    "X03_industry": {
+      "all_match": true/false,
+      "industries": {"parent": "...", "child1": "...", "child2": "..."}
+    },
+    "X04_intercompany": {
+      "ic_vendors_found": N,
+      "ic_customers_found": N,
+      "matching_pairs": N
+    },
+    "X05_coa_alignment": {
+      "parent_accounts": N,
+      "child1_accounts": N,
+      "shared_pct": "N%"
+    },
+    "X06_data_freshness": {
+      "parent_latest_txn": "date",
+      "child1_latest_txn": "date",
+      "child2_latest_txn": "date",
+      "all_within_30_days": true/false
+    },
+    "X07_hierarchy": {
+      "parent_exists": true/false,
+      "children_count": N,
+      "consolidated_available": true/false
+    }
+  },
+  "status": "PASS|FAIL|WARN"
+}
+```
+
+Se X01 tem apenas `{"validated": true}` sem numeros comparativos, o check NAO esta completo. Navegar pro consolidated view e comparar os numeros reais.
+
 ---
 
 ## REPORT GENERATION
 
 > **QUANDO EXECUTAR**: Apos completar ALL screens (T01-T46) para ALL entities + Cross-Entity Validation.
 > **OUTPUT**: Final sweep report in Markdown format.
+
+### Regra do Report: CADA tela individual
+
+O report DEVE listar CADA tela T01-T46 individualmente na tabela de resultados.
+PROIBIDO agrupar como "T31-T46 | MIXED | Detail drills, reports, AI features".
+Cada tela precisa de sua propria linha com status e key metric.
+Exemplo correto:
+| T31 Invoice Drill | WARN | 5 invoices checked, 2 with TBX prefix |
+| T32 Bill Drill | PASS | 3 bills checked, realistic vendors |
+| T33 Journal Entries | PASS | 15 JEs, balanced, realistic memos |
 
 ### Report Template
 
