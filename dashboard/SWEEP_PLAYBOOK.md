@@ -25,6 +25,7 @@
 12. **P1 entities: minimo T01+T02+T05+T06 com metricas** — rapido mas com dados reais, nao "PASS".
 13. **Se o contexto estiver grande: usar /compact e CONTINUAR** — nunca parar no meio. Se preciso, dividir em fases (T01-T15 numa sessao, T16-T46 na proxima), mas NUNCA pular telas.
 14. **Gerar report SOMENTE apos T46 completo** — o report final so pode ser escrito depois que TODAS as telas foram verificadas. Report gerado antes de T46 e INCOMPLETO.
+15. **NUNCA usar Agent tool para telas do sweep** — subagents/background agents NAO tem acesso ao browser (Playwright MCP). Toda navegacao, extracao e fix deve ser feita na sessao principal, sequencialmente. Delegar telas para subagents = telas nao executadas.
 
 ## FERRAMENTAS DISPONIVEIS
 
@@ -824,6 +825,7 @@ Checklist:
 
 **⛔ PROIBIDO AVANCAR PARA CHILD ENTITIES ANTES DE COMPLETAR T16-T46 NO PARENT.**
 **⛔ PROIBIDO GERAR REPORT ANTES DE COMPLETAR T16-T46 NO PARENT.**
+**⛔ PROIBIDO USAR AGENTS/SUBAGENTS PARA TELAS** — subagents NAO tem acesso ao Playwright/browser. TODAS as telas devem ser executadas na sessao principal, sequencialmente. Nunca delegar telas para Agent tool.
 **⛔ A ORDEM E: Parent T01→T46 COMPLETO, depois Child 1 T01-T15, depois Child 2 T01-T15, depois P1, depois Cross-Entity, depois Report.**
 **Se voce pulou T16-T46 no parent: VOLTAR AGORA e completar antes de qualquer outra acao.**
 
