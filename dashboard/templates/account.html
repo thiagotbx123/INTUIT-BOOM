@@ -407,12 +407,14 @@
 {% endif %}
 
 <!-- Notes -->
-{% if account.notes %}
 <div class="card" style="margin-bottom: 28px">
     <h3>Notes</h3>
+    {% if account.notes %}
     <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6">{{ account.notes }}</div>
+    {% else %}
+    <div style="font-size: 13px; color: var(--text-muted, #555); line-height: 1.6; font-style: italic">No notes yet. Add notes via Config panel.</div>
+    {% endif %}
 </div>
-{% endif %}
 
 <!-- Actions -->
 <div class="actions">

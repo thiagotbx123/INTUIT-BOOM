@@ -58,15 +58,20 @@ def _parse_sweep_score(text: str) -> float | None:
     """Extract score from sweep report (header first, then full text tables)."""
     header = "\n".join(text.split("\n")[:30])
     patterns = [
+        # v8.x format: "- **Overall Score**: 7/10" or "- **Overall Score**: 7.5/10"
+        r"\*\*Overall\s+Score\*\*\s*:\s*(\d+(?:\.\d+)?)\s*/\s*10",
+        # v6.x/v7.x format: "**Overall Score:** 7.5/10"
         r"\*\*Overall\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10(?!\d)",
         r"\*\*Revalidation\s+Score[:\s]*\*?\*?\s*(\d+(?:\.\d+)?)/10(?!\d)",
+        # Bare format: "Overall Score: 7/10"
+        r"Overall\s+Score\s*:\s*(\d+(?:\.\d+)?)\s*/\s*10",
     ]
     for pat in patterns:
         m = re.search(pat, header, re.IGNORECASE)
         if m:
             return float(m.group(1))
-    # Fallback: table format "| Realism Score | **6.3/10** |"
-    m = re.search(r"\|\s*Realism\s+Score\s*\|\s*\*?\*?(\d+(?:\.\d+)?)/10(?!\d)", text, re.IGNORECASE)
+    # Fallback: table format "| Overall Score | 7/10 |" or "| Realism Score | **6.3/10** |"
+    m = re.search(r"\|\s*(?:Overall|Realism)\s+Score\s*\|\s*\*?\*?(\d+(?:\.\d+)?)/10(?!\d)", text, re.IGNORECASE)
     if m:
         return float(m.group(1))
     log.debug("Could not parse sweep score from report header: %s", header[:100])
@@ -84,9 +89,16 @@ def _parse_sweep_date(text: str) -> str | None:
 def _parse_realism_score(text: str) -> int | None:
     """Extract realism score (0-100) from report."""
     patterns = [
+        # v8.x format: "- **Realism Score**: 74/100"
+        r"\*\*Realism\s+Score\*\*\s*:\s*(\d+)\s*/\s*100",
+        # v6.x/v7.x format: "**Realism Score:** 74/100"
         r"\*\*(?:Overall\s+)?Realism(?:\s+Score)?[:\s]*\*?\*?\s*(\d+)/100",
-        r"Overall\s+Realism[:\s]*(\d+)/100",
+        # Bare format: "Realism Score: 74/100"
+        r"Realism\s+Score\s*:\s*(\d+)\s*/\s*100",
+        # Table format: "| Realism Score | 74/100 |"
         r"\|\s*Realism\s+Score\s*\|\s*(\d+)/100",
+        # Total Realism in report body: "**Total Realism: 74/100**"
+        r"Total\s+Realism\s*:\s*(\d+)\s*/\s*100",
     ]
     for pat in patterns:
         m = re.search(pat, text, re.IGNORECASE)
