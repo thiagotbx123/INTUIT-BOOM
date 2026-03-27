@@ -1686,16 +1686,16 @@ FIX_TIERS = {
 }
 
 DEMO_REALISM_CRITERIA = [
-    {"id": "DR01", "name": "Financial Viability", "description": "P&L makes sense? Positive net income?"},
-    {"id": "DR02", "name": "Name Coherence", "description": "Customers, vendors, products match sector?"},
-    {"id": "DR03", "name": "Data Volume", "description": "Looks like a real company with history?"},
-    {"id": "DR04", "name": "Transaction Diversity", "description": "Not just 1 type of transaction?"},
-    {"id": "DR05", "name": "Banking Health", "description": "Accounts connected, transactions categorized?"},
-    {"id": "DR06", "name": "AR/AP Balance", "description": "Company has receivables AND payables?"},
-    {"id": "DR07", "name": "Payroll Presence", "description": "Employees exist with salaries?"},
-    {"id": "DR08", "name": "Projects Richness", "description": "Projects with transactions, not empty?"},
-    {"id": "DR09", "name": "Report Quality", "description": "Reports generate useful data, not zeroed?"},
-    {"id": "DR10", "name": "Storytelling Potential", "description": "Can tell a convincing business story?"},
+    {"id": "RC01", "name": "Financial Viability", "description": "P&L makes sense? Positive net income?"},
+    {"id": "RC02", "name": "Name Coherence", "description": "Customers, vendors, products match sector?"},
+    {"id": "RC03", "name": "Data Volume", "description": "Looks like a real company with history?"},
+    {"id": "RC04", "name": "Transaction Diversity", "description": "Not just 1 type of transaction?"},
+    {"id": "RC05", "name": "Banking Health", "description": "Accounts connected, transactions categorized?"},
+    {"id": "RC06", "name": "AR/AP Balance", "description": "Company has receivables AND payables?"},
+    {"id": "RC07", "name": "Payroll Presence", "description": "Employees exist with salaries?"},
+    {"id": "RC08", "name": "Projects Richness", "description": "Projects with transactions, not empty?"},
+    {"id": "RC09", "name": "Report Quality", "description": "Reports generate useful data, not zeroed?"},
+    {"id": "RC10", "name": "Storytelling Potential", "description": "Can tell a convincing business story?"},
 ]
 
 

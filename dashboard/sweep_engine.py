@@ -334,16 +334,16 @@ Se o station e N/A ou vazio: 1 linha com razao e suficiente.
 |-------|-------|
 | URL | https://accounts.intuit.com/app/sign-in |
 | Email | `{acct.email}` |
-| Password | `{acct.password}` |
-| TOTP Secret | `{acct.totp_secret}` |
+| Password | Ler de `knowledge-base/access/QBO_CREDENTIALS.json` |
+| TOTP Secret | Ler de `knowledge-base/access/QBO_CREDENTIALS.json` |
 | Dataset | {acct.dataset} |
 
 **Procedimento (Agent Browser — PREFERIDO):**
 0. `agent-browser --profile ~/.agent-browser/profiles/qbo open "https://accounts.intuit.com/app/sign-in"` (session persistence — pode pular login se sessao salva)
 1. `agent-browser snapshot -i -c` → ver form (compacto, ~15 linhas vs 200+ do Playwright)
 2. Se login form aparece: `agent-browser fill @email "{acct.email}" && agent-browser click @signIn`
-3. Se password pedida: `agent-browser fill @password "{acct.password}" && agent-browser click @submit`
-4. TOTP (se pedido): `python -c "import pyotp,time; t=pyotp.TOTP('{acct.totp_secret}'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"` → `agent-browser fill @code RESULTADO && agent-browser click @verify`
+3. Se password pedida: ler password do QBO_CREDENTIALS.json → `agent-browser fill @password PASSWORD && agent-browser click @submit`
+4. TOTP (se pedido): ler totp_secret do QBO_CREDENTIALS.json → `python -c "import pyotp,time; t=pyotp.TOTP('SECRET'); r=30-int(time.time())%30; time.sleep(r+1) if r<10 else None; print(t.now())"` → `agent-browser fill @code RESULTADO && agent-browser click @verify`
 5. Skip prompts: `agent-browser click @skip` ou `agent-browser click @notNow` se passkey/2FA prompt aparece
 6. Company selector: `agent-browser snapshot -i -c` → `agent-browser click @ENTITY_NAME`
 7. Confirmar homepage: `agent-browser get title` → deve conter "Intuit Enterprise Suite"
@@ -725,10 +725,12 @@ ANTES de fixar: checar se ja esta em fixes_applied → se sim, PULAR.
 *Gerado em {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")} pelo QBO Demo Manager v6.0 (Compact)*
 """
 
+    # v8.0: SWEEP_ORDER.md kept as legacy reference but NOT the primary instruction.
+    # Primary path is SWEEP_ACTIVATION.md → SWEEP_PLAYBOOK.md
     order_file = pending_dir / "SWEEP_ORDER.md"
     order_file.write_text(md.strip(), encoding="utf-8")
 
-    # Also generate playbook activation file that references SWEEP_PLAYBOOK.md
+    # Generate the ONLY activation file the sweep agent should read
     _generate_playbook_activation(pending_dir, acct, resume_from)
 
 
@@ -746,6 +748,9 @@ def _generate_playbook_activation(pending_dir, acct, resume_from=None):
     for c in acct.companies:
         companies_lines.append(f"| {c.name} | {c.cid} | {c.type} | {c.priority} |")
 
+    # Credentials: write email + dataset inline, but password/TOTP via secure reference
+    cred_path = (BASE.parent / "knowledge-base" / "access" / "QBO_CREDENTIALS.json").as_posix()
+
     activation = f"""# SWEEP ACTIVATION — God Complete v8.0
 
 > Ler `{dashboard_path}/SWEEP_PLAYBOOK.md` e executar tela por tela.
@@ -757,9 +762,11 @@ def _generate_playbook_activation(pending_dir, acct, resume_from=None):
 | Campo | Valor |
 |-------|-------|
 | Email | `{acct.email}` |
-| Password | `{acct.password}` |
-| TOTP Secret | `{acct.totp_secret}` |
 | Dataset / Setor | {acct.dataset} |
+
+**Password e TOTP**: ler de `{cred_path}` no campo correspondente ao account `{acct.shortcode}`.
+Usar: `python -c "import json; d=json.loads(open('{cred_path}').read()); a=[x for x in d if x.get('email')=='{acct.email}'][0]; print('PWD:', a['password']); print('TOTP:', a['totp_secret'])"`
+NAO copiar password/TOTP para nenhum outro arquivo.
 
 ## ENTITIES ({len(acct.companies)})
 

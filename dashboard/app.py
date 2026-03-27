@@ -379,17 +379,20 @@ async def api_stop_sweep():
         except Exception:
             pass
 
-    # Kill sweep process by PID
+    # Kill sweep process by PID (sanitized — cast to int to prevent injection)
     pid = data.get("pid") if data else None
     if pid:
         try:
-            sp.run(f"taskkill /F /PID {pid} /T", shell=True, capture_output=True, timeout=10)
+            safe_pid = str(int(pid))  # Cast to int then back — rejects any non-numeric input
+            sp.run(["taskkill", "/F", "/PID", safe_pid, "/T"], capture_output=True, timeout=10)
+        except (ValueError, TypeError):
+            pass  # Non-numeric PID — skip
         except Exception:
             pass
 
     # Fallback: kill any remaining QBO Sweep windows
     try:
-        sp.run('taskkill /F /FI "WINDOWTITLE eq QBO Sweep*" /T', shell=True, capture_output=True, timeout=10)
+        sp.run(["taskkill", "/F", "/FI", "WINDOWTITLE eq QBO Sweep*", "/T"], capture_output=True, timeout=10)
     except Exception:
         pass
 
