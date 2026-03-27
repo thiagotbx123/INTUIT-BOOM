@@ -145,6 +145,44 @@ def generate_sweep_order_md(pending_dir, acct, profile_data, profile_key, deep, 
         if safety.get(s["id"], True):
             safety_lines.append(f"- **{s['id']}** {s['name']}: `{s['pattern']}` [{s['severity']}]")
 
+    # God Mode v7.0 — build summaries for new check types
+    from sweep_checks import (
+        TEMPORAL_CHECKS,
+        DATA_CHAINS,
+        E2E_WORKFLOWS,
+        DEMO_READINESS_SCENARIOS,
+        SECTOR_REALISM_BENCHMARKS,
+    )
+
+    checks_map = profile_data.get("checks", {})
+
+    temporal_summary = []
+    for s in TEMPORAL_CHECKS:
+        if checks_map.get(s["id"], False):
+            temporal_summary.append(f"- **{s['id']}** {s['name']} — {s['description']} [{s['source']}]")
+
+    chain_summary = []
+    for s in DATA_CHAINS:
+        if checks_map.get(s["id"], False):
+            chain_summary.append(f"- **{s['id']}** {s['name']} — {s['description']}")
+
+    workflow_summary = []
+    for s in E2E_WORKFLOWS:
+        if checks_map.get(s["id"], False):
+            dtag = " ⚠DESTRUCTIVE" if s.get("destructive") else ""
+            workflow_summary.append(f"- **{s['id']}** {s['name']}: {s['steps']}{dtag}")
+
+    demo_summary = []
+    for s in DEMO_READINESS_SCENARIOS:
+        if checks_map.get(s["id"], False):
+            demo_summary.append(f"- **{s['id']}** {s['name']} — {s['description']}")
+
+    # Sector benchmarks for the dataset
+    sector_benchmarks = SECTOR_REALISM_BENCHMARKS.get(acct.dataset, SECTOR_REALISM_BENCHMARKS.get("construction", []))
+    benchmark_lines = []
+    for b in sector_benchmarks:
+        benchmark_lines.append(f"| {b['id']} | {b['name']} | {b['range']} | {b['formula']} |")
+
     # Fix tiers
     fix_desc = []
     if fix.get("fix_immediately", True):
@@ -366,6 +404,35 @@ Agrupar em lotes: `[S01-S06] ✓✓✓○✗✓`
 {"## 5.1 CROSS-ENTITY (rodar APOS todas entities)" if is_multi else ""}
 {"Para detalhes: Read checks.json secao cross_entity_checks" if is_multi else ""}
 
+{"## 5.2 TEMPORAL COHERENCE (" + str(len(temporal_summary)) + " habilitados)" if temporal_summary else ""}
+
+{chr(10).join(temporal_summary) if temporal_summary else ""}
+
+{"**Protocolo TC**: Para DB checks (TC01-TC05) usar psql/query. Para UI checks (TC06-TC14) navegar e verificar visualmente." if temporal_summary else ""}
+{"Progress tracking: ao completar todos TC, registrar 'CID:TC_BATCH' em completed_stations." if temporal_summary else ""}
+
+{"## 5.3 DATA CHAIN TRACING (" + str(len(chain_summary)) + " habilitados)" if chain_summary else ""}
+
+{chr(10).join(chain_summary) if chain_summary else ""}
+
+{"**Protocolo CHAIN**: Para cada chain, abrir 1-3 records ALEATORIOS e rastrear o link ate o final. Documentar gaps encontrados." if chain_summary else ""}
+{"Progress tracking: ao completar todos CHAIN, registrar 'CID:CHAIN_BATCH' em completed_stations." if chain_summary else ""}
+
+{"## 5.4 E2E WORKFLOWS (" + str(len(workflow_summary)) + " habilitados)" if workflow_summary else ""}
+
+{chr(10).join(workflow_summary) if workflow_summary else ""}
+
+{"**Protocolo WF**: Workflows marcados DESTRUCTIVE criam records reais. So executar em profile create_test ou god_full." if workflow_summary else ""}
+{"Workflows read-only (WF05, WF07, WF08, WF09) verificam sem criar dados." if workflow_summary else ""}
+{"Progress tracking: registrar cada WF individual (CID:WF01, CID:WF02, etc)." if workflow_summary else ""}
+
+{"## 5.5 DEMO READINESS (" + str(len(demo_summary)) + " habilitados)" if demo_summary else ""}
+
+{chr(10).join(demo_summary) if demo_summary else ""}
+
+{"**Protocolo DR**: Simular comportamento de prospect. Navegar como se fosse a primeira vez. Anotar qualquer coisa que pareca falsa ou quebrada." if demo_summary else ""}
+{"Progress tracking: ao completar todos DR, registrar 'CID:DR_BATCH' em completed_stations." if demo_summary else ""}
+
 ## 6. CONTENT SAFETY
 
 {chr(10).join(safety_lines)}
@@ -384,6 +451,11 @@ NUNCA: company settings, employee edits com 2FA, feature flags, payroll, deletes
 ## 8. REALISM SCORING
 
 {"HABILITADO — pontuar 10 criterios de 1-10 ao final." if profile_data.get("realism_scoring", True) else "DESABILITADO"}
+
+{"### SECTOR BENCHMARKS (" + acct.dataset + ")" if benchmark_lines else ""}
+{"" if not benchmark_lines else "| ID | Metric | Target Range | Formula |"}
+{"" if not benchmark_lines else "|-----|--------|-------------|---------|"}
+{chr(10).join(benchmark_lines) if benchmark_lines else ""}
 
 ## 8.5 DEPTH PROTOCOL — FORMATO OBRIGATORIO DO REPORT
 
