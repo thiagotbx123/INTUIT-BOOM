@@ -12,7 +12,7 @@
 2. **Se algo parece errado, PARE e corrija ANTES de avancar** — nao documente pra depois
 3. **Cada tela tem output obrigatorio** — se falta algum campo, a tela NAO esta completa
 4. **Interprete como humano** — "Client 1" nao e nome real. "$82M bank balance" pra construtora pequena nao e realista. Margem de 48% em construction nao existe.
-5. **Corrija test/placeholder names SEMPRE** — qualquer coisa com "Test", "Sample", "Demo 3.5", "Example", "Foo", "TBX", "Lorem", "Client 1", "Vendor 1", "Account 1" deve ser renomeada para nome realista do setor. Se encontrou = PARAR e CORRIGIR AGORA. Nao documentar pra depois. O VALOR do sweep e CORRIGIR, nao listar.
+5. **Corrija test/placeholder names SEMPRE** — qualquer coisa com "Test", "Sample", "Demo 3.5", "Example", "Foo", "TBX", "Lorem", "Client 1", "Vendor 1", "Account 1" deve ser renomeada para nome realista do setor. **TBX prefixes** em invoices, estimates, ou records indicam dados de teste — se o campo e editavel, renomear. Se nao e editavel (ex: invoice number gerado pelo sistema), documentar como CS3 finding com nota "system-generated, not editable". Se encontrou = PARAR e CORRIGIR AGORA. Nao documentar pra depois. O VALOR do sweep e CORRIGIR, nao listar.
 6. **Company Settings (Legal Name, DBA) = NUNCA CORRIGIR** — mesmo que tenha "Testing_OBS_AUTOMATION", documentar mas NAO alterar
 7. **Use QBO API para validar numeros do UI** — se UI diz $590K income mas API diz $500K, isso e finding
 8. **Output compacto** — max 10 linhas JSON por tela
@@ -107,6 +107,18 @@
 - Marcar T03-T15 de child entity como "shared data model" ou "same as parent" — CADA entity tem seus numeros
 - Parar no T15 e gerar report — T16-T46 sao OBRIGATORIAS para parent
 - Detectar CS violation e NAO corrigir — se "Client 1" aparece, RENOMEAR na hora
+
+**PROFUNDIDADE OBRIGATORIA EM CHILD ENTITIES P0:**
+Para cada child entity P0 (ex: Terra, BlueCraft), as telas T03-T15 DEVEM ter metricas extraidas via navegacao real no browser:
+- T03 Balance Sheet: totalAssets, totalLiabilities, totalEquity, a_equals_le (NAO "1 metric")
+- T04 Banking: accounts, balances, pending_txns (NAO "1 metric")
+- T05 Customers: customer_count, overdue, ar_total (NAO "1 metric")
+- T06 Vendors: vendor_count, overdue_bills, ap_total (NAO "1 metric")
+- T07 Employees: employee_count, payroll_enabled (NAO "1 metric")
+- T08 Products: product_count, types (NAO "1 metric")
+- T09-T15: cada tela com MINIMO 2 metricas reais
+
+Se uma tela de child entity tem apenas 1 metrica no JSON, ela NAO esta completa. Navegar de novo e extrair dados reais.
 
 ### Output:
 ```json
@@ -1171,6 +1183,7 @@ Nota: Advanced-tier feature. Pode nao estar disponivel em todos os planos. Se 40
 | Feature not available | Documentar como N/A. Nao e erro — e limitacao de tier | Documentar |
 | Feature enabled but no rules | Documentar como P2 — setup incompleto | Documentar |
 | No deferred revenue account | Documentar como P2 finding | Documentar |
+| TBX prefix visible | Investigar source. Se e nome de record editavel → renomear. Se e system-generated → documentar como CS3 "system-generated, not editable" | Playwright → Edit record |
 
 ### Output obrigatorio
 ```json
@@ -1604,6 +1617,7 @@ Alternativa: Left nav → Accounting → Reconcile
 | All same date | Documentar como P2 finding | Documentar |
 | Missing terms/due date | Editar invoice, add terms | Playwright → edit invoice |
 | Inflated amounts | Documentar como P2 | Documentar |
+| TBX prefix on invoice/customer | Se customer name tem TBX → ir em Customers e renomear. Se invoice number tem TBX → system-generated, documentar. Se invoice description tem TBX → editar invoice e renomear | Playwright |
 
 ### Output obrigatorio
 ```json
@@ -2017,6 +2031,12 @@ KPI Scorecard: `https://qbo.intuit.com/app/business-intelligence/kpi-scorecard`
 4. Esperar 10s (report pesado)
 5. Resize viewport para capturar dados completos
 
+**IES Workaround (se URL direta retorna 404 ou BLOCKED):**
+- Alternativa 1: Ir para /app/standardreports → procurar "Profit and Loss by Class" na lista → clicar
+- Alternativa 2: Ir para /app/standardreports → clicar em P&L normal → dentro do report, usar o filtro/dropdown "Rows: Class" se disponivel
+- Alternativa 3: Usar Global Search → digitar "Profit and Loss by Class" → clicar no resultado
+- Se todas alternativas falham: marcar como BLOCKED com nota "IES routing — 3 alternatives attempted"
+
 ### O que olhar
 - [ ] **Classes showing data**: classes definidas em T24 mostram dados? Ou todas em $0?
 - [ ] **Amounts cross-ref**: total income no P&L by Class = total income no P&L (T02)?
@@ -2064,6 +2084,11 @@ KPI Scorecard: `https://qbo.intuit.com/app/business-intelligence/kpi-scorecard`
 3. Clicar no report
 4. Esperar 8s
 5. Alternativa direta: search "AR Aging" no report list
+
+**IES Workaround (se URL direta retorna 404 ou BLOCKED):**
+- Alternativa 1: Ir para /app/standardreports → procurar "A/R Aging Summary" ou "Accounts Receivable Aging" → clicar
+- Alternativa 2: Ir para /app/reportlist → categoria "What you owe" ou "Who owes you" → clicar AR Aging
+- Se todas alternativas falham: marcar como BLOCKED com nota "IES routing — 2 alternatives attempted"
 
 ### O que olhar
 - [ ] **Aging buckets**: Current, 1-30, 31-60, 61-90, 90+ — todas com dados?
@@ -2113,6 +2138,11 @@ KPI Scorecard: `https://qbo.intuit.com/app/business-intelligence/kpi-scorecard`
 2. Procurar "Accounts Payable Aging" ou "A/P Aging Summary"
 3. Clicar no report
 4. Esperar 8s
+
+**IES Workaround (se URL direta retorna 404 ou BLOCKED):**
+- Alternativa 1: Ir para /app/standardreports → procurar "A/P Aging Summary" ou "Accounts Payable Aging" → clicar
+- Alternativa 2: Ir para /app/reportlist → categoria "What you owe" → clicar AP Aging
+- Se todas alternativas falham: marcar como BLOCKED com nota "IES routing — 2 alternatives attempted"
 
 ### O que olhar
 - [ ] **Aging buckets**: Current, 1-30, 31-60, 61-90, 90+ — todas com dados?
@@ -2212,6 +2242,12 @@ Alternativa URLs:
 - Cash Flow Planner: `https://qbo.intuit.com/app/cashflow`
 Nota: IES Advanced feature. Muitas sub-features podem nao estar disponiveis.
 
+**IES Workaround (se URL direta retorna 404 ou BLOCKED):**
+- Alternativa 1: Ir para /app/business-intelligence/kpi-scorecard (KPI Scorecard direto)
+- Alternativa 2: Ir para /app/standardreports → procurar "KPI" ou "Scorecard" ou "Dashboard" na lista
+- Alternativa 3: Abrir qualquer report (P&L) → verificar se icones de AI (sparkle) aparecem → documentar presenca
+- Se todas alternativas falham: marcar como BLOCKED com nota "IES routing — 3 alternatives attempted"
+
 ### O que olhar
 - [ ] **AI categorization**: transacoes sendo auto-categorized? (bank feed matching)
 - [ ] **Smart Match**: suggested matches presentes na banking feed?
@@ -2285,6 +2321,12 @@ Nota: IES Advanced feature. Muitas sub-features podem nao estar disponiveis.
 | Search returns errors | Documentar como P1 — functional bug | Documentar |
 | Slow search (>5s) | Documentar como P3 — performance issue | Documentar |
 | Irrelevant results | Documentar como P2 | Documentar |
+
+### Se encontrar TBX em resultados
+- Identificar a SOURCE do TBX (invoice? customer? product?)
+- Navegar ate o record original
+- Se editavel: renomear
+- Se system-generated (ex: invoice number): documentar como CS3 "not editable"
 
 ### Output obrigatorio
 ```json
