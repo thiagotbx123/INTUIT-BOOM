@@ -1741,6 +1741,430 @@ REVALIDATION_RULES = [
 ]
 
 
+# ─── GOD MODE v7.0 ADDITIONS (2026-03-26) ────────────────────────────────────
+# ALL ADDITIVE — zero modification of existing structures.
+# New prefixes: TC (Temporal), CHAIN (Data Chain), WF (Workflow), DRS (Demo Readiness Scenario)
+# Controlled by new profiles: god_full, god_core, god_quick, read_only, create_test
+
+TEMPORAL_CHECKS = [
+    {
+        "id": "TC01",
+        "name": "Invoice date < Due date",
+        "query": "For each invoice: create_date < due_date",
+        "source": "DB",
+        "description": "No invoice should have a due date before its creation date",
+    },
+    {
+        "id": "TC02",
+        "name": "Invoice paid date > Invoice date",
+        "query": "For each paid invoice: paid_date > create_date",
+        "source": "DB",
+        "description": "Payment cannot happen before invoice is created",
+    },
+    {
+        "id": "TC03",
+        "name": "Invoice paid date < today",
+        "query": "No future-dated payments",
+        "source": "DB",
+        "description": "No invoice should be marked as paid in the future",
+    },
+    {
+        "id": "TC04",
+        "name": "Bill date < Due date",
+        "query": "For each bill: create_date < due_date",
+        "source": "DB",
+        "description": "Bill due date must be after creation",
+    },
+    {
+        "id": "TC05",
+        "name": "Bill paid date > Bill date",
+        "query": "For each paid bill: paid_date > create_date",
+        "source": "DB",
+        "description": "Bill payment cannot precede bill creation",
+    },
+    {
+        "id": "TC06",
+        "name": "Employee hire date < first payroll",
+        "query": "Employee not paid before hired",
+        "source": "UI",
+        "description": "Employee should not have paychecks before hire date",
+    },
+    {
+        "id": "TC07",
+        "name": "Estimate date < Invoice conversion",
+        "query": "Estimate not converted before created",
+        "source": "UI",
+        "description": "Invoice from estimate must be dated after the estimate",
+    },
+    {
+        "id": "TC08",
+        "name": "Project start < first transaction",
+        "query": "No expenses/invoices before project start",
+        "source": "UI",
+        "description": "Project transactions should not predate project start",
+    },
+    {
+        "id": "TC09",
+        "name": "Bank txn dates sequential",
+        "query": "No large gaps or unrealistic concentrations",
+        "source": "UI",
+        "description": "Bank feed should show realistic transaction frequency",
+    },
+    {
+        "id": "TC10",
+        "name": "Revenue distributed across 12 months",
+        "query": "No month > 40% of total annual revenue",
+        "source": "UI",
+        "description": "Revenue should not be concentrated in a single month",
+    },
+    {
+        "id": "TC11",
+        "name": "Recurring next date is future",
+        "query": "All recurring templates have future next_date",
+        "source": "UI",
+        "description": "Recurring transactions should not have past-due execution dates",
+    },
+    {
+        "id": "TC12",
+        "name": "Last reconciled date recent",
+        "query": "Bank reconciled within 45 days",
+        "source": "UI",
+        "description": "Bank accounts should be reconciled recently",
+    },
+    {
+        "id": "TC13",
+        "name": "Accrual vs Cash basis coherence",
+        "query": "Switch P&L basis — cash revenue <= accrual revenue, both positive",
+        "source": "UI",
+        "description": "Cash basis P&L should show lower or equal revenue vs accrual",
+    },
+    {
+        "id": "TC14",
+        "name": "Beginning balance matches prior reconciliation",
+        "query": "Current beginning balance = prior ending balance per bank account",
+        "source": "UI",
+        "description": "Reconciliation beginning balance must chain correctly",
+    },
+]
+
+DATA_CHAINS = [
+    {
+        "id": "CHAIN01",
+        "name": "Invoice → Payment → Deposit → Reconciliation",
+        "description": "Trace a sample invoice through payment, bank deposit, and reconciliation. Verify amounts match at each link.",
+        "telas": "Invoices, Payments, Bank Deposits, Banking, Reconcile, AR (BS), Revenue (P&L)",
+    },
+    {
+        "id": "CHAIN02",
+        "name": "Bill → Bill Payment → Withdrawal → Reconciliation",
+        "description": "Trace a sample bill through payment, bank withdrawal, and reconciliation.",
+        "telas": "Bills, Bill Payments, Banking, Reconcile, AP (BS), Expenses (P&L)",
+    },
+    {
+        "id": "CHAIN03",
+        "name": "Estimate → Invoice → Payment",
+        "description": "Verify converted estimate links to invoice with matching amounts.",
+        "telas": "Estimates, Invoices, Payments",
+    },
+    {
+        "id": "CHAIN04",
+        "name": "PO → Bill → Payment",
+        "description": "Verify PO links to bill with matching amounts.",
+        "telas": "Purchase Orders, Bills, Bill Payments",
+    },
+    {
+        "id": "CHAIN05",
+        "name": "Time Entry → Payroll → Paycheck → Tax → Bank",
+        "description": "Trace time entry through payroll to paycheck. Verify hours × rate = gross pay. CONDITIONAL: requires payroll access (2FA may block).",
+        "telas": "Time, Employees, Payroll, Paychecks, Tax Center, Banking",
+    },
+    {
+        "id": "CHAIN06",
+        "name": "Time Entry → Project → Invoice (billable)",
+        "description": "Verify billable time generates invoices for the correct project/customer.",
+        "telas": "Time, Projects, Invoices",
+    },
+    {
+        "id": "CHAIN07",
+        "name": "Journal Entry → CoA → BS/P&L",
+        "description": "Verify all JEs are balanced (debits = credits) and reference valid accounts.",
+        "telas": "Journal Entries, Chart of Accounts, Balance Sheet, P&L",
+    },
+    {
+        "id": "CHAIN08",
+        "name": "Bank Transaction → Categorization → P&L/BS",
+        "description": "Verify categorized bank transactions flow to correct P&L/BS accounts.",
+        "telas": "Banking, P&L, Balance Sheet",
+    },
+    {
+        "id": "CHAIN09",
+        "name": "Recurring → Execution → Records",
+        "description": "Verify recurring templates generate correct records (invoices, bills, JEs).",
+        "telas": "Recurring Transactions, Invoices, Bills, JEs",
+    },
+    {
+        "id": "CHAIN10",
+        "name": "Multi-Entity IC → Consolidation",
+        "description": "Verify IC transactions net to zero on consolidation. CONDITIONAL: multi-entity only.",
+        "telas": "IC Transactions, Consolidated P&L, Consolidated BS",
+    },
+    {
+        "id": "CHAIN11",
+        "name": "BS Balance vs Reconciliation Balance",
+        "description": "Bank account balance on BS must match last reconciliation ending balance.",
+        "telas": "Balance Sheet, Reconcile, Banking",
+    },
+    {
+        "id": "CHAIN12",
+        "name": "Reconciled Transactions Integrity",
+        "description": "Transactions marked as reconciled should not have been edited after reconciliation.",
+        "telas": "Reconcile, Banking, Journal Entries",
+    },
+]
+
+E2E_WORKFLOWS = [
+    {
+        "id": "WF01",
+        "name": "Quote-to-Cash",
+        "steps": "1) Create Estimate → 2) Convert to Invoice → 3) Send Invoice → 4) Receive Payment → 5) Deposit to Bank → 6) Reconcile",
+        "destructive": True,
+        "description": "Full sales cycle end-to-end. CREATES records.",
+    },
+    {
+        "id": "WF02",
+        "name": "Procure-to-Pay",
+        "steps": "1) Create PO → 2) Receive Bill → 3) Pay Bill → 4) Bank Withdrawal → 5) Reconcile",
+        "destructive": True,
+        "description": "Full purchase cycle. CREATES records.",
+    },
+    {
+        "id": "WF03",
+        "name": "Hire-to-Pay",
+        "steps": "1) Add Employee → 2) Set pay rate → 3) Log time → 4) Run Payroll → 5) Review paychecks → 6) Tax filing",
+        "destructive": True,
+        "description": "Full payroll cycle. CREATES records. CONDITIONAL: 2FA may block.",
+    },
+    {
+        "id": "WF04",
+        "name": "Project Lifecycle",
+        "steps": "1) Create Project → 2) Assign team → 3) Log time → 4) Record expenses → 5) Invoice client → 6) Close project",
+        "destructive": True,
+        "description": "Full project cycle. CREATES records.",
+    },
+    {
+        "id": "WF05",
+        "name": "Month-End Close",
+        "steps": "1) Reconcile all banks → 2) Review AR/AP aging → 3) Run depreciation → 4) Review P&L → 5) Review BS → 6) Generate Management Report",
+        "destructive": False,
+        "description": "Close process verification. Read-only except reconciliation.",
+    },
+    {
+        "id": "WF06",
+        "name": "Bank Reconciliation",
+        "steps": "1) Open reconcile → 2) Review transactions → 3) Match/Create → 4) Categorize → 5) Post → 6) Finish reconciliation",
+        "destructive": True,
+        "description": "Full reconciliation cycle.",
+    },
+    {
+        "id": "WF07",
+        "name": "Sales Tax Compliance",
+        "steps": "1) Verify tax config → 2) Check tax on invoices → 3) Review liability → 4) File return status",
+        "destructive": False,
+        "description": "Tax compliance verification. Read-only.",
+    },
+    {
+        "id": "WF08",
+        "name": "Multi-Entity IC",
+        "steps": "1) Record IC txn → 2) Match in other entity → 3) Verify on consolidation → 4) Check elimination",
+        "destructive": False,
+        "description": "IC workflow verification. CONDITIONAL: multi-entity only.",
+    },
+    {
+        "id": "WF09",
+        "name": "Report Generation",
+        "steps": "1) Open report → 2) Set date range → 3) Apply filters → 4) Customize columns → 5) Export to Excel/PDF",
+        "destructive": False,
+        "description": "Report workflow including export. Read-only.",
+    },
+    {
+        "id": "WF10",
+        "name": "Customer Onboarding",
+        "steps": "1) Create customer → 2) Add contact info → 3) Create estimate → 4) Convert to invoice → 5) Send",
+        "destructive": True,
+        "description": "New customer setup. CREATES records.",
+    },
+    {
+        "id": "WF11",
+        "name": "Refund/Credit Memo",
+        "steps": "1) Open paid invoice → 2) Issue Credit Memo → 3) Apply to invoice → 4) Refund to customer → 5) Bank withdrawal → 6) Verify AR and P&L",
+        "destructive": True,
+        "description": "Refund flow. CREATES records.",
+    },
+]
+
+DEMO_READINESS_SCENARIOS = [
+    {
+        "id": "DR01",
+        "name": "First Impression (Dashboard)",
+        "description": "Dashboard shows recent data, AI insights, populated widgets, no errors",
+    },
+    {
+        "id": "DR02",
+        "name": "Random Invoice Click",
+        "description": "Open random invoice — complete data, valid customer, line items, correct status",
+    },
+    {
+        "id": "DR03",
+        "name": "P&L Report Review",
+        "description": "P&L shows positive revenue, realistic margins, data across categories",
+    },
+    {
+        "id": "DR04",
+        "name": "Cross-Screen Data Consistency",
+        "description": "Employee count, customer count, revenue match across Dashboard, lists, and reports",
+    },
+    {
+        "id": "DR05",
+        "name": "Create New Record",
+        "description": "Create invoice or customer — form works, Save succeeds, record appears in list. DESTRUCTIVE.",
+    },
+    {
+        "id": "DR06",
+        "name": "Export Report",
+        "description": "Export P&L or BS to Excel/PDF — download works, data matches screen",
+    },
+    {
+        "id": "DR07",
+        "name": "Navigate Unknown Page",
+        "description": "Open a page not in the standard demo flow — loads with data, no 404 or empty",
+    },
+    {
+        "id": "DR08",
+        "name": "Search Functionality",
+        "description": "Search for customer, invoice, vendor by name/number — finds correct results",
+    },
+    {
+        "id": "DR09",
+        "name": "Project Deep Dive",
+        "description": "Open project — budget, actual, profitability, transactions, time entries all populated",
+    },
+    {
+        "id": "DR10",
+        "name": "Notifications Check",
+        "description": "Notification tray has real, recent notifications — not empty or spammy",
+    },
+    {
+        "id": "DR11",
+        "name": "Entity Switch (ME)",
+        "description": "Switch entity — smooth transition, different data, correct entity in header",
+    },
+    {
+        "id": "DR12",
+        "name": "AI Features",
+        "description": "Intuit Intelligence gives relevant insights — not empty or generic",
+    },
+]
+
+SECTOR_REALISM_BENCHMARKS = {
+    "construction": [
+        {"id": "BR01", "name": "Net Margin", "range": "3-15%", "formula": "Net Income / Total Revenue"},
+        {"id": "BR02", "name": "Gross Margin", "range": "20-35%", "formula": "(Revenue - COGS) / Revenue"},
+        {"id": "BR03", "name": "DSO", "range": "30-60 days", "formula": "AR / (Revenue / 365)"},
+        {"id": "BR04", "name": "DPO", "range": "30-45 days", "formula": "AP / (COGS / 365)"},
+        {
+            "id": "BR05",
+            "name": "Employees per Revenue",
+            "range": "1 per $150K-250K",
+            "formula": "Employee count vs Revenue",
+        },
+        {"id": "BR06", "name": "Subcontractor % of COGS", "range": "40-60%", "formula": "Sub payments / COGS"},
+        {
+            "id": "BR07",
+            "name": "Projects per $10M Revenue",
+            "range": "5-15 active",
+            "formula": "Active projects / (Revenue / $10M)",
+        },
+        {"id": "BR08", "name": "Invoice avg amount", "range": "$5K-$50K", "formula": "Total AR / Invoice count"},
+        {"id": "BR09", "name": "Bill avg amount", "range": "$2K-$20K", "formula": "Total AP / Bill count"},
+        {
+            "id": "BR10",
+            "name": "Customer concentration",
+            "range": "<20% per customer",
+            "formula": "Top customer / Total revenue",
+        },
+        {
+            "id": "BR11",
+            "name": "Vendor concentration",
+            "range": "<15% per vendor",
+            "formula": "Top vendor / Total COGS",
+        },
+        {
+            "id": "BR12",
+            "name": "Service vs Material products",
+            "range": "70%+ services",
+            "formula": "Service items / Total items",
+        },
+        {"id": "BR13", "name": "Projects with budgets", "range": "80%+", "formula": "Projects with budget / Total"},
+        {
+            "id": "BR14",
+            "name": "Time entry coverage",
+            "range": "80%+ field employees",
+            "formula": "Employees with time / Total",
+        },
+        {"id": "BR15", "name": "Change orders exist", "range": "30%+ projects", "formula": "Projects with CO / Total"},
+    ],
+    "tire_shop": [
+        {"id": "BR21", "name": "Net Margin", "range": "25-35%", "formula": "Net Income / Total Revenue"},
+        {"id": "BR22", "name": "Inventory Turnover", "range": "6-12x per year", "formula": "COGS / Average Inventory"},
+        {
+            "id": "BR23",
+            "name": "Service vs Parts Revenue",
+            "range": "40-60% services",
+            "formula": "Service revenue / Total revenue",
+        },
+        {
+            "id": "BR24",
+            "name": "Customer Retention",
+            "range": "60-80% repeat",
+            "formula": "Returning customers / Total",
+        },
+    ],
+    "non_profit": [
+        {
+            "id": "BR31",
+            "name": "Program Expense Ratio",
+            "range": "65-85%",
+            "formula": "Program expenses / Total expenses",
+        },
+        {
+            "id": "BR32",
+            "name": "Fundraising Efficiency",
+            "range": "<25% of donations",
+            "formula": "Fundraising cost / Donations",
+        },
+        {
+            "id": "BR33",
+            "name": "Grant Dependency",
+            "range": "<50% from single grant",
+            "formula": "Largest grant / Total revenue",
+        },
+        {"id": "BR34", "name": "Surplus Margin", "range": "2-10%", "formula": "Net surplus / Total revenue"},
+    ],
+    "manufacturing": [
+        {"id": "BR41", "name": "Gross Margin", "range": "25-40%", "formula": "(Revenue - COGS) / Revenue"},
+        {"id": "BR42", "name": "Inventory Days on Hand", "range": "30-60 days", "formula": "Inventory / (COGS / 365)"},
+        {"id": "BR43", "name": "COGS % of Revenue", "range": "55-75%", "formula": "COGS / Revenue"},
+        {"id": "BR44", "name": "WIP as % of Inventory", "range": "20-40%", "formula": "WIP / Total Inventory"},
+    ],
+    "professional_services": [
+        {"id": "BR51", "name": "Utilization Rate", "range": "65-80%", "formula": "Billable hours / Total available"},
+        {"id": "BR52", "name": "Revenue per Employee", "range": "$150K-$300K", "formula": "Revenue / Employee count"},
+        {"id": "BR53", "name": "Net Margin", "range": "20-40%", "formula": "Net Income / Revenue"},
+        {"id": "BR54", "name": "DSO", "range": "30-45 days", "formula": "AR / (Revenue / 365)"},
+    ],
+}
+
+
 def get_all_checks():
     """Return all checks in a flat list with tier info."""
     checks = []
@@ -1776,6 +2200,15 @@ def get_all_checks():
                 "fix_actions": ["Document discrepancy with severity and root cause hypothesis"],
             }
         )
+    # God Mode v7.0 additions
+    for c in TEMPORAL_CHECKS:
+        checks.append({**c, "tier": "temporal", "category": "Temporal Coherence", "enabled": True, "auto_fix": False})
+    for c in DATA_CHAINS:
+        checks.append({**c, "tier": "data_chain", "category": "Data Chain Tracing", "enabled": True, "auto_fix": False})
+    for c in E2E_WORKFLOWS:
+        checks.append({**c, "tier": "workflow", "category": "E2E Workflow", "enabled": True, "auto_fix": False})
+    for c in DEMO_READINESS_SCENARIOS:
+        checks.append({**c, "tier": "demo_readiness", "category": "Demo Readiness", "enabled": True, "auto_fix": False})
     return checks
 
 
