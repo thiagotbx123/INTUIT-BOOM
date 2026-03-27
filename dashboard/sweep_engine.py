@@ -299,8 +299,11 @@ Se redirecionar para accounts.intuit.com → re-login (max 3 tentativas).
 **REGRA #6 — CORRECAO OBRIGATORIA (FIX, NAO APENAS REPORT)**
 Findings de CS2 (placeholder) e CS3 (test names): CORRIGIR IMEDIATAMENTE, nao apenas anotar.
 - Vendor "test jones" → Edit → renomear para nome realista do setor → Save
-- Project "Test Delete" → Edit → renomear para nome de projeto real → Save
+- Project "Test Delete", "TestProjectPMAgent", "Test 123" → Edit → renomear para nome de projeto real → Save
+- Customer "Demo 3.5", "Testing ABC", "test_customer" → Edit → renomear → Save
+- Product "Sample Widget", "Dummy Item", "Fake Product", "Temp SKU" → Edit → renomear → Save
 - Estimate "#1" → Edit → dar titulo descritivo → Save
+CS3 detecta: Test+numero, TestCamelCase, test_snake, test-kebab, Testing*, TESTER, Demo+versao, Example Proj, Sample, Dummy, Fake, Temp/tmp.
 Se ENCONTROU um problema fixavel (tier fix_immediately): CORRIJA antes de avancar.
 Sweep que DETECTA mas NAO CORRIGE e inutil — qualquer um pode ler uma tela.
 O VALOR do sweep e CORRIGIR, nao listar.
@@ -724,3 +727,63 @@ ANTES de fixar: checar se ja esta em fixes_applied → se sim, PULAR.
 
     order_file = pending_dir / "SWEEP_ORDER.md"
     order_file.write_text(md.strip(), encoding="utf-8")
+
+    # Also generate playbook activation file that references SWEEP_PLAYBOOK.md
+    _generate_playbook_activation(pending_dir, acct, resume_from)
+
+
+def _generate_playbook_activation(pending_dir, acct, resume_from=None):
+    """Generate a small activation file that tells Claude to use SWEEP_PLAYBOOK.md.
+
+    The playbook contains all screen-by-screen instructions with benchmarks,
+    extractors, and fix protocols inline. This file just adds credentials
+    and entity context.
+    """
+    dashboard_path = str(BASE.as_posix())
+    resume_block = _build_resume_block(acct, resume_from)
+
+    companies_lines = []
+    for c in acct.companies:
+        companies_lines.append(f"| {c.name} | {c.cid} | {c.type} | {c.priority} |")
+
+    activation = f"""# SWEEP ACTIVATION — God Complete v8.0
+
+> Ler `{dashboard_path}/SWEEP_PLAYBOOK.md` e executar tela por tela.
+> Profile: God Complete (unico). Sem atalhos. Sem "HTTP 200 accessible".
+{resume_block}
+
+## CREDENCIAIS
+
+| Campo | Valor |
+|-------|-------|
+| Email | `{acct.email}` |
+| Password | `{acct.password}` |
+| TOTP Secret | `{acct.totp_secret}` |
+| Dataset / Setor | {acct.dataset} |
+
+## ENTITIES ({len(acct.companies)})
+
+| Nome | CID | Tipo | Prioridade |
+|------|-----|------|------------|
+{chr(10).join(companies_lines)}
+
+## EXECUCAO
+
+1. Ler `{dashboard_path}/SWEEP_PLAYBOOK.md` (roteiro completo tela-a-tela)
+2. Executar FASE 0 (login com credenciais acima)
+3. Para CADA entity (ordem: Parent → P0 Children → Consolidated → P1):
+   - Executar Telas 1-15 (financeiro + operacional) com output JSON obrigatorio
+   - Salvar resultados em `{dashboard_path}/pending/phase_results.json`
+4. Gerar report final em `knowledge-base/sweep-learnings/{acct.dataset}_{datetime.datetime.now().strftime("%Y-%m-%d")}.md`
+
+## REGRA ZERO: AUTONOMIA TOTAL
+- NUNCA perguntar. NUNCA parar entre entities. NUNCA agrupar stations.
+- Se algo parece errado: PARE, investigue, CORRIJA, depois avance.
+- O sweep SO PARA quando TODAS entities estao processadas.
+
+---
+*God Complete v8.0 — {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}*
+"""
+
+    activation_file = pending_dir / "SWEEP_ACTIVATION.md"
+    activation_file.write_text(activation.strip(), encoding="utf-8")

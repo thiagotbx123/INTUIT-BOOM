@@ -1613,9 +1613,9 @@ CONTENT_SAFETY = [
     {
         "id": "CS3",
         "name": "Test Names",
-        "pattern": "Test, TESTER, IDT, explicit test markers, 'test project', 'test customer'",
+        "pattern": r"(?i)\b(test\s*\d|test[_\-\s]\w|test[A-Z]\w|testing\b|tester\b|IDT\b|demo\s*\d|demo\s+project|example\s+proj|sample\b|dummy\b|fake\b|temp\b|tmp\b)",
         "severity": "P2",
-        "guidance": "Check customer names, vendor names, project names, product names, and employee names. Also check notes/description fields where 'test' entries are commonly left behind.",
+        "guidance": "Check customer names, vendor names, project names, product names, and employee names. Also check notes/description fields where 'test' entries are commonly left behind. Catches: 'Test 123', 'TestProjectPMAgent' (camelCase), 'test_something', 'Testing 123', 'TESTER', 'Demo 3.5', 'Example Proj', 'Sample', 'Dummy', 'Fake', 'Temp/tmp'. Does NOT flag the standalone word 'test' in sentences — only when it starts a name or is combined with identifiers.",
     },
     {"id": "CS4", "name": "PII Exposure", "pattern": "SSN, credit card, @test emails", "severity": "CRITICAL"},
     {
