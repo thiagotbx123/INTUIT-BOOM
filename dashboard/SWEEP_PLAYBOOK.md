@@ -1,6 +1,6 @@
-# QBO SWEEP PLAYBOOK — God Complete v8.0
+# QBO SWEEP PLAYBOOK — God Complete v8.1
 
-> **Versao:** 8.0 (2026-03-27)
+> **Versao:** 8.1 (2026-03-27)
 > **Profile:** God Complete (unico — nao existe outro modo)
 > **Principio:** Abra cada tela, olhe TUDO como um especialista humano, corrija na hora.
 
@@ -12,10 +12,19 @@
 2. **Se algo parece errado, PARE e corrija ANTES de avancar** — nao documente pra depois
 3. **Cada tela tem output obrigatorio** — se falta algum campo, a tela NAO esta completa
 4. **Interprete como humano** — "Client 1" nao e nome real. "$82M bank balance" pra construtora pequena nao e realista. Margem de 48% em construction nao existe.
-5. **Corrija test names SEMPRE** — qualquer coisa com "Test", "Sample", "Demo 3.5", "Example", "Foo", "TBX", "Lorem" deve ser renomeada para nome realista do setor
+5. **Corrija test/placeholder names SEMPRE** — qualquer coisa com "Test", "Sample", "Demo 3.5", "Example", "Foo", "TBX", "Lorem", "Client 1", "Vendor 1", "Account 1" deve ser renomeada para nome realista do setor. Se encontrou = PARAR e CORRIGIR AGORA. Nao documentar pra depois. O VALOR do sweep e CORRIGIR, nao listar.
 6. **Company Settings (Legal Name, DBA) = NUNCA CORRIGIR** — mesmo que tenha "Testing_OBS_AUTOMATION", documentar mas NAO alterar
 7. **Use QBO API para validar numeros do UI** — se UI diz $590K income mas API diz $500K, isso e finding
 8. **Output compacto** — max 10 linhas JSON por tela
+
+## REGRAS ANTI-SKIP (CRITICAS)
+
+9. **TODAS as 46 telas sao OBRIGATORIAS** — T01 ate T46, sem excecao. O sweep NAO esta completo se parou no T15. T16-T46 cobrem Payroll, Time, Tax, Recurring, Fixed Assets, Revenue Recognition, Budgets, Classes, Workflows, Custom Fields, Settings, Reconciliation, Invoice/Bill detail, POs, Reports, AI Features, Surface Scan. TODAS devem ser executadas.
+10. **Child entities P0 devem ter metricas REAIS em T03-T15** — NAO copiar "shared data model" ou "same as parent". Cada entity tem seus proprios numeros. Navegar ate a tela, extrair dados, registrar JSON. Se os numeros forem iguais ao parent, ISSO e um finding (dados compartilhados indevidamente).
+11. **Child entities P0: T01-T15 COMPLETO com dados** — mesma profundidade que parent. Nao reduzir. Nao resumir. Cada tela visitada individualmente com output JSON.
+12. **P1 entities: minimo T01+T02+T05+T06 com metricas** — rapido mas com dados reais, nao "PASS".
+13. **Se o contexto estiver grande: usar /compact e CONTINUAR** — nunca parar no meio. Se preciso, dividir em fases (T01-T15 numa sessao, T16-T46 na proxima), mas NUNCA pular telas.
+14. **Gerar report SOMENTE apos T46 completo** — o report final so pode ser escrito depois que TODAS as telas foram verificadas. Report gerado antes de T46 e INCOMPLETO.
 
 ## FERRAMENTAS DISPONIVEIS
 
@@ -71,7 +80,7 @@
 ## FASE 0: LOGIN E CONTEXTO
 
 ### Procedimento
-1. Ler credenciais do SWEEP_ORDER.md (email, TOTP secret)
+1. Ler credenciais do SWEEP_ACTIVATION.md (email, referencia ao QBO_CREDENTIALS.json)
 2. Gerar TOTP: `python -c "import pyotp; print(pyotp.TOTP('SECRET').now())"`
 3. Navegar para https://accounts.intuit.com/app/sign-in
 4. Login com email + TOTP
@@ -82,6 +91,21 @@
 - Identificar o setor do dataset (construction/tire/nonprofit/etc)
 - Carregar benchmarks correspondentes (secao acima)
 - Listar todas entities do account (parent + children)
+
+### Ordem de Execucao por Entity (OBRIGATORIA)
+```
+1. PARENT ENTITY: T01-T46 COMPLETO (todas 46 telas com output JSON)
+2. P0 CHILD 1:    T01-T15 COMPLETO com metricas reais (nao copiar do parent)
+3. P0 CHILD 2:    T01-T15 COMPLETO com metricas reais (nao copiar do parent)
+4. P1 CHILDREN:   T01+T02+T05+T06 com dados reais para CADA um
+5. CROSS-ENTITY:  X01-X07 validacao
+6. REPORT FINAL:  SOMENTE apos tudo acima completo
+```
+
+**PROIBIDO:**
+- Marcar T03-T15 de child entity como "shared data model" ou "same as parent" — CADA entity tem seus numeros
+- Parar no T15 e gerar report — T16-T46 sao OBRIGATORIAS para parent
+- Detectar CS violation e NAO corrigir — se "Client 1" aparece, RENOMEAR na hora
 
 ### Output:
 ```json
@@ -780,6 +804,25 @@ except:
 data["results"].append(SCREEN_OUTPUT_JSON)
 open(f, 'w').write(json.dumps(data, indent=2))
 ```
+
+---
+
+## ⚠ CHECKPOINT OBRIGATORIO (apos T15)
+
+**NAO gere report ainda. NAO pule para a proxima entity.**
+
+Voce completou T01-T15 (financeiro + operacional). Agora DEVE continuar com T16-T46 (advanced + settings + reports + surface) ANTES de trocar de entity.
+
+Checklist:
+- [ ] T01-T15 completos com output JSON? → Continuar para T16
+- [ ] Algum fix pendente (CS3/CS5 encontrado mas nao corrigido)? → CORRIGIR AGORA antes de continuar
+- [ ] Context window grande? → Usar /compact e continuar. NAO parar.
+
+**Telas T16-T46 cobrem:** Payroll, Contractors, Time, Sales Tax, Recurring, Fixed Assets, Revenue Recognition, Budgets, Classes, Workflows, Custom Fields, 3 paineis de Settings, Reconciliation, Invoice/Bill drill-in, Journal Entries, POs, Sales Orders, Inventory, Customer Hub CRM, Reports completos (Standard, P&L by Class, AR Aging, AP Aging), Audit Log, AI Features, Global Search, e Surface Scan de 16 paginas restantes.
+
+**Se voce parar aqui, o sweep esta 33% completo (15 de 46 telas). Continue.**
+
+---
 
 ## TELA 16: PAYROLL HUB (/app/payroll?jobId=payroll)
 
@@ -2324,6 +2367,20 @@ Para CADA pagina abaixo, navegar e verificar em < 30 segundos:
   "status": "PASS|FAIL|WARN"
 }
 ```
+
+---
+
+## ⚠ CHECKPOINT OBRIGATORIO (apos T46 da ULTIMA entity)
+
+**Voce completou T01-T46 para todas as entities? Verifique:**
+- [ ] Parent: T01-T46 com output JSON? (46 telas)
+- [ ] P0 Child 1: T01-T15 com metricas reais? (15 telas, NAO shallow)
+- [ ] P0 Child 2: T01-T15 com metricas reais? (15 telas, NAO shallow)
+- [ ] P1 Children: T01+T02+T05+T06 com dados? (4 telas cada)
+- [ ] Todos os CS violations encontrados foram CORRIGIDOS? (nao apenas documentados)
+- [ ] phase_results.json tem output JSON para CADA tela de CADA entity?
+
+**Se algum item acima nao foi feito: VOLTAR e completar antes de gerar report.**
 
 ---
 
