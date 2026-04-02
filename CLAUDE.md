@@ -3,20 +3,35 @@
 ## PROTOCOLO DE INICIO (SEGUIR NESTA ORDEM EXATA)
 
 **Passo 1 — VERIFICAR SWEEP PENDENTE (OBRIGATORIO, FAZER PRIMEIRO):**
-Leia o arquivo `dashboard/pending/LATEST_SWEEP.json`. Se o campo `"status"` for `"pending"`:
+Leia o arquivo `C:/Users/adm_r/QBO_DEMO_MANAGER/pending/LATEST_SWEEP.json`. Se o campo `"status"` for `"pending"`:
 - NAO leia memory.md
 - NAO de status do projeto
 - NAO pergunte nada ao usuario
 - NAO leia `PROMPT_CLAUDE_QBO_MASTER.md` (ele e para sweeps manuais, NAO para dashboard sweeps)
 - NAO leia `knowledge-base/access/TESTBOX_ACCOUNTS.md` ou `QBO_CREDENTIALS.json`
-- Leia **SOMENTE** `dashboard/pending/SWEEP_ORDER.md` — ele contem instrucoes e credenciais
-- **NOVO v6.0**: SWEEP_ORDER.md e compacto (~13KB). Detalhes de checks estao em:
-  - `dashboard/configs/checks.json` — sub_checks, drill_in, fix_actions por station
-  - `dashboard/extractors/*.js` — JS extractors E01-E10
+- Leia **SOMENTE** `C:/Users/adm_r/QBO_DEMO_MANAGER/pending/SWEEP_ACTIVATION.md` — ele contem instrucoes e credenciais
+- **NOVO v6.0**: Detalhes de checks estao em:
+  - `C:/Users/adm_r/QBO_DEMO_MANAGER/configs/checks.json` — sub_checks, drill_in, fix_actions por station
+  - `C:/Users/adm_r/QBO_DEMO_MANAGER/extractors/*.js` — JS extractors E01-E10
   - Leia esses arquivos **sob demanda** ao chegar em cada station (NAO tudo de uma vez)
-- Comece pelo login usando as credenciais do SWEEP_ORDER.md (e NENHUMA outra fonte)
+- Comece pelo login usando as credenciais do SWEEP_ACTIVATION.md (e NENHUMA outra fonte)
 - Ao terminar, mude o status no JSON para `"completed"` e salve o report
 - PARE AQUI. Nao siga os passos abaixo.
+
+**Execucao do Sweep — Playwright MCP:**
+- Usar ferramentas Playwright MCP (`browser_navigate`, `browser_snapshot`, `browser_click`, `browser_fill_form`, `browser_evaluate`) para TODA automacao de browser
+- NAO usar agent-browser CLI — usar somente Playwright MCP
+- Se aparecer dialog "Seguranca do Windows" pedindo PIN: `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('190985{ENTER}')"`
+
+**Progress Tracking (OBRIGATORIO apos cada station):**
+- `python C:/Users/adm_r/QBO_DEMO_MANAGER/progress.py current STATION_ID` antes de iniciar
+- `python C:/Users/adm_r/QBO_DEMO_MANAGER/progress.py station_done STATION_ID` ao completar
+- Para multi-entity: `python progress.py station_done D01 --entity CID`
+
+**Session Recovery (se retomando de sessao anterior):**
+- Ler `C:/Users/adm_r/QBO_DEMO_MANAGER/pending/phase_results.json` para screens ja processados
+- Ler `progress.completed_stations` em `LATEST_SWEEP.json`
+- PULAR stations ja completados — continuar do proximo pendente
 
 **Passo 2 — SE NAO HOUVER SWEEP PENDENTE:**
 Ai sim, siga o protocolo normal:
@@ -99,34 +114,25 @@ intuit-boom/
 │   ├── settings.local.json
 │   └── commands/          <- Slash commands
 ├── .mcp.json              <- MCP servers (Playwright, QBO API, Slack, GDrive)
-├── dashboard/             <- QBO Demo Manager (FastAPI)
-│   ├── app.py             <- Rotas FastAPI + sweep lifecycle
-│   ├── sweep_engine.py    <- Gerador de SWEEP_ORDER.md (v6.0, compacto)
-│   ├── sweep_checks.py    <- Definicoes de checks (source of truth Python)
-│   ├── data.py            <- Loader de credentials + history
-│   ├── models.py          <- Pydantic models
-│   ├── config.py          <- Profiles + account configs
-│   ├── actions.py         <- TOTP, login test, Retool sync
-│   ├── logger.py          <- Logging estruturado
-│   ├── configs/
-│   │   ├── checks.json    <- Checks exportados (JSON, leitura sob demanda)
-│   │   ├── account_configs.json
-│   │   ├── profiles.json
-│   │   └── finding_actions.json
-│   ├── extractors/        <- JS extractors E01-E10
-│   │   ├── index.json     <- Mapa de extractors
-│   │   └── e01-e10.js     <- Funcoes JS individuais
-│   ├── pending/           <- Sweep ativo
-│   │   ├── LATEST_SWEEP.json
-│   │   └── SWEEP_ORDER.md
-│   ├── templates/         <- Jinja2 HTML
-│   ├── static/            <- CSS/JS
-│   └── logs/              <- Logs diarios
 ├── knowledge-base/        <- Base de conhecimento QBO
 ├── scripts/               <- Utilitarios (Retool sync)
 ├── sessions/              <- HISTORICO DE SESSOES
 ├── PROMPT_CLAUDE_QBO_MASTER.md  <- Sweep manual (referencia)
 └── qbo_checker/           <- Modulos antigos (legacy)
+
+QBO Demo Manager (SEPARADO — C:/Users/adm_r/QBO_DEMO_MANAGER/):
+├── app.py                 <- Rotas FastAPI + sweep lifecycle
+├── settings.json          <- Caminhos configuraveis (aponta para intuit-boom)
+├── settings.py            <- Loader de settings
+├── sweep_engine.py        <- Gerador de SWEEP_ORDER.md
+├── sweep_checks.py        <- Definicoes de checks
+├── SWEEP_PLAYBOOK.md      <- Playbook completo para sweep agent
+├── configs/               <- checks.json, profiles, accounts
+├── extractors/            <- JS extractors E01-E10
+├── pending/               <- Sweep ativo (LATEST_SWEEP.json, SWEEP_ORDER.md)
+├── templates/             <- Jinja2 HTML
+├── static/                <- CSS/JS
+└── logs/                  <- Logs diarios
 ```
 
 ---

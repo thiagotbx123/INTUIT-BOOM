@@ -12,7 +12,7 @@
     "hidden": false
   },
   "mid-market": {
-    "profile": "full_sweep",
+    "profile": "god_complete",
     "overrides": {},
     "notes": "",
     "hidden": false
@@ -36,7 +36,7 @@
     "hidden": false
   },
   "construction": {
-    "profile": "god_full",
+    "profile": "god_complete",
     "overrides": {},
     "notes": "",
     "hidden": false
