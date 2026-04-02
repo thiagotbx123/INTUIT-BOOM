@@ -18,23 +18,21 @@ Leia o arquivo `C:/Users/adm_r/QBO_DEMO_MANAGER/pending/LATEST_SWEEP.json`. Se o
 - Ao terminar, mude o status no JSON para `"completed"` e salve o report
 - PARE AQUI. Nao siga os passos abaixo.
 
-**Execucao do Sweep — OBRIGATORIO usar Playwright MCP (server: "playwright"):**
+**Execucao do Sweep — Browser Automation:**
 
 > **REGRA ABSOLUTA — SEM EXCECOES:**
-> Voce DEVE usar as ferramentas do MCP server chamado **"playwright"** para TODA interacao com browser.
-> Os nomes das ferramentas sao: `browser_navigate`, `browser_snapshot`, `browser_click`,
-> `browser_type`, `browser_tab_new`, `browser_tab_close`, `browser_take_screenshot`,
-> `browser_press_key`, `browser_select_option`, `browser_hover`, `browser_drag`,
-> `browser_handle_dialog`, `browser_file_upload`, `browser_pdf_save`, `browser_console_messages`,
-> `browser_network_requests`, `browser_install`, `browser_close`.
+> Usar ferramentas de browser (`browser_navigate`, `browser_snapshot`, `browser_click`,
+> `browser_type`, `browser_evaluate`, `browser_take_screenshot`, `browser_press_key`,
+> `browser_select_option`, `browser_hover`, `browser_handle_dialog`) para TODA interacao.
 >
-> **PROIBIDOS (nao usar em hipotese alguma):**
+> **PASSO OBRIGATORIO**: A PRIMEIRA acao DEVE ser `browser_navigate` para a URL de login.
+> NAO listar tabs primeiro. NAO fazer snapshot antes de navegar. Voce CRIA a tab navegando.
+> Sequencia correta: `browser_navigate(URL)` → `browser_snapshot` → interagir.
+>
+> **PROIBIDOS:**
 > - `agent-browser` CLI ou qualquer variante
 > - Shell commands como `curl`, `wget`, `node -e` para acessar paginas web
-> - Qualquer fallback que nao seja Playwright MCP
->
-> Se Playwright MCP nao estiver disponivel, PARE e reporte o erro.
-> NAO tente alternativas. NAO improvise com Shell.
+> - Listar tabs e esperar que alguem abra o browser por voce
 
 - Se aparecer dialog "Seguranca do Windows" pedindo PIN: `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('190985{ENTER}')"`
 
