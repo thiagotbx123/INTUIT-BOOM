@@ -81,9 +81,33 @@
 
 ---
 
+## Dataset V2 — Connection Info (2026-04-13)
+
+Construction dataset migrado para V2 (PLA-3376). Conexao:
+- **Host**: `tbx-postgres-v2-unstable.flycast:5432`
+- **Database**: `quickbooks` (NAO `postgres`)
+- **User**: `postgres`
+- **Creds**: Bitwarden "Dataset V2 Unstable Credentials" ou AWS Parameter Store
+- **GOTCHA**: Default database e `postgres` — sempre especificar `quickbooks`
+- **GOTCHA**: NOT NULL constraints mais estritos que legacy (usar `''` ao inves de NULL)
+- **Databases no cluster**: archer, brevo, common, gem, gong, postgres, quickbooks, repmgr, siteimprove, tropic
+- **Coda doc**: `https://coda.io/d/_dUwAsQie1Nk/` (Creating a New Dataset)
+- **Learning completo**: `TSA_CORTEX/knowledge-base/learnings/2026-04-13_dataset_v2_postgres_connection.md`
+
+## Cash Flow Fix — PLA-3416 (2026-04-13)
+
+- **Status**: Needs Review (era Blocked)
+- **Feito**: 93 invoices + 422 line items inseridos no V2 quickbooks DB
+- **IDs**: invoices 45470-45562, line items 121414-121835
+- **Total dataset invoices agora**: 428 (era 335)
+- **Pendente**: Augusto gerar activity plans → ingestao → Gate 2 Retool
+- **Script**: `scripts/ingestion/insert_cashflow_invoices_v2.py`
+
+---
+
 ## Historico
 - Sessoes detalhadas: `.claude/memory_backup_2026-03-23.md`
 - Sweep reports: `knowledge-base/sweep-learnings/`
 - Strategic Cortex: `knowledge-base/strategic-cortex/OUTPUT_A_*.md`
 
-Ultima atualizacao: 2026-03-23
+Ultima atualizacao: 2026-04-13
