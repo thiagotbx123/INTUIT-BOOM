@@ -4,6 +4,10 @@
 *.pickle
 token_*.pickle
 
+# Credential files — NEVER commit
+knowledge-base/access/QBO_CREDENTIALS.json
+knowledge-base/access/*.json
+
 # Browser automation profile data
 .playwright-profile/
 chrome_profile_*/

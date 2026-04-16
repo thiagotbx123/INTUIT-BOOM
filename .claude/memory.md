@@ -1,5 +1,5 @@
 # INTUIT BOOM - Memory File
-**Ultima atualizacao:** 2026-04-16 (INGEST_CHECK TCO + Construction — 14 fixes, 2 tickets, checklist v7)
+**Ultima atualizacao:** 2026-04-16 (INGEST_CHECK 14 fixes + Payroll Tax Debug + May Release Analysis)
 
 ---
 
@@ -136,7 +136,7 @@
 | M2 (Beta) | Starts next week |
 | Mineral HR | Discovery session scheduled |
 | Weekly sync | Started with all teams |
-| Blocker | PLA-3431: Construction Payroll history not found |
+| Blocker | PLA-3431: Payroll tax — **RUNS** despite Declined (grace until May 16). Need Intuit Ops before deadline. |
 
 **Docs:**
 - WFS Milestone: https://docs.google.com/spreadsheets/d/1aP3o4biKOmEPtnDjvXSWRpXK2oaPCAKE/edit
@@ -230,6 +230,53 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 
 ---
 
+## QBO Payroll — Critical Learnings (2026-04-16)
+
+### Nov 2025 Autotax Enforcement (AFFECTS ALL FUTURE ACCOUNTS)
+- **Cutoff**: QBO accounts created **after November 15, 2025** are LOCKED into "Automated Taxes & Forms" — NO toggle to switch to manual filing
+- **Impact**: ALL demo/test accounts provisioned from Dec 2025+ are affected (construction-clone, any future account)
+- **Result**: Federal/State tax enrollment WILL fail on test accounts (fake EINs rejected by IRS)
+- **Sources**: [QBO Help 1](https://quickbooks.intuit.com/learn-support/en-us/process-payroll/set-up-payroll-taxes-and-forms/00/370042), [QBO Help 2](https://quickbooks.intuit.com/learn-support/en-us/help-article/payroll-forms/manage-automatic-tax-payments-form-filings/L8IgYMkDo_US_en_US)
+
+### Grace Period Pattern
+- QBO gives ~30 days after warning before blocking payroll
+- Construction Clone: "Finish by May 16, 2026" warning appeared mid-April → payroll runs normally until then
+- Only automated tax e-filing is disabled; actual paycheck generation works
+
+### Payroll Test Result (Apr 16)
+- **Account**: quickbooks-testuser-construction-clone@tbxofficial.com
+- **Entity**: Keystone Terra (Child)
+- **Period**: 04/16-04/30
+- **Result**: SUCCESS — 35 employees, $177,213.21, Paper check
+- **How**: Disabled Auto Payroll for current period → manual submission → processed
+- **Employee fixes needed**: Admin Keystone + Simon Walker had incomplete profiles (SSN, address, pay types, taxes, payment method)
+
+### Safe Test Data for Employee Profiles
+- SSN: `078-05-1120` | DOB: `01/15/1985` | Address: `123 Main St, San Jose, CA 95112`
+- Pay type: Hourly $25.00/hour | Payment: Paper check
+- W-4: Single, 0 allowances, no additional withholding
+
+### Future Account Provisioning Rule
+Any new QBO account MUST account for autotax:
+1. Get Intuit Ops to flip autotax flag to manual, OR
+2. Get Intuit Ops to approve test EIN for enrollment, OR
+3. Accept Paper check + grace period workaround (time-limited)
+
+### May Release Payroll Features (WIS)
+| WIS # | Feature | Risk |
+|-------|---------|------|
+| 23 | PAYROLL NAME CHANGE and REBRAND | **HIGH** — could change enforcement behavior |
+| 35 | ME Payroll Hub | Medium — Multi-Entity payroll dashboard |
+| 36 | Certified Payroll Reports | Low — new report type |
+
+**Risk**: #23 Rebrand could tighten enforcement after May 16, breaking current workaround. Monitor after WIS lock (Apr 17).
+
+### PLA-3431 Comments Posted (Apr 16)
+1. Root cause analysis (autotax enforcement, Nov 2025 cutoff)
+2. Test result + May Release risk + 3-tier recommendation (short/medium/long term)
+
+---
+
 ## Cash Flow Fix — PLA-3416 (2026-04-13)
 
 - **Status**: Needs Review (era Blocked)
@@ -297,7 +344,7 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 
 | Issue | Owner | Status | Impact |
 |-------|-------|--------|--------|
-| PLA-3431: Construction Payroll history not found | Augusto | Blocked (waiting Soranzo) | WFS environment |
+| PLA-3431: Construction Payroll tax setup | Augusto/Ops | **PAYROLL RUNS** (grace period until May 16). Autotax locked post-Nov2025. Need Intuit Ops before May 16. | WFS + May Release |
 | PLA-3416: Cash flow invoices gate 2 | Augusto | Confusion on process | QBO cash flow |
 | TCO Invoice Terms: 20K erros | Augusto | Needs investigation (which terms for tire_shop) | Gate 2 TCO |
 | TCO+Construction: activity plans needed | Augusto | DB fixes done, need propagation to QBO | All Gate 2 |
@@ -372,12 +419,15 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 | fix_construction.py | Downloads/ | Construction 6 fixes script |
 | create_tco_ticket.py | Downloads/ | PLA-3473 creation script |
 | create_construction_ticket.py | Downloads/ | PLA-3474 creation + CSVs |
+| post_comment_3431.py | Downloads/ | PLA-3431 root cause comment |
+| post_comment_3431_v2.py | Downloads/ | PLA-3431 test result + May Release risk |
 
 ---
 
 ## Historico
 
-- Sessoes detalhadas: `sessions/` (29 files, last: 2026-04-16)
+- Sessoes detalhadas: `sessions/` (30 files, last: 2026-04-16)
+- **Session completa Apr 16**: `sessions/2026-04-16_ingest-check-payroll-mayrelease.md` (INGEST_CHECK 14 fixes + Payroll debug + May Release analysis)
 - Memory backup: `.claude/memory_backup_2026-03-23.md`
 - Sweep reports: `knowledge-base/sweep-learnings/` (33 reports)
 - Strategic Cortex: `knowledge-base/strategic-cortex/OUTPUT_A_*.md` (STALE — Dec 2025)
@@ -393,7 +443,7 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 4. **URGENTE — Consolidated View**: Kat pediu dev team habilitar Consolidated View no IES Future Features (CoIDs: 9341455531293719, 9341455531274694, 9341455531294375). Daniel Sharvit precisa pra demo sexta 17/04. Dev team nao respondeu — dar bump.
 5. **PENDENTE — RAC-764**: Checar com Alexandra se provisioning Mailchimp Admin (Jodie, Kym, Carl, Antonio) foi resolvido.
 6. **PENDENTE — kledabyl**: User no Help Tracker — Alexandra convidou + resolveu white screen, mas kledabyl nao confirmou se QBOA MM funciona nem informou quais ambientes IES precisa. Follow up.
-7. **PENDENTE — PLA-3431**: Cobrar Kat sobre payroll bank Construction Clone (2 dias sem resposta)
+7. **URGENTE — PLA-3431 May 16 deadline**: Payroll FUNCIONA (testado Apr 16, 35 employees, $177K). Mas May 16 = hard deadline — precisa Intuit Ops flipar autotax flag ou aprovar test EIN ANTES. Escalar via Kat.
 8. **Coda Update**: Atualizar pagina "How to setup a new account" (canvas-AAMV0rdAbv) no Integrations Central → Intuit com a politica de access requests da Kat (Scenario A/B + canned response). Precisa ser feito no browser — API nao edita canvas pages.
 9. **Apr 17**: Monitorar lock de scope da Spring Release
 10. **PLA-3416**: Desbloquear Augusto sobre gate 2 no Retool (cash flow invoices TAMBEM pendentes)
@@ -432,7 +482,7 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 - 2 resolved (Zak Kelly QBOA MM, mcalderon1 new hire redirect)
 - 3 pending (Consolidated View URGENT, RAC-764, kledabyl Help Tracker)
 - 2 watch (Kat de-provision Mailchimp, Brevo SSO)
-- PLA-3431 payroll bank: 2 days no reply from Kat
+- PLA-3431 payroll: UNBLOCKED (runs via Paper check). May 16 deadline for Intuit Ops escalation
 
 ---
 
@@ -655,7 +705,7 @@ Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx` (CANON
 - `knowledge-base/sweep-learnings/construction-clone_2026-04-15_v3.md` — Latest sweep report
 - `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx` — **76-rule checklist (CANONICAL, updated 2026-04-16)**
 - `~/Downloads/CONSTRUCTION_CLONE_DELIVERY/scripts/` — ALL fix/audit scripts (12 files)
-- `sessions/2026-04-16_ingest-check-tco-construction.md` — Full INGEST_CHECK session log
+- `sessions/2026-04-16_ingest-check-payroll-mayrelease.md` — Full session log (INGEST_CHECK + Payroll + May Release)
 - **PLA-3473** — TCO: 8 fixes applied + 7 CSVs attached
 - **PLA-3474** — Construction: 6 fixes applied + 5 CSVs attached
 
@@ -670,4 +720,4 @@ Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx` (CANON
 8. `fix_margin.py` — Deleted 16 smallest bills to reach 18.6% margin
 9. Final audit: `full_checklist_audit.py` + `audit_remaining_rules.py` → 66/66 PASS
 
-Ultima atualizacao: 2026-04-16 (INGEST_CHECK session — TCO 8 fixes PLA-3473, Construction 6 fixes PLA-3474, Checklist v7 76 regras)
+Ultima atualizacao: 2026-04-16 (INGEST_CHECK 14 fixes PLA-3473+3474 | Payroll Tax Debug — RUNS despite Declined, May 16 deadline | May Release 3 payroll features analyzed | 2 comments PLA-3431)

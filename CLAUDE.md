@@ -34,7 +34,7 @@ Leia o arquivo `C:/Users/adm_r/QBO_DEMO_MANAGER/pending/LATEST_SWEEP.json`. Se o
 > - Shell commands como `curl`, `wget`, `node -e` para acessar paginas web
 > - Listar tabs e esperar que alguem abra o browser por voce
 
-- Se aparecer dialog "Seguranca do Windows" pedindo PIN: `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('190985{ENTER}')"`
+- Se aparecer dialog "Seguranca do Windows" pedindo PIN: usar o PIN do Windows Credential Manager (NAO hardcodar aqui)
 
 **Progress Tracking (OBRIGATORIO apos cada station):**
 - `python C:/Users/adm_r/QBO_DEMO_MANAGER/progress.py current STATION_ID` antes de iniciar
