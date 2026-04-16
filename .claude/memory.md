@@ -1,5 +1,5 @@
 # INTUIT BOOM - Memory File
-**Ultima atualizacao:** 2026-04-13 (deep refresh — Slack + KB audit + Downloads scan)
+**Ultima atualizacao:** 2026-04-16 (INGEST_CHECK TCO + Construction — 14 fixes, 2 tickets, checklist v7)
 
 ---
 
@@ -172,6 +172,64 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 
 ---
 
+## INGEST_CHECK — TCO + Construction (2026-04-16)
+
+**Session**: `sessions/2026-04-16_ingest-check-tco-construction.md` (detalhes completos)
+**DB**: `tbx-postgres-v2-unstable.flycast:5432/quickbooks` (user=postgres, pw=Urdq28HxbFabZc5)
+
+### TCO (fab72c98-c38d-4892-a2db-5e5269571082) — PLA-3473
+
+8 fixes aplicados via DB direto. Todos verificados PASS no DB (0 erros):
+
+| Fix | Regra | Rows Afetadas |
+|-----|-------|---------------|
+| LIC field_id NULL | QB_INVOICE_UNIQUE_CLASSIFICATION_DIMENSIONS | 26,288 |
+| PSC overlap delete | QB_INVOICE_UNIQUE_CLASSIFICATION_DIMENSIONS | 466 deleted |
+| Fixed assets dims | QB_FIXED_ASSETS_HAVE_DIMENSION | 113 inserted |
+| Company type match | QB_COMPANY_TYPES_MATCH | 2 products |
+| Invoice dates >365d | QB_INVOICES_WITHIN_YEAR | 127 capped |
+| PO LIC field_id NULL | QB_PURCHASE_ORDER_UNIQUE_CLASSIFICATION_DIMENSIONS | 2,565 |
+| Expense LIC field_id NULL | QB_EXPENSE_UNIQUE_CLASSIFICATION_DIMENSIONS | 2,690 |
+| Duplicate product names | QB_CONSTRAINT_QUICKBOOKS_PRODUCT_SERVICES_UNIQUE_NAME | 3 deleted, 562 LIs redirected |
+
+**PENDENTE TCO**: QB_INVOICE_TERMS_MATCH_COMPANY_SETTINGS — 20,002 erros. Augusto ciente. Requer investigacao de qual terms aplicar para tire_shop.
+
+### Construction (321c6fa0-a4ee-4e05-b085-7b4d51473495) — PLA-3474
+
+6 fixes aplicados. Todos verificados PASS no DB (0 erros):
+
+| Fix | Regra | Rows Afetadas |
+|-----|-------|---------------|
+| LIC field_id NULL | QB_INVOICE_UNIQUE_CLASSIFICATION_DIMENSIONS | 8,432 |
+| PSC overlap delete | QB_INVOICE_UNIQUE_CLASSIFICATION_DIMENSIONS | 83 deleted |
+| PO LIC field_id NULL | (preventivo — nao reportado) | 416 |
+| Expense LIC field_id NULL | (preventivo — nao reportado) | 4,024 |
+| Invoice terms mismatch | QB_INVOICE_TERMS_MATCH_COMPANY_SETTINGS | 256 → Net 30 |
+| Time entries outside project | QB_TIME_ENTRIES_START/END_IN_PROJECT | 59 clamped to day 90 |
+
+### Checklist — CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx
+
+- **6 regras novas** adicionadas (rows 72-77): LIC/PSC/PO/Expense field_id, product name unique, invoice terms
+- **2 status updates**: Row 64 (TXN_DATE_IN_PROJECT) FAIL→PASS, Row 71 (FIXED_ASSETS) FAIL→PASS
+- **Totais**: 76 regras | 62 PASS | 11 N/A | 3 FAIL (pre-existentes)
+- **Backup**: `CHECKLIST_INGESTION_CONSTRUCTION (7).BACKUP.xlsx`
+- **CANONICAL**: Checklist agora e a v7 (antes era v5 em sessoes anteriores)
+
+### Learnings Sistemicos (aplicaveis a TODOS datasets)
+
+1. **classification_field_id NULL** — afeta LIC, PO LIC, Expense LIC. Fix: walk up parent_id ate NULL para achar root ancestor ID.
+2. **PSC deve estar VAZIO** — Construction (referencia) nao tem PSC. Quando tem, validator compara com LIC e reporta overlap.
+3. **Retool validator tem throttling** — Lambda DynamoDB throttle causa ghost errors. Exports consecutivos mostram numeros decrescentes. Verificar SEMPRE no DB.
+4. **Unique constraints em junction tables** — PO LIC e Expense LIC tem unique constraint em (line_item_id, classification_field_id). Deduplicar ANTES de UPDATE.
+5. **Linear file upload** — GCS signed URLs exigem header Content-Type explicito no PUT.
+
+### Scripts Criados (~/Downloads/)
+
+- `fix_tco_round3.py`, `create_tco_ticket.py`, `gen_tco_csvs.py`, `upload_tco_csvs.py`, `fix_ticket.py`, `update_tco_ticket.py`
+- `create_construction_ticket.py`, `fix_construction.py`
+
+---
+
 ## Cash Flow Fix — PLA-3416 (2026-04-13)
 
 - **Status**: Needs Review (era Blocked)
@@ -241,6 +299,8 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 |-------|-------|--------|--------|
 | PLA-3431: Construction Payroll history not found | Augusto | Blocked (waiting Soranzo) | WFS environment |
 | PLA-3416: Cash flow invoices gate 2 | Augusto | Confusion on process | QBO cash flow |
+| TCO Invoice Terms: 20K erros | Augusto | Needs investigation (which terms for tire_shop) | Gate 2 TCO |
+| TCO+Construction: activity plans needed | Augusto | DB fixes done, need propagation to QBO | All Gate 2 |
 | Spring Release scope not locked | Intuit | Deadline Apr 17 | Blocks ingestion cycle |
 | May release plan = DRAFT only | Kat/Gayathri | Open items remain | Feature scoping |
 | QBOA MM credentials missing from Retool | Soranzo/Augusto | Investigating | External user access |
@@ -250,7 +310,7 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 
 ---
 
-## Knowledge Base Health Audit (2026-04-13)
+## Knowledge Base Health Audit (2026-04-16)
 
 ### CURRENT (usar com confianca)
 - `sweep-learnings/` — 33 reports through Apr 2
@@ -259,6 +319,7 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 - `access/QBO_CREDENTIALS.json` — Mar 10
 - `EVIDENCE_COLLECTION_PLAYBOOK.md` — Feb 23
 - `UNIVERSAL_VALIDATION_FRAMEWORK.md` — Mar 4
+- **`ACCESS_MANAGEMENT_PLAYBOOK.md`** — Apr 16 (NEW — Kat policy, 9 sections, Coda map, changelog)
 
 ### STALE (precisa refresh)
 - `strategic-cortex/` — Dec 2025 baseline (exceto OUTPUT_A Mar 11)
@@ -306,12 +367,17 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 | Demo QBO manager tool video 2.mp4 | Downloads/ | 900MB — demo recording |
 | PARA_AUGUSTO/ | Downloads/ | 15 CSVs for ingestion (Feb 8) |
 | INGESTION_PLANS/ | Downloads/ | 56 files — scripts, guides, audit |
+| CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx | Downloads/ | **CANONICAL** — 76 rules, updated Apr 16 |
+| fix_tco_round3.py | Downloads/ | TCO PO/Expense LIC + date fixes |
+| fix_construction.py | Downloads/ | Construction 6 fixes script |
+| create_tco_ticket.py | Downloads/ | PLA-3473 creation script |
+| create_construction_ticket.py | Downloads/ | PLA-3474 creation + CSVs |
 
 ---
 
 ## Historico
 
-- Sessoes detalhadas: `sessions/` (28 files, last: 2026-03-13)
+- Sessoes detalhadas: `sessions/` (29 files, last: 2026-04-16)
 - Memory backup: `.claude/memory_backup_2026-03-23.md`
 - Sweep reports: `knowledge-base/sweep-learnings/` (33 reports)
 - Strategic Cortex: `knowledge-base/strategic-cortex/OUTPUT_A_*.md` (STALE — Dec 2025)
@@ -321,15 +387,54 @@ Construction dataset migrado para V2 (PLA-3376). Conexao:
 
 ## Proximas Acoes Recomendadas
 
-1. **URGENTE — Activity Plans**: Pedir Augusto para gerar activity plans para construction-clone (493 bills + 731 payroll inseridos no V2 DB em 2026-04-15). Sem isso, dados NAO aparecem no QBO.
-2. **Apr 17**: Monitorar lock de scope da Spring Release
-3. **PLA-3416**: Desbloquear Augusto sobre gate 2 no Retool (cash flow invoices TAMBEM pendentes)
-4. **PLA-3431**: Cobrar Soranzo sobre payroll approach
-5. **QB-08 gap**: Validar se engine tolera gaps em bill_no (16 gaps de 4999-5507). Se nao, renumerar.
-6. **Outros datasets**: TCO, Manufacturing, NonProfit, Consulting — todos precisam de work similar ao construction-clone (ver Dataset Mastery Analysis)
-7. **Sweep Summit**: Executar quando usuario pedir
-8. **KB Refresh**: Atualizar wfs/, strategic-cortex/, INDEX.md
-9. **Health Reports**: Acompanhar calibracao de accuracy com Augusto
+1. **URGENTE — Activity Plans (TCO + Construction)**: Augusto precisa gerar activity plans para AMBOS datasets. TCO: 8 fixes (PLA-3473). Construction: 6 fixes (PLA-3474). Sem activity plans, DB fixes NAO propagam ao QBO.
+2. **URGENTE — TCO Invoice Terms**: 20,002 erros de QB_INVOICE_TERMS_MATCH_COMPANY_SETTINGS. Augusto precisa investigar qual preferred_invoice_terms aplicar para tire_shop.
+3. **URGENTE — Activity Plans (construction-clone)**: 493 bills + 731 payroll inseridos no V2 DB em 2026-04-15. Sem isso, dados NAO aparecem no QBO.
+4. **URGENTE — Consolidated View**: Kat pediu dev team habilitar Consolidated View no IES Future Features (CoIDs: 9341455531293719, 9341455531274694, 9341455531294375). Daniel Sharvit precisa pra demo sexta 17/04. Dev team nao respondeu — dar bump.
+5. **PENDENTE — RAC-764**: Checar com Alexandra se provisioning Mailchimp Admin (Jodie, Kym, Carl, Antonio) foi resolvido.
+6. **PENDENTE — kledabyl**: User no Help Tracker — Alexandra convidou + resolveu white screen, mas kledabyl nao confirmou se QBOA MM funciona nem informou quais ambientes IES precisa. Follow up.
+7. **PENDENTE — PLA-3431**: Cobrar Kat sobre payroll bank Construction Clone (2 dias sem resposta)
+8. **Coda Update**: Atualizar pagina "How to setup a new account" (canvas-AAMV0rdAbv) no Integrations Central → Intuit com a politica de access requests da Kat (Scenario A/B + canned response). Precisa ser feito no browser — API nao edita canvas pages.
+9. **Apr 17**: Monitorar lock de scope da Spring Release
+10. **PLA-3416**: Desbloquear Augusto sobre gate 2 no Retool (cash flow invoices TAMBEM pendentes)
+11. **Outros datasets**: Manufacturing, NonProfit, Consulting — mesmos fixes de classification/PSC provavelmente necessarios (ver learnings sistemicos acima + Dataset Mastery Analysis)
+12. **Sweep Summit**: Executar quando usuario pedir
+13. **KB Refresh**: Atualizar wfs/, strategic-cortex/, INDEX.md
+14. **Health Reports**: Acompanhar calibracao de accuracy com Augusto
+
+## Access Management (2026-04-16)
+
+### Kat's New Policy (Apr 15-16)
+- **Scenario A (ADD_ENV)**: User already has account → add environment via impersonate/Django
+- **Scenario B (NET_NEW)**: User has no account → paste canned response with Google Doc link
+- **IMPORTANT**: Google Doc link is for the USERS, not for us. We don't need access to it. Just send the link.
+- Kat (Apr 16): *"We don't need to request access, we just need to send them the link"*
+- Canned response: `Hi, please go to this doc and follow it further instructions on how to request a license for TestBox. Link here: https://docs.google.com/document/d/1RmlGoruS1bzSFgA-7ZYYr245ioVklFifVqvWfkO8tUc/edit?tab=t.0`
+
+### ACCESS_MANAGER Tool (v2)
+- **Location**: `C:/Users/adm_r/Tools/ACCESS_MANAGER/access_manager.py`
+- **What**: Multi-channel Slack scanner (13 channels + Help Tracker), 8 classifications, canned responses, playbook, user lookup
+- **Commands**: `scan [--days N] [--deep]`, `triage`, `lookup EMAIL`, `playbook`, `respond NET_NEW|ADD_ENV|ISSUE`, `channels`, `history`
+- **Depends on**: `SLACK_USER_TOKEN` in `TSA_CORTEX/.env`
+
+### Playbook
+- **Location**: `knowledge-base/ACCESS_MANAGEMENT_PLAYBOOK.md`
+- **Content**: Policy, methods (impersonate/Django), new customer SOP, gotchas, contacts, env names, Coda map, changelog
+
+### Coda Map (Integrations Central)
+- Intuit section: `canvas-3ZQK_H3Lto` in doc `bd-guBL5H_`
+- **Best page for policy update**: "How to setup a new account" (`canvas-AAMV0rdAbv`) — browser link: https://coda.io/d/_dbd-guBL5H_/_su0rdAbv
+- Canvas pages can't be edited via API — needs manual browser update
+- Other relevant pages: Intuit Accounts (`canvas-KLKS3MLjNf`), Activation failures (`canvas-y_Rw4T1wr8`), Quickbooks Activities (`canvas-GJeXYbTbE9`)
+
+### 14-Day Audit Results (Apr 16)
+- **17 channels scanned**, 65 messages found
+- 2 resolved (Zak Kelly QBOA MM, mcalderon1 new hire redirect)
+- 3 pending (Consolidated View URGENT, RAC-764, kledabyl Help Tracker)
+- 2 watch (Kat de-provision Mailchimp, Brevo SSO)
+- PLA-3431 payroll bank: 2 days no reply from Kat
+
+---
 
 ## Learnings Acumulados — Sweep Automation (2026-04-15)
 
@@ -498,15 +603,38 @@ TSA inserts data → Postgres V2 → Hasura GraphQL → Platypus Ingestion Engin
 1. **RL-48**: Vendor-product affinity weak — Blue Bird Insurance sells 52 products. Risk: LOW (realism only, not ingestion failure). Fix would require rewriting all 1429 bill LI product assignments.
 2. **RL-46**: PO link 16% vs 22% target — acceptable.
 3. **RL-47**: Expense-estimate link 3.7% vs 7-10% — pre-existing, not my data.
-4. **QB-08**: bill_no has 16 gaps from deleted bills (gap between 4903-5507). Risk: UNKNOWN if engine cares about gaps.
+4. **QB-08**: bill_no has 16 gaps from deleted bills (gap between 4903-5507). Risk: **NONE** — investigated deeply: no FK refs, no triggers, no pipeline validation on gaps. Dataset `2ed5d245` (construction original) has 3,161 gaps (85.5%) and works fine. QBO DocNumber is a reference field, not a sequential constraint. Decision: DO NOT renumber.
 5. **Bills terms distribution**: Due on Receipt over-represented (186/589=31%) because of date clamp fix converting Net60→DueOnReceipt on late-year bills.
+
+### Engineering Validation Fixes (2026-04-16, session 2)
+
+**Source**: `export (10).csv` from Retool Gate 2 validator — 6 rules, 924 violations.
+
+| Fix | Violations | Action | Status |
+|-----|-----------|--------|--------|
+| QB_PAYROLL_EXPENSES_HAVE_LINE_ITEMS | 731 | Inserted 1,462 LIs (731×2: Wages COA82 + Taxes COA80) | FIXED |
+| QB_COMPANY_TYPES_MATCH (bills→PO) | 41 | Re-linked to POs with matching company_type | FIXED |
+| QB_PAYROLL_EXPENSES_IN_PROJECT | 29 | Clamped dates to Meridian project period (60-300d) | FIXED |
+| QB_INVOICES_IN_PROJECT | 5 | Clamped dates to Meridian project period (60-300d) | FIXED |
+| QB_TIME_ENTRIES_START_IN_PROJECT | 29 | PRE-EXISTING, not fixable without TE ownership | KNOWN |
+| QB_TIME_ENTRIES_END_IN_PROJECT | 0 | Already clean | N/A |
+
+**Post-fix audit: 6/6 rules PASS** (0 violations except 29 pre-existing TE start dates).
+**Script**: `fix_eng_violations.py` in `~/Downloads/CONSTRUCTION_CLONE_DELIVERY/scripts/`
+
+### Checklist v6 Gap Analysis
+
+3 gaps found in checklist that caused us to miss these issues:
+1. **#10 QB_PARENT_MUST_HAVE_LI** — covers invoices/expenses but OMITS payroll→payroll_li
+2. **#2 QB_COMPANY_TYPES_MATCH** — too vague, doesn't list specific FK pairs (bill→PO missed)
+3. **MISSING RULE** — no rule for "transaction dates must fall within linked project period"
 
 **CRITICAL NEXT STEP**: Augusto must generate **activity plans** for the new data to propagate from V2 DB → Hasura → Platypus → QBO. Without this, all DB changes remain invisible in QBO UI.
 
-### Checklist Rules Reference (60 rules)
+### Checklist Rules Reference (76 rules)
 
-Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (5).xlsx`. Key rules by category:
-- **QB (1-21, 60)**: Technical DB rules — dataset_id, company_type, dates≤365, intervals, FKs, LI counts, purchasable, precision, classifications, canceled projects
+Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx` (CANONICAL — atualizada 2026-04-16). Key rules by category:
+- **QB (1-21, 60, 70-77)**: Technical DB rules — dataset_id, company_type, dates≤365, intervals, FKs, LI counts, purchasable, precision, classifications, canceled projects, field_id NOT NULL (LIC/PO/Expense), PSC overlap, product name unique, invoice terms
 - **BIZ (22-33)**: Business logic — P&L positive per month/CT, margins 18-28%, COGS, payroll sync, seasonal pattern, inventory safety
 - **RL (34-48)**: Realism — notes/terms variation, descriptions, product-project affinity, invoice ranges, vendor-product affinity, PO links
 - **PIPE (49-59)**: Pipeline/runtime — account types, sellable flag, name uniqueness, parallel inventory, pre-ingested accounts. Marked N/A in checklist.
@@ -521,12 +649,15 @@ Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (5).xlsx`. Key r
 - Date columns are `DATE` type (not `INTERVAL` like invoices/estimates) — pipeline may need special handling
 - Table is GLOBALLY empty (0 rows across ALL datasets) — feature never used
 
-### Key Docs (Construction-Clone)
+### Key Docs (Construction-Clone + INGEST_CHECK)
 - `knowledge-base/CONSTRUCTION_CLONE_PLAN.md` — Focused action plan
 - `knowledge-base/CONSTRUCTION_CLONE_TRIANGULATION.md` — 500-line master triangulation
 - `knowledge-base/sweep-learnings/construction-clone_2026-04-15_v3.md` — Latest sweep report
-- `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (5).xlsx` — 60-rule checklist (CANONICAL)
+- `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (7).xlsx` — **76-rule checklist (CANONICAL, updated 2026-04-16)**
 - `~/Downloads/CONSTRUCTION_CLONE_DELIVERY/scripts/` — ALL fix/audit scripts (12 files)
+- `sessions/2026-04-16_ingest-check-tco-construction.md` — Full INGEST_CHECK session log
+- **PLA-3473** — TCO: 8 fixes applied + 7 CSVs attached
+- **PLA-3474** — Construction: 6 fixes applied + 5 CSVs attached
 
 ### Sequence of Operations (for reproducibility)
 1. `fix_inline_classifications.py --execute` — Fill NULL inline class cols
@@ -539,4 +670,4 @@ Full checklist in `~/Downloads/CHECKLIST_INGESTION_CONSTRUCTION (5).xlsx`. Key r
 8. `fix_margin.py` — Deleted 16 smallest bills to reach 18.6% margin
 9. Final audit: `full_checklist_audit.py` + `audit_remaining_rules.py` → 66/66 PASS
 
-Ultima atualizacao: 2026-04-15 23:00 (post cost-gap-fix, full 60-rule audit, all BLOCKERs resolved)
+Ultima atualizacao: 2026-04-16 (INGEST_CHECK session — TCO 8 fixes PLA-3473, Construction 6 fixes PLA-3474, Checklist v7 76 regras)
